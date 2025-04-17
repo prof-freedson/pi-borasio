@@ -7,10 +7,8 @@ const Home: React.FC = () => {
   return (
     <main className="bg-[#eaf5e0] min-h-screen font-sans flex flex-col justify-between">
       <div>
-        <Header />
         <Hero />
       </div>
-      <Footer />
     </main>
   );
 };
