@@ -18,8 +18,8 @@ const Header: React.FC = () => {
 
       {/* Navegação principal (visível em telas médias ou maiores) */}
       <nav className="hidden md:flex space-x-6 font-roboto text-base md:text-lg flex-grow justify-end mr-6"> {/* Adicionada margem à direita */}
-        <Link href="#"><span className="hover:underline cursor-pointer">Início</span></Link>
-        <Link href="#"><span className="hover:underline cursor-pointer">Corridas</span></Link>
+        <Link href="/"><span className="hover:underline cursor-pointer">Início</span></Link>
+        <Link href="/corridas"><span className="hover:underline cursor-pointer">Corridas</span></Link>
         <Link href="#"><span className="hover:underline cursor-pointer">Sobre</span></Link>
         <Link href="#"><span className="hover:underline cursor-pointer">Contato</span></Link>
       </nav>
