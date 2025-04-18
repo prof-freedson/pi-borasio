@@ -21,10 +21,10 @@ export default function CorridasPage() {
       {corridas.map((corrida) => (
         <div
           key={corrida.id}
-          className="bg-[#fefce8] rounded-2xl shadow-md w-full max-w-md overflow-hidden"
+          className="bg-white rounded-2xl shadow-md w-full max-w-md overflow-hidden"
         >
-          <div className="bg-green-900 text-[#fefce8] text-center py-4 text-2xl font-bold">
-            BoraSió!
+          <div className="bg-green-900 text-white text-center py-4 text-2xl font-bold">
+            BoraSiô!
           </div>
 
           <div className="flex items-center gap-4 px-6 py-4">

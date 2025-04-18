@@ -18,7 +18,7 @@ const Cadastro = () => {
 
   return (
     <main className="min-h-screen bg-green-100 flex items-center justify-center px-4">
-      <div className="bg-[#fefce8] p-8 rounded-2xl shadow-md w-full max-w-sm">
+      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm">
         <h1 className="text-3xl font-bold text-center text-green-900 mb-6">Criar conta</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
