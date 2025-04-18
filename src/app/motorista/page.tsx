@@ -15,7 +15,8 @@ export default function Motorista() {
 
   return (
     <div className="min-h-screen flex flex-col items-center space-y-10 bg-[#DAF3D7] bg-cover bg-center">
-      <div className='bg-white/50 p-20'>
+      <div className="bg-white/50 p-20">
+
         {/* Perfil */}
         <div className="flex gap-8 items-center mt-10 mb-10">
           <img
@@ -23,9 +24,9 @@ export default function Motorista() {
             className="w-52 h-52 rounded-full object-cover"
             alt="Foto do motorista"
           />
-          <div className="flex flex-col border-2  text-[#004d2b] rounded-2xl p-2">
-            <h1 className="text-4xl text-[#004d2b] font-bold">João Ribamar</h1>
-            <h2 className="text-2xl text-[#000000]">Motorista</h2>
+          <div className="flex flex-col border-2 text-[#004d2b] rounded-2xl p-2">
+            <h1 className="text-4xl font-bold">João Ribamar</h1>
+            <h2 className="text-2xl text-black">Motorista</h2>
           </div>
         </div>
 
@@ -99,7 +100,17 @@ export default function Motorista() {
           <div className="text-center">
             <h2 className="text-lg text-gray-800">Volkswagen Gol</h2>
           </div>
+          <div>
+            <h4 className="text-lg text-green-900 text-center mt-4">Informações do Veículo:</h4>
+            <ul className="text-gray-800 text-center space-y-1 mt-2">
+              <li>Placa: OXY-1234</li>
+              <li>Cor: Branco</li>
+              <li>Ano: 2018</li>
+              <li>Combustível: Flex</li>
+            </ul>
+          </div>
         </div>
+
       </div>
     </div>
   )

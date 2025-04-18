@@ -4,7 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 
 const Cadastro = () => {
-  const [form, setForm] = useState({ nome: "", email: "", senha: "", confirmarSenha: "" });
+  const [form, setForm] = useState({
+    nome: "",
+    cpf: "",
+    endereco: "",
+    email: "",
+    senha: "",
+    confirmarSenha: "",
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,9 +24,11 @@ const Cadastro = () => {
   };
 
   return (
-    <main className="min-h-screen bg-green-100 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-green-100 flex items-center justify-center px-4 pt-20 md:pt-32 pb-20 md:pb-32">
       <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm">
-        <h1 className="text-3xl font-bold text-center text-green-900 mb-6">Criar conta</h1>
+        <h1 className="text-3xl font-bold text-center text-green-900 mb-6">
+          Criar conta
+        </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="nome" className="block text-green-900 mb-1">
@@ -30,6 +39,34 @@ const Cadastro = () => {
               name="nome"
               id="nome"
               value={form.nome}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="cpf" className="block text-green-900 mb-1">
+              CPF
+            </label>
+            <input
+              type="text"
+              name="cpf"
+              id="cpf"
+              value={form.cpf}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="endereco" className="block text-green-900 mb-1">
+              Endereço
+            </label>
+            <input
+              type="text"
+              name="endereco"
+              id="endereco"
+              value={form.endereco}
               onChange={handleChange}
               className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               required
@@ -64,7 +101,10 @@ const Cadastro = () => {
             />
           </div>
           <div>
-            <label htmlFor="confirmarSenha" className="block text-green-900 mb-1">
+            <label
+              htmlFor="confirmarSenha"
+              className="block text-green-900 mb-1"
+            >
               Confirmar senha
             </label>
             <input

@@ -17,6 +17,7 @@ const Header: React.FC = () => {
       <nav className="hidden md:flex space-x-6 font-roboto text-base md:text-lg flex-grow justify-end mr-6"> 
         <Link href="/"><span className="hover:underline cursor-pointer">Início</span></Link>
         <Link href="/corridas"><span className="hover:underline cursor-pointer">Corridas</span></Link>
+        <Link href="/motorista"><span className="hover:underline cursor-pointer">Motorista</span></Link>
         <Link href="/sobre"><span className="hover:underline cursor-pointer">Sobre</span></Link>
         <Link href="/contato"><span className="hover:underline cursor-pointer">Contato</span></Link>
       </nav>
