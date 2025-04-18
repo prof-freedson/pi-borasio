@@ -1,15 +1,6 @@
 export default function LoginPage() {
   return (
     <main className="min-h-screen bg-green-100 flex flex-col items-center justify-center">
-      {/* Top banner */}
-      {/* Top banner */}
-<div className="w-full bg-green-800 py-6 text-center">
-  <img
-    src="/logo.png"
-    alt="Logo BoraSiô!"
-    className="mx-auto h-12" // ajuste o tamanho da logo conforme necessário
-  />
-</div>
       {/* Login box */}
       <div className="bg-green-50 mt-10 p-8 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-bold mb-6 text-green-800 text-center">Entrar</h2>
