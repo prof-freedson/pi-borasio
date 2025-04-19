@@ -9,9 +9,9 @@ export default function SobrePage() {
 
         {/* Título e Introdução */}
         <div className="text-justify">
-          <h1 className="text-4xl font-bold text-green-900">Sobre o BoraSiô!</h1>
+          <h1 className="text-4xl font-bold text-green-900">Sobre o BoraSiô</h1>
           <p className="text-[#4e4e4e] text-lg mt-4">
-            O BoraSiô! oferece uma plataforma conveniente e acessível para conectar passageiros a motoristas.
+            O BoraSiô oferece uma plataforma conveniente e acessível para conectar passageiros a motoristas.
             Nosso objetivo é facilitar a mobilidade urbana com uma solução prática e transparente. 
             Escolher a gente é garantir a experiência de uma viagem confortável, com um preço justo 
             e com motoristas comprometidos em oferecer o melhor serviço.

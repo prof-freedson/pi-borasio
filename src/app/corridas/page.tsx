@@ -24,7 +24,7 @@ export default function CorridasPage() {
           className="bg-white rounded-2xl shadow-md w-full max-w-md overflow-hidden"
         >
           <div className="bg-green-900 text-white text-center py-4 text-2xl font-bold">
-            BoraSiô!
+            BoraSiô
           </div>
 
           <div className="flex items-center gap-4 px-6 py-4">

@@ -17,7 +17,7 @@ const Hero: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl text-center">
             <div className="flex flex-col items-center">
               <h3 className="text-[#004d2b] font-bold text-2xl mb-2">Preço Justo</h3>
-              <p className="text-[#4e4e4e] text-base">
+              <p className="text-[#4e4e4e] text-lg">
                 Transparência e economia em cada corrida. Sem surpresas no final.
               </p>
             </div>
@@ -26,14 +26,14 @@ const Hero: React.FC = () => {
               <h3 className="text-[#004d2b] font-bold text-xl lg:text-2xl mb-2 whitespace-nowrap">
                 Segurança
               </h3>
-              <p className="text-[#4e4e4e] text-base">
+              <p className="text-[#4e4e4e] text-lg">
                 Prioridade para a sua segurança em cada trajeto.
               </p>
             </div>
 
             <div className="flex flex-col items-center">
               <h3 className="text-[#004d2b] font-bold text-2xl mb-2">Fácil e rápido</h3>
-              <p className="text-[#4e4e4e] text-base">
+              <p className="text-[#4e4e4e] text-lg">
                 Cadastre-se e tenha corrida disponível sempre que desejar.
               </p>
             </div>
