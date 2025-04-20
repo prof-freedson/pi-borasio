@@ -178,11 +178,11 @@ export default function Motorista() {
           </div>
         ) : (
           <div className="flex gap-5">
-            <div className="w-1/5 border-2 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faCarSide} className="mr-2 text-green-800" /> {marca}</div>
-            <div className="w-1/5 border-2 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faCar} className="mr-2 text-green-800" /> {modelo}</div>
-            <div className="w-1/5 border-2 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faIdBadge} className="mr-2 text-green-800" /> {placa}</div>
-            <div className="w-1/5 border-2 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faPalette} className="mr-2 text-green-800" /> {cor}</div>
-            <div className="w-1/5 border-2 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faGasPump} className="mr-2 text-green-800" /> {combustivel}</div>
+            <div className="w-1/5 border-1 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faCarSide} className="mr-2 text-green-800" /> {marca}</div>
+            <div className="w-1/5 border-1 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faCar} className="mr-2 text-green-800" /> {modelo}</div>
+            <div className="w-1/5 border-1 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faIdBadge} className="mr-2 text-green-800" /> {placa}</div>
+            <div className="w-1/5 border-1 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faPalette} className="mr-2 text-green-800" /> {cor}</div>
+            <div className="w-1/5 border-1 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faGasPump} className="mr-2 text-green-800" /> {combustivel}</div>
           </div>
         )}
       </div>
