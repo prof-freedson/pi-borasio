@@ -2,6 +2,7 @@ import './globals.css'
 import { Poppins } from 'next/font/google'
 import Header from '@/app/components/Header'
 import Footer from '@/app/components/Footer'
+import ChatFlutuante from '@/app/components/ChatFlutuante' 
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '600', '700'], variable: '--font-poppins' })
 
@@ -16,6 +17,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex flex-col min-h-screen bg-green-100">
         <Header />
         <main className="flex-grow">{children}</main>
+
+        <ChatFlutuante />
+
         <Footer />
       </body>
     </html>
