@@ -98,7 +98,7 @@ export default function Motorista() {
               </div>
             </div>
 
-            <button onClick={salvarEdicao} className="bg-green-800 hover:bg-green-900 text-white font-bold p-2 ml-45 w-[80%] mt-4">Salvar</button>
+            <button onClick={salvarEdicao} className="bg-green-800 hover:bg-green-900 text-white font-bold p-2 ml-30 w-[80%] mt-4">Salvar</button>
           </>
         ) : (
           <>
