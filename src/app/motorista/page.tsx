@@ -32,7 +32,7 @@ export default function Motorista() {
     <div className="min-h-screen flex flex-col items-center space-y-10 bg-[#DAF3D7] bg-cover bg-center">
       
       {/* Perfil */}
-      <div className="bg-white/50 w-1/2 mb-1 items-center rounded-2xl flex mt-20 justify-between">
+      <div className="bg-white/80 w-[80%] mb-1 items-center rounded-2xl flex mt-20 justify-between">
         <img
           src="https://media.istockphoto.com/id/1264589335/pt/foto/school-bus-driver.jpg?s=612x612&w=0&k=20&c=ofVI950kPXaZa6eSeChGpmSANsA20C64OSfJOrT39bM="
           className="w-32 h-32 rounded-full object-cover"
@@ -45,7 +45,7 @@ export default function Motorista() {
       </div>
 
       {/* Informações Conta */}
-      <div className="bg-white/50 p-6 rounded-2xl shadow-lg w-1/2 mb-1 space-y-4">
+      <div className="bg-white/80 p-6 rounded-2xl shadow-lg w-[80%] mb-1 space-y-4">
         <h1 className="text-3xl border-2 p-3 text-[#004d2b] font-bold text-center rounded-2xl">Informações da Conta</h1>
 
         {modoEdicao ? (
@@ -98,7 +98,7 @@ export default function Motorista() {
               </div>
             </div>
 
-            <button onClick={salvarEdicao} className="bg-green-800 hover:bg-green-900 text-white font-bold p-2 ml-45 w-1/2 mt-4">Salvar</button>
+            <button onClick={salvarEdicao} className="bg-green-800 hover:bg-green-900 text-white font-bold p-2 ml-45 w-[80%] mt-4">Salvar</button>
           </>
         ) : (
           <>
@@ -144,13 +144,13 @@ export default function Motorista() {
               <h2 className="text-lg">{endereco}</h2>
             </div>
 
-            <button onClick={() => setModoEdicao(true)} className="bg-green-800 hover:bg-green-900 text-white font-bold w-1/2 p-2 ml-45">Editar Perfil</button>
+            <button onClick={() => setModoEdicao(true)} className="bg-green-800 hover:bg-green-900 text-white font-bold w-[80%] p-2 ml-30">Editar Perfil</button>
           </>
         )}
       </div>
 
       {/* Informações Veículo */}
-      <div className="bg-white/50 p-6 rounded-2xl shadow-lg w-1/2 mb-5">
+      <div className="bg-white/80 p-6 rounded-2xl shadow-lg w-[80%] mb-5">
         <h1 className="text-xl text-green-800 font-bold rounded-2xl border-2 p-3 mb-5">Veículo</h1>
 
         {modoEdicao ? (
