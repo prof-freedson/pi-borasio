@@ -154,7 +154,7 @@ export default function Motorista() {
         <h1 className="text-xl text-green-800 font-bold rounded-2xl border-2 p-3 mb-5">Veículo</h1>
 
         {modoEdicao ? (
-          <div className="flex flex-wrap gap-4">
+          <div className="flex  gap-4">
             <div className="w-1/5 flex items-center">
               <FontAwesomeIcon icon={faCarSide} className="mr-2 text-green-800" />
               <input type="text" value={marca} onChange={(e) => setMarca(e.target.value)} placeholder="Marca" className="border w-full p-2 rounded" />
@@ -177,12 +177,12 @@ export default function Motorista() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-4">
-            <div className="w-1/5"><FontAwesomeIcon icon={faCarSide} className="mr-2 text-green-800" /> {marca}</div>
-            <div className="w-1/5"><FontAwesomeIcon icon={faCar} className="mr-2 text-green-800" /> {modelo}</div>
-            <div className="w-1/5"><FontAwesomeIcon icon={faIdBadge} className="mr-2 text-green-800" /> {placa}</div>
-            <div className="w-1/5"><FontAwesomeIcon icon={faPalette} className="mr-2 text-green-800" /> {cor}</div>
-            <div className="w-1/5"><FontAwesomeIcon icon={faGasPump} className="mr-2 text-green-800" /> {combustivel}</div>
+          <div className="flex gap-5">
+            <div className="w-1/5 border-2 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faCarSide} className="mr-2 text-green-800" /> {marca}</div>
+            <div className="w-1/5 border-2 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faCar} className="mr-2 text-green-800" /> {modelo}</div>
+            <div className="w-1/5 border-2 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faIdBadge} className="mr-2 text-green-800" /> {placa}</div>
+            <div className="w-1/5 border-2 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faPalette} className="mr-2 text-green-800" /> {cor}</div>
+            <div className="w-1/5 border-2 p-1 text-green-800 rounded"><FontAwesomeIcon icon={faGasPump} className="mr-2 text-green-800" /> {combustivel}</div>
           </div>
         )}
       </div>
