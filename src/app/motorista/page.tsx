@@ -23,9 +23,9 @@ export default function Motorista() {
   const [arCondicionado, setArCondicionado] = useState(true)
 
   const [corridas, setCorridas] = useState([
-    { passageiro: 'Maria Souza', localViagem: 'Avenida Brasil, 345' },
-    { passageiro: 'Pedro Oliveira', localViagem: 'Rua da Paz, 123' },
-    { passageiro: 'Ana Costa', localViagem: 'Avenida Independência, 678' }
+    { passageiro: 'Maria Souza', localViagem: 'Avenida Brasil, 345', destino: 'Rua do Sol, 890', valor: 'R$ 25,00', data: '2025-04-20 10:30', duracao: '15 min', distancia: '8 km', pagamento: 'Cartão', status: 'Concluída', classificacao: '4.8', comentarios: 'Viagem tranquila e rápida.' },
+    { passageiro: 'Pedro Oliveira', localViagem: 'Rua da Paz, 123', destino: 'Praça da Liberdade, 456', valor: 'R$ 30,00', data: '2025-04-20 11:00', duracao: '20 min', distancia: '12 km', pagamento: 'Dinheiro', status: 'Concluída', classificacao: '4.5', comentarios: 'Motorista muito educado.' },
+    { passageiro: 'Ana Costa', localViagem: 'Avenida Independência, 678', destino: 'Shopping Central, 123', valor: 'R$ 40,00', data: '2025-04-20 12:00', duracao: '30 min', distancia: '15 km', pagamento: 'Cartão', status: 'Concluída', classificacao: '5.0', comentarios: 'Ótimo serviço!' }
   ])
 
   const denunciarCorrida = () => {
@@ -139,30 +139,39 @@ export default function Motorista() {
         <div className="flex flex-col space-y-4">
           {corridas.map((corrida, index) => (
             <div key={index} className="flex flex-col space-y-2 border-2 border-gray-300 rounded-xl p-4">
-              <div className="flex items-center space-x-2">
-                <FontAwesomeIcon icon={faUser} className="text-green-800" />
-                <span className="text-lg font-bold">Passageiro:</span>
-                <span>{corrida.passageiro}</span>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-lg">{corrida.passageiro}</h3>
+                  <p>{corrida.localViagem} → {corrida.destino}</p>
+                </div>
+                <div>
+                  <p className="font-bold">{corrida.valor}</p>
+                  <p>{corrida.data}</p>
+                </div>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <FontAwesomeIcon icon={faMapMarkerAlt} className="text-green-800" />
-                <span className="text-lg font-bold">Local da Viagem:</span>
-                <span>{corrida.localViagem}</span>
+              <div className="mt-2">
+                <p className="text-sm"><strong>Duração:</strong> {corrida.duracao}</p>
+                <p className="text-sm"><strong>Distância:</strong> {corrida.distancia}</p>
+                <p className="text-sm"><strong>Pagamento:</strong> {corrida.pagamento}</p>
+                <p className="text-sm"><strong>Status:</strong> {corrida.status}</p>
+                <p className="text-sm"><strong>Classificação:</strong> {corrida.classificacao}</p>
+                <p className="text-sm"><strong>Comentários:</strong> {corrida.comentarios}</p>
               </div>
 
-              <div className="flex justify-center mt-4">
-                <button onClick={denunciarCorrida} className="bg-yellow-800 hover:bg-yellow-900 text-white text-sm font-bold w-1/2 py-2 px-3 rounded">
-                  Denunciar
+              <div className="mt-4">
+                <button
+                  onClick={denunciarCorrida}
+                  className="text-red-600 hover:text-red-800 font-bold"
+                >
+                  Denunciar Corrida
                 </button>
               </div>
             </div>
+            
           ))}
+          <button className='border-2 rounded p-1 w-full text-yellow-800 hover:text-red-400 '><strong>Historico completo</strong></button>
         </div>
-
-        <button className="bg-gray-800 text-white font-bold p-2 w-full mt-6" disabled>
-          Mostrar Histórico Completo
-        </button>
       </div>
 
     </div>
