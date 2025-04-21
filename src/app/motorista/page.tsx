@@ -170,7 +170,7 @@ export default function Motorista() {
             </div>
             
           ))}
-          <button className='border-2 rounded p-1 w-full text-yellow-800 hover:text-red-400 '><strong>Historico completo</strong></button>
+          <button className='border-2 rounded p-1 w-full text-yellow-800 hover:text-red-400 '><strong>Histórico completo</strong></button>
         </div>
       </div>
 
