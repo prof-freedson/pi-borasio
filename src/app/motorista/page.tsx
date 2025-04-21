@@ -54,7 +54,7 @@ export default function Motorista() {
       </div>
 
       {/* Informações da Conta */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[80%] space-y-4">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[80%] mb-5">
         <h1 className="text-2xl md:text-3xl border-2 p-3 text-[#004d2b] font-bold text-center rounded-2xl">Informações da Conta</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-10">
