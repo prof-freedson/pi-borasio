@@ -9,6 +9,7 @@ const Cadastro = () => {
     cpf: "",
     endereco: "",
     email: "",
+    telefone: "",
     senha: "",
     confirmarSenha: "",
   });
@@ -81,6 +82,20 @@ const Cadastro = () => {
               name="email"
               id="email"
               value={form.email}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="telefone" className="block text-green-900 mb-1">
+              Telefone
+            </label>
+            <input 
+              type="tel"
+              name="telefone"
+              id="telefone"
+              value={form.telefone}
               onChange={handleChange}
               className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               required
