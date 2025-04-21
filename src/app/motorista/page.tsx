@@ -102,7 +102,7 @@ export default function Motorista() {
                   className="border w-full p-2 rounded bg-gray-100"
                 />
               ) : (
-                <span className="text-gray-700">{item.value}</span>
+                <span className="text-gray-700 border-1 border-green-800 w-full p-2 rounded ">{item.value}</span>
               )}
             </div>
           ))}
