@@ -1,5 +1,5 @@
-import React from 'react';
 import Link from 'next/link';
+import React from 'react';
 
 const Header: React.FC = () => {
   return (
@@ -18,6 +18,7 @@ const Header: React.FC = () => {
         <Link href="/"><span className="hover:underline cursor-pointer">Início</span></Link>
         <Link href="/corridas"><span className="hover:underline cursor-pointer">Corridas</span></Link>
         <Link href="/motorista"><span className="hover:underline cursor-pointer">Motorista</span></Link>
+        <Link href="/usuario"><span className="hover:underline cursor-pointer">Usuario</span></Link>
         <Link href="/sobre"><span className="hover:underline cursor-pointer">Sobre</span></Link>
         <Link href="/contato"><span className="hover:underline cursor-pointer">Contato</span></Link>
       </nav>
