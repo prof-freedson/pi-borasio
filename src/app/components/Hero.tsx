@@ -13,7 +13,7 @@ const Hero: React.FC = () => {
           com praticidade, economia e conforto.
         </p>   
         
-        <div className="mt-14 flex justify-center">
+        <div className="mt-32 flex justify-center">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl text-center">
             <div className="flex flex-col items-center">
               <h3 className="text-[#004d2b] font-bold text-2xl mb-2">Preço Justo</h3>
