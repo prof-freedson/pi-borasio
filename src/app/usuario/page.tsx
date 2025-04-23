@@ -1,6 +1,6 @@
 "use client"
 
-import { faClock, faCommentDots, faCreditCard, faEdit, faEnvelope, faIdBadge, faMapMarkerAlt, faMoneyBill, faPhone, faRoute, faTimes, faUser, faCarAlt } from '@fortawesome/free-solid-svg-icons'
+import { faClock, faCommentDots, faCreditCard, faEdit, faEnvelope, faIdBadge, faMapMarkerAlt, faMoneyBill, faPhone, faRoute, faTimes, faUser, faCarAlt, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 import Link from 'next/link'
@@ -34,7 +34,7 @@ export default function Usuario() {
 
   return (
     <div className="min-h-screen flex flex-col items-center space-y-10 bg-[#DAF3D7] p-4">
-      {/* Perfil - Seção modificada */}
+      {/* Perfil */}
       <div className="bg-white w-[80%] mb-1 items-center rounded-2xl flex mt-10 p-4 justify-between">
         <div className="flex items-center">
           <img
@@ -124,8 +124,20 @@ export default function Usuario() {
             <p><FontAwesomeIcon icon={faIdBadge} className="mr-2 text-green-800" /> {cpf}</p>
             <p><FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-green-800" /> {endereco}</p>
             
-            {/* Exibir Métodos de Pagamento */}
-            <h3 className="mt-2"><FontAwesomeIcon icon={faCreditCard} className="mr-2 text-green-800" /> Métodos de Pagamento: {pagamentos.join(', ')}</h3>
+            {/* Exibir Métodos de Pagamento com botão para página de pagamento */}
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faCreditCard} className="mr-2 text-green-800" />
+                <span>Métodos de Pagamento: {pagamentos.join(', ')}</span>
+              </div>
+              <Link 
+                href="/pagamento" 
+                className="bg-yellow-300 text-[#004d2b] px-3 py-1 rounded-2xl font-bold hover:bg-yellow-400 text-sm flex items-center"
+              >
+                <FontAwesomeIcon icon={faPlusCircle} className="mr-1" />
+                Novo
+              </Link>
+            </div>
 
             <div className="w-[60%] mb-10 mx-auto flex justify-center">
               <button onClick={() => setModoEdicao(true)}
