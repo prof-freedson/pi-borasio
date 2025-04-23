@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Cadastro = () => {
+  const router = useRouter();
   const [form, setForm] = useState({
     nome: "",
     cpf: "",
@@ -14,14 +16,37 @@ const Cadastro = () => {
     confirmarSenha: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aqui pode colocar lógica de validação ou envio para API
-    console.log("Cadastro:", form);
+    setIsLoading(true);
+    setError("");
+
+    // Validação básica
+    if (form.senha !== form.confirmarSenha) {
+      setError("As senhas não coincidem");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Simulação de chamada API
+      console.log("Dados para cadastro:", form);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Redirecionamento após cadastro
+      router.push("/usuario");
+    } catch (err) {
+      setError("Erro ao cadastrar. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -30,10 +55,18 @@ const Cadastro = () => {
         <h1 className="text-3xl font-bold text-center text-green-900 mb-6">
           Criar conta
         </h1>
+        
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Nome Completo */}
           <div>
             <label htmlFor="nome" className="block text-green-900 mb-1">
-              Nome
+              Nome Completo
             </label>
             <input
               type="text"
@@ -45,6 +78,8 @@ const Cadastro = () => {
               required
             />
           </div>
+
+          {/* CPF */}
           <div>
             <label htmlFor="cpf" className="block text-green-900 mb-1">
               CPF
@@ -59,9 +94,11 @@ const Cadastro = () => {
               required
             />
           </div>
+
+          {/* Endereço */}
           <div>
             <label htmlFor="endereco" className="block text-green-900 mb-1">
-              Endereço
+              Endereço Completo
             </label>
             <input
               type="text"
@@ -73,6 +110,8 @@ const Cadastro = () => {
               required
             />
           </div>
+
+          {/* Email */}
           <div>
             <label htmlFor="email" className="block text-green-900 mb-1">
               E-mail
@@ -87,11 +126,13 @@ const Cadastro = () => {
               required
             />
           </div>
+
+          {/* Telefone */}
           <div>
             <label htmlFor="telefone" className="block text-green-900 mb-1">
               Telefone
             </label>
-            <input 
+            <input
               type="tel"
               name="telefone"
               id="telefone"
@@ -101,6 +142,8 @@ const Cadastro = () => {
               required
             />
           </div>
+
+          {/* Senha */}
           <div>
             <label htmlFor="senha" className="block text-green-900 mb-1">
               Senha
@@ -113,14 +156,14 @@ const Cadastro = () => {
               onChange={handleChange}
               className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               required
+              minLength={6}
             />
           </div>
+
+          {/* Confirmar Senha */}
           <div>
-            <label
-              htmlFor="confirmarSenha"
-              className="block text-green-900 mb-1"
-            >
-              Confirmar senha
+            <label htmlFor="confirmarSenha" className="block text-green-900 mb-1">
+              Confirmar Senha
             </label>
             <input
               type="password"
@@ -130,18 +173,24 @@ const Cadastro = () => {
               onChange={handleChange}
               className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               required
+              minLength={6}
             />
           </div>
+
           <button
             type="submit"
-            className="w-full bg-yellow-300 text-green-900 font-bold py-3 rounded-md hover:bg-yellow-400 transition"
+            disabled={isLoading}
+            className={`w-full bg-yellow-300 text-green-900 font-bold py-3 rounded-md hover:bg-yellow-400 transition ${
+              isLoading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
           >
-            Cadastre-se
+            {isLoading ? "Cadastrando..." : "Cadastre-se"}
           </button>
         </form>
+
         <p className="text-center text-sm text-green-900 mt-4">
           Já tem uma conta?{" "}
-          <Link href="/login" className="hover:underline">
+          <Link href="/pessoal/login" className="hover:underline font-medium">
             Faça login
           </Link>
         </p>
