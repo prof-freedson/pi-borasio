@@ -4,9 +4,9 @@ import { FaCarSide, FaRegLightbulb, FaRegHandshake } from 'react-icons/fa';
 
 export default function SobrePage() {
   return (
-    <div className="min-h-screen bg-green-100 px-4 py-2 flex items-center justify-center">
-      <div className="w-full max-w-7xl bg-white shadow-xl rounded-2xl px-8 py-20 space-y-16">
-
+    <div className="min-h-screen bg-green-100 flex justify-center items-start px-4"> {/* Alinha ao topo */}
+      <div className="w-full max-w-7xl bg-white shadow-xl rounded-2xl px-8 py-16 space-y-16 mt-20 mx-auto"> {/* mt-20 para descer mais */}
+        
         {/* Título e Introdução */}
         <div className="text-justify">
           <h1 className="text-4xl font-bold text-green-900">Sobre o BoraSiô</h1>
@@ -19,12 +19,12 @@ export default function SobrePage() {
         </div>
 
         {/* Missão, Visão e Valores */}
-        <div className="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0 md:space-x-8 mt-20">
+        <div className="flex flex-col md:flex-row justify-between items-center space-y-12 md:space-y-0 md:space-x-8 mt-16">
           {/* Missão */}
           <div className="flex flex-col items-center text-center md:text-left space-y-4">
-            <FaRegLightbulb className="text-green-800 text-6xl" />
+            <FaRegLightbulb className="text-green-800 text-6xl transition-transform transform hover:scale-110" />
             <h3 className="text-xl font-semibold text-green-800">Nossa Missão</h3>
-            <p className="text-gray-600 text-center">
+            <p className="text-gray-600 text-center text-base md:text-lg">
               Tornar o transporte urbano mais acessível e econômico para todos. Oferecemos
               corridas rápidas, seguras e com o melhor custo-benefício.
             </p>
@@ -32,9 +32,9 @@ export default function SobrePage() {
 
           {/* Visão */}
           <div className="flex flex-col items-center text-center md:text-left space-y-4">
-            <FaCarSide className="text-green-800 text-6xl" />
+            <FaCarSide className="text-green-800 text-6xl transition-transform transform hover:scale-110" />
             <h3 className="text-xl font-semibold text-green-800">Nossa Visão</h3>
-            <p className="text-gray-600 text-center">
+            <p className="text-gray-600 text-center text-base md:text-lg">
               Ser a principal opção de transporte para quem busca economia, conforto e confiança.
               Estamos sempre em busca de melhorias e inovações para tornar cada viagem mais agradável.
             </p>
@@ -42,9 +42,9 @@ export default function SobrePage() {
 
           {/* Valores */}
           <div className="flex flex-col items-center text-center md:text-left space-y-4">
-            <FaRegHandshake className="text-green-800 text-6xl" />
+            <FaRegHandshake className="text-green-800 text-6xl transition-transform transform hover:scale-110" />
             <h3 className="text-xl font-semibold text-green-800">Nossos Valores</h3>
-            <p className="text-gray-600 text-center">
+            <p className="text-gray-600 text-center text-base md:text-lg">
               Valorizamos a transparência, a honestidade e o respeito pelo cliente. Cada corrida é tratada
               com o máximo cuidado e comprometimento.
             </p>

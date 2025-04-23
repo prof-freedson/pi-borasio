@@ -25,8 +25,8 @@ export default function ContatoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-green-100 px-4 py-12 flex items-center justify-center">
-      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 bg-white shadow-xl rounded-2xl p-8">
+    <div className="min-h-screen bg-green-100 px-4 flex flex-col">
+      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 bg-white shadow-xl rounded-2xl p-8 mt-20 mx-auto"> {/* Alterei mt-32 para mt-20 */}
         
         {/* Lado esquerdo - Informações de contato */}
         <div className="flex flex-col items-start justify-between space-y-8">

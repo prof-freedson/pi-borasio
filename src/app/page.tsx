@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Hero from './components/Hero';
 
-const Home: React.FC = () => {
+interface HomeProps {
+  children: ReactNode;
+}
+
+const Home: React.FC<HomeProps> = ({ children }) => {
   return (
-    <main className="overflow-hidden h-screen"> 
+    <main className="flex-grow w-full">
       <Hero />
+      {children} 
     </main>
   );
 };
