@@ -53,104 +53,73 @@ const Cadastromotorista = () => {
   };
 
   return (
-    <main className="min-h-screen bg-green-100 flex items-center justify-center px-4 pt-20 md:pt-32 pb-20 md:pb-32">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm">
-        <h1 className="text-3xl font-bold text-center text-green-900 mb-6">
-          Criar conta
+    <main className="min-h-screen bg-green-100 flex items-center justify-center px-4 py-16">
+      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-6xl">
+        <h1 className="text-3xl font-bold text-center text-green-900 mb-8">
+          Cadastro de Motorista
         </h1>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Dados Pessoais */}
-          <div>
-            <label htmlFor="nome" className="block text-green-900 mb-1">Nome Completo</label>
-            <input type="text" name="nome" id="nome" value={form.nome} onChange={handleChange} className="w-full p-3 border rounded-md" required />
-          </div>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Dados do Motorista */}
+          <fieldset className="space-y-4">
+            <legend className="text-xl font-semibold text-green-800 mb-2 border-b pb-1">
+              Dados Pessoais
+            </legend>
 
-          <div>
-            <label htmlFor="cpf" className="block text-green-900 mb-1">CPF</label>
-            <input type="text" name="cpf" id="cpf" value={form.cpf} onChange={handleChange} className="w-full p-3 border rounded-md" required />
-          </div>
-
-          <div>
-            <label htmlFor="cnh" className="block text-green-900 mb-1">CNH</label>
-            <input type="text" name="cnh" id="cnh" value={form.cnh} onChange={handleChange} className="w-full p-3 border rounded-md" required />
-          </div>
-
-          <div>
-            <label htmlFor="endereco" className="block text-green-900 mb-1">Endereço Completo</label>
-            <input type="text" name="endereco" id="endereco" value={form.endereco} onChange={handleChange} className="w-full p-3 border rounded-md" required />
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block text-green-900 mb-1">E-mail</label>
-            <input type="email" name="email" id="email" value={form.email} onChange={handleChange} className="w-full p-3 border rounded-md" required />
-          </div>
-
-          <div>
-            <label htmlFor="telefone" className="block text-green-900 mb-1">Telefone</label>
-            <input type="tel" name="telefone" id="telefone" value={form.telefone} onChange={handleChange} className="w-full p-3 border rounded-md" required />
-          </div>
-
-          {/* Senhas */}
-          <div>
-            <label htmlFor="senha" className="block text-green-900 mb-1">Senha</label>
-            <input type="password" name="senha" id="senha" value={form.senha} onChange={handleChange} className="w-full p-3 border rounded-md" required minLength={6} />
-          </div>
-
-          <div>
-            <label htmlFor="confirmarSenha" className="block text-green-900 mb-1">Confirmar Senha</label>
-            <input type="password" name="confirmarSenha" id="confirmarSenha" value={form.confirmarSenha} onChange={handleChange} className="w-full p-3 border rounded-md" required minLength={6} />
-          </div>
+            <Input label="Nome Completo" name="nome" value={form.nome} onChange={handleChange} />
+            <Input label="CPF" name="cpf" value={form.cpf} onChange={handleChange} />
+            <Input label="CNH" name="cnh" value={form.cnh} onChange={handleChange} />
+            <Input label="Endereço Completo" name="endereco" value={form.endereco} onChange={handleChange} />
+            <Input type="email" label="E-mail" name="email" value={form.email} onChange={handleChange} />
+            <Input type="tel" label="Telefone" name="telefone" value={form.telefone} onChange={handleChange} />
+            <Input type="password" label="Senha" name="senha" value={form.senha} onChange={handleChange} />
+            <Input type="password" label="Confirmar Senha" name="confirmarSenha" value={form.confirmarSenha} onChange={handleChange} />
+          </fieldset>
 
           {/* Dados do Veículo */}
-          <h2 className="text-2xl font-semibold text-green-900 mt-8 mb-4">Veículo</h2>
+          <fieldset className="space-y-4">
+            <legend className="text-xl font-semibold text-green-800 mb-2 border-b pb-1">
+              Dados do Veículo
+            </legend>
 
-          <div>
-            <label htmlFor="veiculoMarca" className="block text-green-900 mb-1">Marca</label>
-            <input type="text" name="veiculoMarca" id="veiculoMarca" value={form.veiculoMarca} onChange={handleChange} className="w-full p-3 border rounded-md" />
+            <Input label="Marca" name="veiculoMarca" value={form.veiculoMarca} onChange={handleChange} />
+            <Input label="Modelo" name="veiculoModelo" value={form.veiculoModelo} onChange={handleChange} />
+            <Input label="Cor" name="veiculoCor" value={form.veiculoCor} onChange={handleChange} />
+            <Select
+              label="Ar-Condicionado"
+              name="veiculoArCondicionado"
+              value={form.veiculoArCondicionado}
+              onChange={handleChange}
+              options={[
+                { label: "Sim", value: "sim" },
+                { label: "Não", value: "não" }
+              ]}
+            />
+            <Input label="Combustível" name="veiculoCombustivel" value={form.veiculoCombustivel} onChange={handleChange} />
+            <Input type="number" label="Assentos" name="veiculoAssentos" value={form.veiculoAssentos} onChange={handleChange} />
+          </fieldset>
+
+          {/* Botão (fica abaixo das colunas) */}
+          <div className="md:col-span-2">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full bg-yellow-300 text-green-900 font-bold py-3 rounded-md hover:bg-yellow-400 transition ${
+                isLoading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            >
+              {isLoading ? "Cadastrando..." : "Cadastre-se"}
+            </button>
           </div>
-
-          <div>
-            <label htmlFor="veiculoModelo" className="block text-green-900 mb-1">Modelo</label>
-            <input type="text" name="veiculoModelo" id="veiculoModelo" value={form.veiculoModelo} onChange={handleChange} className="w-full p-3 border rounded-md" />
-          </div>
-
-          <div>
-            <label htmlFor="veiculoCor" className="block text-green-900 mb-1">Cor</label>
-            <input type="text" name="veiculoCor" id="veiculoCor" value={form.veiculoCor} onChange={handleChange} className="w-full p-3 border rounded-md" />
-          </div>
-
-          <div>
-            <label htmlFor="veiculoArCondicionado" className="block text-green-900 mb-1">Ar-Condicionado</label>
-            <select name="veiculoArCondicionado" id="veiculoArCondicionado" value={form.veiculoArCondicionado} onChange={handleChange} className="w-full p-3 border rounded-md">
-              <option value="sim">Sim</option>
-              <option value="não">Não</option>
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="veiculoCombustivel" className="block text-green-900 mb-1">Combustível</label>
-            <input type="text" name="veiculoCombustivel" id="veiculoCombustivel" value={form.veiculoCombustivel} onChange={handleChange} className="w-full p-3 border rounded-md" />
-          </div>
-
-          <div>
-            <label htmlFor="veiculoAssentos" className="block text-green-900 mb-1">Quantidade de Assentos</label>
-            <input type="number" name="veiculoAssentos" id="veiculoAssentos" value={form.veiculoAssentos} onChange={handleChange} className="w-full p-3 border rounded-md" />
-          </div>
-
-          {/* Botão */}
-          <button type="submit" disabled={isLoading} className={`w-full bg-yellow-300 text-green-900 font-bold py-3 rounded-md hover:bg-yellow-400 transition ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}>
-            {isLoading ? "Cadastrando..." : "Cadastre-se"}
-          </button>
         </form>
 
-        <p className="text-center text-sm text-green-900 mt-4">
+        <p className="text-center text-sm text-green-900 mt-6">
           Já tem uma conta?{" "}
           <Link href="/pessoalmotorista/loginmotorista" className="hover:underline font-medium">
             Faça login
@@ -160,5 +129,67 @@ const Cadastromotorista = () => {
     </main>
   );
 };
+
+const Input = ({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text"
+}: {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+}) => (
+  <div>
+    <label htmlFor={name} className="block text-green-900 mb-1 font-medium">
+      {label}
+    </label>
+    <input
+      id={name}
+      name={name}
+      type={type}
+      value={value}
+      onChange={onChange}
+      className="w-full p-3 border border-green-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+      required
+    />
+  </div>
+);
+
+const Select = ({
+  label,
+  name,
+  value,
+  onChange,
+  options
+}: {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: { label: string; value: string }[];
+}) => (
+  <div>
+    <label htmlFor={name} className="block text-green-900 mb-1 font-medium">
+      {label}
+    </label>
+    <select
+      id={name}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="w-full p-3 border border-green-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+    >
+      {options.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+  </div>
+);
 
 export default Cadastromotorista;
