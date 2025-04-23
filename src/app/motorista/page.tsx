@@ -12,7 +12,7 @@ export default function Motorista() {
   const [telefone, setTelefone] = useState('(98) 98745-3629')
   const [cnh, setCnh] = useState('12345678900')
   const [cpf, setCpf] = useState('123.456.789-00')
-  const [endereco, setEndereco] = useState('Rua das Flores, 123 - Centro')
+  const [ear, setEndereco] = useState('sim')
 
   const [marca, setMarca] = useState('Volkswagen')
   const [modelo, setModelo] = useState('Gol')
@@ -43,7 +43,7 @@ export default function Motorista() {
       {/* Perfil */}
       <div className="bg-white w-full md:w-[80%] mb-1 flex flex-col md:flex-row items-center rounded-2xl mt-10 p-4 md:justify-between">
         <img
-          src="https://media.istockphoto.com/id/1264589335/pt/foto/school-bus-driver.jpg?s=612x612&w=0&k=20&c=ofVI950kPXaZa6eSeChGpmSANsA20C64OSfJOrT39bM="
+          src="https://lmmobilidade.com.br/lmveiculosapps/wp-content/uploads/sites/4/2023/03/Ativo-2.png"
           className="w-32 h-32 rounded-full object-cover"
           alt="Foto do motorista"
         />
@@ -62,9 +62,9 @@ export default function Motorista() {
             { label: "Nome", value: nome, setValue: setNome, icon: faUser, type: "text" },
             { label: "Telefone", value: telefone, setValue: setTelefone, icon: faPhone, type: "text" },
             { label: "E-mail", value: email, setValue: setEmail, icon: faEnvelope, type: "email" },
+            { label: "EAR", value: ear, setValue: setEndereco, icon: faIdCard, type: "text" },
             { label: "CNH", value: cnh, setValue: setCnh, icon: faIdCard, type: "text" },
             { label: "CPF", value: cpf, setValue: setCpf, icon: faIdBadge, type: "text" },
-            { label: "Endereço", value: endereco, setValue: setEndereco, icon: faMapMarkerAlt, type: "text" }
           ].map((item, index) => (
             <div key={index} className="flex items-center space-x-2">
               <FontAwesomeIcon icon={item.icon} className="text-green-800" />
@@ -97,7 +97,7 @@ export default function Motorista() {
 
       {/* Informações do Veículo */}
       <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[80%] mb-5">
-        <h1 className="text-xl md:text-2xl text-green-800 font-bold rounded-2xl border-2 p-3 mb-5">Veículo</h1>
+        <h1 className="text-xl md:text-2xl text-green-800 font-bold rounded border-2 p-3 mb-5">Veículo</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {[ 
@@ -132,9 +132,18 @@ export default function Motorista() {
         </div>
       </div>
 
+      {/* Corridas Online */}
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[80%] mb-5 ">
+        <h1 className="text-xl md:text-2xl text-green-800 font-bold rounded border-2 p-3 mb-5">Corridas Online</h1>
+        <div className="flex space-x-4 justify-center">
+          <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-2xl">Ligar</button>
+          <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-2xl">Desligar</button>
+        </div>
+      </div>
+
       {/* Últimas Corridas */}
       <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[80%] mb-5">
-        <h1 className="text-xl md:text-2xl text-green-800 font-bold rounded-2xl border-2 p-3 mb-5">Últimas Corridas</h1>
+        <h1 className="text-xl md:text-2xl text-green-800 font-bold rounded border-2 p-3 mb-5">Últimas Corridas</h1>
 
         <div className="flex flex-col space-y-4">
           {corridas.map((corrida, index) => (
@@ -150,27 +159,20 @@ export default function Motorista() {
                 </div>
               </div>
 
-              <div className="mt-2">
-                <p className="text-sm"><strong>Duração:</strong> {corrida.duracao}</p>
-                <p className="text-sm"><strong>Distância:</strong> {corrida.distancia}</p>
-                <p className="text-sm"><strong>Pagamento:</strong> {corrida.pagamento}</p>
-                <p className="text-sm"><strong>Status:</strong> {corrida.status}</p>
-                <p className="text-sm"><strong>Classificação:</strong> {corrida.classificacao}</p>
-                <p className="text-sm"><strong>Comentários:</strong> {corrida.comentarios}</p>
+              <div className="mt-2 text-sm text-gray-600">
+                <p><strong>Duração:</strong> {corrida.duracao}</p>
+                <p><strong>Distância:</strong> {corrida.distancia}</p>
+                <p><strong>Pagamento:</strong> {corrida.pagamento}</p>
+                <p><strong>Status:</strong> {corrida.status}</p>
+                <p><strong>Classificação:</strong> {corrida.classificacao}</p>
+                <p><strong>Comentários:</strong> {corrida.comentarios}</p>
               </div>
 
-              <div className="mt-4">
-                <button
-                  onClick={denunciarCorrida}
-                  className="text-red-600 hover:text-red-800 font-bold"
-                >
-                  Denunciar Corrida
-                </button>
-              </div>
+              <button onClick={denunciarCorrida} className="mt-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-xl self-end">
+                Denunciar Corrida
+              </button>
             </div>
-            
           ))}
-          <button className='border-2 rounded p-1 w-full text-yellow-800 hover:text-red-400 '><strong>Histórico completo</strong></button>
         </div>
       </div>
 

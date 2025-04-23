@@ -7,7 +7,7 @@ export default function EscolhaUsuarioPage() {
   const [tipoUsuario, setTipoUsuario] = useState('')
   const router = useRouter()
   const searchParams = useSearchParams()
-  const acao = searchParams.get('acao') // 'login' ou 'cadastro'
+  const acao = searchParams.get('acao') // 'login', 'cadastro' ou 'cadastromotorista'
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,14 +20,23 @@ export default function EscolhaUsuarioPage() {
     // Salva o tipo no localStorage
     localStorage.setItem('tipoUsuario', tipoUsuario)
 
-    // Redireciona SEMPRE para 'pessoal' por enquanto
-    const rotaFinal = 'pessoal'
+    let rotaFinal = ''
 
-    if (acao === 'cadastro') {
-      router.push(`/${rotaFinal}/cadastro`)
-    } else {
-      router.push(`/${rotaFinal}/login`)
+    if (tipoUsuario === 'motorista') {
+      if (acao === 'cadastro' || acao === 'cadastromotorista') {
+        rotaFinal = 'pessoalmotorista/cadastromotorista'
+      } else {
+        rotaFinal = 'pessoalmotorista/loginmotorista'
+      }
+    } else { // passageiro
+      if (acao === 'cadastro') {
+        rotaFinal = 'pessoal/cadastro'
+      } else {
+        rotaFinal = 'pessoal/login'
+      }
     }
+
+    router.push(`/${rotaFinal}`)
   }
 
   return (
@@ -45,7 +54,6 @@ export default function EscolhaUsuarioPage() {
             <option value="">Selecione uma opção</option>
             <option value="passageiro">Passageiro</option>
             <option value="motorista">Motorista</option>
-
           </select>
         </label>
         <button
