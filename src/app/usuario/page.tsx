@@ -11,7 +11,7 @@ export default function Usuario() {
   const [selectedCorrida, setSelectedCorrida] = useState<any>(null)
   const searchParams = useSearchParams()
 
-  const [nome, setNome] = useState('Sarah lima pereira')
+  const [nome, setNome] = useState('Sarah Lima Pereira')
   const [email, setEmail] = useState('Sarah@exemplo.com')
   const [telefone, setTelefone] = useState('(98) 98877-8999')
   const [cpf, setCpf] = useState('123.456.789-00')
