@@ -25,18 +25,18 @@ export default function ContatoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-green-100 px-4 flex flex-col">
-      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 bg-white shadow-xl rounded-2xl p-8 mt-20 mx-auto"> {/* Alterei mt-32 para mt-20 */}
+    <div className="min-h-screen bg-green-100 px-4 sm:px-8 md:px-16 flex flex-col">
+      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 bg-white shadow-xl rounded-2xl p-8 mt-20 mx-auto">
         
         {/* Lado esquerdo - Informações de contato */}
         <div className="flex flex-col items-start justify-between space-y-8">
           
           {/* Título sem ícone */}
-          <h2 className="text-3xl font-bold text-green-900">BoraSiô</h2>
+          <h2 className="text-3xl font-bold text-green-900 sm:text-4xl">BoraSiô</h2>
 
           {/* Localização, E-mail e WhatsApp */}
           <div>
-            <h3 className="text-xl font-semibold text-green-800 mb-2">Localização</h3>
+            <h3 className="text-xl font-semibold text-green-800 mb-2 sm:text-2xl">Localização</h3>
             <div className="flex items-start space-x-2 text-[#4e4e4e] mb-4">
               <FaMapMarkerAlt className="mt-1 text-green-700" />
               <p>
@@ -58,7 +58,7 @@ export default function ContatoPage() {
 
           {/* Redes Sociais */}
           <div>
-            <h3 className="text-xl font-semibold text-green-800 mb-2">Siga-nos</h3>
+            <h3 className="text-xl font-semibold text-green-800 mb-2 sm:text-2xl">Siga-nos</h3>
             <div className="flex space-x-4 text-[#393838] text-2xl">
               <a href="https://facebook.com" className="hover:text-green-700">
                 <FaFacebook />
@@ -72,10 +72,10 @@ export default function ContatoPage() {
             </div>
           </div>
 
-          {/* Baixe nosso aplicativo (Agora abaixo de "Siga-nos") */}
+          {/* Baixe nosso aplicativo */}
           <div className="mt-6">
-            <h3 className="text-xl font-semibold text-green-800 mb-2 text-center">Baixe nosso aplicativo</h3>
-            <p className="text-gray-700 text-center mb-4 text-sm">
+            <h3 className="text-xl font-semibold text-green-800 mb-2 text-center sm:text-2xl">Baixe nosso aplicativo</h3>
+            <p className="text-gray-700 text-center mb-4 text-sm sm:text-base">
               Disponível para Android e iOS. Aproveite nossos recursos exclusivos!
             </p>
             <div className="flex justify-center space-x-6">
@@ -95,7 +95,7 @@ export default function ContatoPage() {
 
         {/* Lado direito - Formulário */}
         <div className="text-center">
-          <h2 className="text-4xl font-bold text-green-900 mb-3">Quer falar com a gente?</h2>
+          <h2 className="text-4xl font-bold text-green-900 mb-3 sm:text-5xl">Quer falar com a gente?</h2>
           <p className="text-[#4e4e4e] text-sm sm:text-base md:text-lg mb-8 mt-1">
             Envie sua mensagem no formulário abaixo:
           </p>
