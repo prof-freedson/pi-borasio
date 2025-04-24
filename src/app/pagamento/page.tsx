@@ -1,18 +1,47 @@
 "use client"
 
-import { faCreditCard, faBarcode, faQrcode, faTicketAlt } from '@fortawesome/free-solid-svg-icons'
+import { faCreditCard, faBarcode, faQrcode, faTicketAlt, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+
 
 export default function Pagamento() {
+  const router = useRouter()
   const [metodoPagamento, setMetodoPagamento] = useState('credito')
   const [descontoAplicado, setDescontoAplicado] = useState(false)
+  const [pagamentoFinalizado, setPagamentoFinalizado] = useState(false)
+  const [valorOriginal] = useState(55.00)
+  const [valorComDesconto] = useState(37.00)
+  const [valorExibido, setValorExibido] = useState(valorOriginal)
 
+  const handleFinalizarPagamento = () => {
+    // Reduz o valor à metade
+    const novoValor = descontoAplicado ? valorComDesconto / 2 : valorOriginal / 2
+    setValorExibido(novoValor)
+    setPagamentoFinalizado(true)
+    
+    // Opcional: resetar após alguns segundos
+    setTimeout(() => {
+      router.push('/usuario')
+    }, 3000)
+  }
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
         <div className="p-8">
           <h1 className="text-2xl font-bold text-gray-800 mb-6">Pagamento</h1>
+          
+          {/* Mensagem de pagamento finalizado */}
+          {pagamentoFinalizado && (
+            <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md flex items-center">
+              <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-green-500 text-xl" />
+              <div>
+                <p className="font-bold">Pagamento finalizado com sucesso!</p>
+                <p className="text-sm">Valor pago: R$ {valorExibido.toFixed(2).replace('.', ',')}</p>
+              </div>
+            </div>
+          )}
           
           {/* Seção de Cartão */}
           <div className="mb-8">
@@ -119,25 +148,32 @@ export default function Pagamento() {
           <div className="border-t pt-4">
             <div className="flex justify-between mb-2">
               <span className="text-gray-600">Subtotal:</span>
-              <span className="font-medium">R$ 150,00</span>
+              <span className="font-medium">R$ {valorOriginal.toFixed(2).replace('.', ',')}</span>
             </div>
             
             {descontoAplicado && (
               <div className="flex justify-between mb-2 text-green-600">
                 <span>Desconto:</span>
-                <span>- R$ 27,00</span>
+                <span>- R$ {(valorOriginal - valorComDesconto).toFixed(2).replace('.', ',')}</span>
               </div>
             )}
             
             <div className="flex justify-between text-lg font-bold mt-4 pt-4 border-t">
               <span>Total:</span>
-              <span className="text-yellow-600">R$ {descontoAplicado ? '123,00' : '150,00'}</span>
+              <span className="text-yellow-600">
+                R$ {pagamentoFinalizado ? valorExibido.toFixed(2).replace('.', ',') : 
+                    (descontoAplicado ? valorComDesconto.toFixed(2).replace('.', ',') : valorOriginal.toFixed(2).replace('.', ','))}
+              </span>
             </div>
           </div>
           
           {/* Botão Finalizar */}
-          <button className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-md mt-6 transition duration-200">
-            Finalizar pagamento
+          <button 
+            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-md mt-6 transition duration-200"
+            onClick={handleFinalizarPagamento}
+            disabled={pagamentoFinalizado}
+          >
+            {pagamentoFinalizado ? 'Pagamento Concluído' : 'Finalizar pagamento'}
           </button>
         </div>
       </div>

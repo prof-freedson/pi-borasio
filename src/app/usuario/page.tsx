@@ -2,11 +2,14 @@
 
 import { faClock, faCommentDots, faCreditCard, faEdit, faEnvelope, faIdBadge, faMapMarkerAlt, faMoneyBill, faPhone, faRoute, faTimes, faUser, faCarAlt, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 export default function Usuario() {
   const [modoEdicao, setModoEdicao] = useState(false)
+  const [selectedCorrida, setSelectedCorrida] = useState<any>(null)
+  const searchParams = useSearchParams()
 
   const [nome, setNome] = useState('Sarah lima pereira')
   const [email, setEmail] = useState('Sarah@exemplo.com')
@@ -23,6 +26,18 @@ export default function Usuario() {
     { id: 1, origem: 'Rua Pinhos - Centro', destino: 'Rua Olivia - Centro', data: '2025-04-20 14:00' },
   ])
 
+  useEffect(() => {
+    // Check if we're coming from corridas selection
+    const corridaSelected = searchParams.get('corridaSelected')
+    if (corridaSelected) {
+      const storedCorrida = localStorage.getItem('selectedCorrida')
+      if (storedCorrida) {
+        setSelectedCorrida(JSON.parse(storedCorrida))
+        localStorage.removeItem('selectedCorrida')
+      }
+    }
+  }, [searchParams])
+
   const salvarEdicao = () => {
     setModoEdicao(false)
     alert('Perfil atualizado com sucesso!')
@@ -32,8 +47,51 @@ export default function Usuario() {
     setCorridasAgendadas(corridasAgendadas.filter(corrida => corrida.id !== id))
   }
 
+  const confirmarCorrida = () => {
+    if (selectedCorrida) {
+      // Add to scheduled corridas
+      const newCorrida = {
+        id: Date.now(),
+        origem: selectedCorrida.origem,
+        destino: selectedCorrida.destino,
+        data: new Date().toLocaleString()
+      }
+      setCorridasAgendadas([...corridasAgendadas, newCorrida])
+      setSelectedCorrida(null)
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center space-y-10 bg-[#DAF3D7] p-4">
+      {/* Selected Corrida Modal */}
+      {selectedCorrida && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-2xl w-[80%] max-w-md shadow-xl">
+            <h2 className="text-2xl font-bold text-[#004d2b] mb-4">Confirmar Corrida</h2>
+            <div className="mb-4">
+              <p><strong>Origem:</strong> {selectedCorrida.origem}</p>
+              <p><strong>Destino:</strong> {selectedCorrida.destino}</p>
+            </div>
+            <div className="flex justify-between">
+              <button 
+                onClick={() => setSelectedCorrida(null)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+              >
+                Cancelar
+              </button>
+              <Link 
+                href="/pagamento" 
+                className="bg-yellow-300 hover:bg-yellow-400 text-[#004d2b] font-bold py-2 px-4 rounded flex items-center"
+                onClick={confirmarCorrida}
+              >
+                <FontAwesomeIcon icon={faCreditCard} className="mr-2" />
+                Selecionar Pagamento
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Perfil */}
       <div className="bg-white w-[80%] mb-1 items-center rounded-2xl flex mt-10 p-4 justify-between">
         <div className="flex items-center">
@@ -123,21 +181,7 @@ export default function Usuario() {
             <p><FontAwesomeIcon icon={faEnvelope} className="mr-2 text-green-800" /> {email}</p>
             <p><FontAwesomeIcon icon={faIdBadge} className="mr-2 text-green-800" /> {cpf}</p>
             <p><FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-green-800" /> {endereco}</p>
-            
-            {/* Exibir Métodos de Pagamento com botão para página de pagamento */}
-            <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center">
-                <FontAwesomeIcon icon={faCreditCard} className="mr-2 text-green-800" />
-                <span>Métodos de Pagamento: {pagamentos.join(', ')}</span>
-              </div>
-              <Link 
-                href="/pagamento" 
-                className="bg-yellow-300 text-[#004d2b] px-3 py-1 rounded-2xl font-bold hover:bg-yellow-400 text-sm flex items-center"
-              >
-                <FontAwesomeIcon icon={faPlusCircle} className="mr-1" />
-                Novo
-              </Link>
-            </div>
+                        
 
             <div className="w-[60%] mb-10 mx-auto flex justify-center">
               <button onClick={() => setModoEdicao(true)}
@@ -193,11 +237,14 @@ export default function Usuario() {
 
       {/* Contato com Motorista */}
       <div className="w-[60%] mb-10 flex justify-center">
-        <button className="bg-yellow-300 text-[#004d2b] w-1/2 p-3 rounded-2xl font-bold hover:bg-yellow-400">
-          <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
-          Entrar em Contato com o Motorista
-        </button>
-      </div>
-    </div>
+  <Link 
+    href="/contato" 
+    className="bg-yellow-300 text-[#004d2b] w-1/2 p-3 rounded-2xl font-bold hover:bg-yellow-400 flex justify-center items-center"
+  >
+    <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
+    Entrar em Contato com o Motorista
+  </Link>
+</div>
+</div>
   )
 }
