@@ -1,5 +1,7 @@
 "use client"
 
+import { faClock, faRulerCombined, faCreditCard, faCheckCircle, faStar, faCommentDots } from '@fortawesome/free-solid-svg-icons'
+
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faPhone, faIdCard, faCar, faMapMarkerAlt, faIdBadge, faUser, faCarSide, faPalette, faGasPump, faChair } from '@fortawesome/free-solid-svg-icons'
@@ -159,13 +161,31 @@ export default function Motorista() {
                 </div>
               </div>
 
-              <div className="mt-2 text-sm text-gray-600">
-                <p><strong>Duração:</strong> {corrida.duracao}</p>
-                <p><strong>Distância:</strong> {corrida.distancia}</p>
-                <p><strong>Pagamento:</strong> {corrida.pagamento}</p>
-                <p><strong>Status:</strong> {corrida.status}</p>
-                <p><strong>Classificação:</strong> {corrida.classificacao}</p>
-                <p><strong>Comentários:</strong> {corrida.comentarios}</p>
+              <div className="mt-2 text-sm text-black">
+                <p className='mt-2'>
+                  <FontAwesomeIcon icon={faClock} className="mr-2 text-green-800" />
+                  <strong>Duração:</strong> {corrida.duracao}
+                </p>
+                <p className='mt-2'>
+                  <FontAwesomeIcon icon={faRulerCombined} className="mr-2 text-green-800" />
+                  <strong>Distância:</strong> {corrida.distancia}
+                </p>
+                <p className='mt-2'>
+                  <FontAwesomeIcon icon={faCreditCard} className="mr-2 text-green-800" />
+                  <strong>Pagamento:</strong> {corrida.pagamento}
+                </p>
+                <p className='mt-2'>
+                  <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-green-800" />
+                  <strong>Status:</strong> {corrida.status}
+                </p>
+                <p className='mt-2'>
+                  <FontAwesomeIcon icon={faStar} className="mr-2 text-yellow-500" />
+                  <strong>Classificação:</strong> {corrida.classificacao}
+                </p>
+                <p className='mt-2'>
+                  <FontAwesomeIcon icon={faCommentDots} className="mr-2 text-green-800" />
+                  <strong>Comentários:</strong> {corrida.comentarios}
+                </p>
               </div>
 
               <button onClick={denunciarCorrida} className="mt-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-xl self-end">
