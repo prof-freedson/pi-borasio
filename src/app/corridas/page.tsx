@@ -1,6 +1,10 @@
+"use client"
+
 import { MapPin } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function CorridasPage() {
+  const router = useRouter();
   const corridas = [
     {
       id: 1,
@@ -15,6 +19,12 @@ export default function CorridasPage() {
       assentos: 2,
     },
   ];
+
+  const handleSelectCorrida = (corrida: any) => {
+    // Store the selected corrida in localStorage or pass as query params
+    localStorage.setItem('selectedCorrida', JSON.stringify(corrida));
+    router.push('/usuario?corridaSelected=true');
+  };
 
   return (
     <main className="min-h-screen bg-green-100 flex flex-col items-center justify-center gap-6 p-4">
@@ -41,7 +51,10 @@ export default function CorridasPage() {
 
           <div className="border-t border-green-200 px-6 py-4 flex items-center justify-between text-green-900">
             <span>{corrida.assentos} assentos disponíveis</span>
-            <button className="px-4 py-1 border-2 border-green-900 rounded-full hover:bg-green-200 transition">
+            <button 
+              onClick={() => handleSelectCorrida(corrida)}
+              className="px-4 py-1 border-2 border-green-900 rounded-full hover:bg-green-200 transition"
+            >
               selecionar
             </button>
           </div>
