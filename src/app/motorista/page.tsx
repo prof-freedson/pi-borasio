@@ -43,7 +43,7 @@ export default function Motorista() {
     <div className="min-h-screen flex flex-col items-center space-y-10 bg-[#DAF3D7] bg-cover bg-center p-4">
 
       {/* Perfil */}
-      <div className="bg-white w-full md:w-[80%] mb-1 flex flex-col md:flex-row items-center rounded-2xl mt-10 p-4 md:justify-between">
+      <div className="bg-white w-full md:w-[55%] mb-1 flex flex-col md:flex-row items-center rounded-2xl mt-10 p-4 md:justify-between">
         <img
           src="https://lmmobilidade.com.br/lmveiculosapps/wp-content/uploads/sites/4/2023/03/Ativo-2.png"
           className="w-32 h-32 rounded-full object-cover"
@@ -56,7 +56,7 @@ export default function Motorista() {
       </div>
 
       {/* Informações da Conta */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[80%] mb-5 ">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[55%] mb-5 ">
         <h1 className="text-2xl md:text-3xl border-2 p-3 text-[#004d2b] font-bold text-center rounded-2xl">Informações da Conta</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-10">
@@ -98,7 +98,7 @@ export default function Motorista() {
       </div>
 
       {/* Informações do Veículo */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[80%] mb-5">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[55%] mb-5">
         <h1 className="text-xl md:text-2xl text-green-800 font-bold rounded border-2 p-3 mb-5">Veículo</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -135,7 +135,7 @@ export default function Motorista() {
       </div>
 
       {/* Corridas Online */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[80%] mb-5 ">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[55%] mb-5 ">
         <h1 className="text-xl md:text-2xl text-green-800 font-bold rounded border-2 p-3 mb-5">Corridas Online</h1>
         <div className="flex space-x-4 justify-center">
           <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-2xl">Ligar</button>
@@ -144,7 +144,7 @@ export default function Motorista() {
       </div>
 
       {/* Últimas Corridas */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[80%] mb-5">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full md:w-[55%] mb-5">
         <h1 className="text-xl md:text-2xl text-green-800 font-bold rounded border-2 p-3 mb-5">Últimas Corridas</h1>
 
         <div className="flex flex-col space-y-4">

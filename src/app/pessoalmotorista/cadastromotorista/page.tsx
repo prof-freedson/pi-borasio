@@ -54,7 +54,7 @@ const Cadastromotorista = () => {
 
   return (
     <main className="min-h-screen bg-green-100 flex items-center justify-center px-4 py-16">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-6xl">
+      <div className="bg-white p-8 rounded-2xl shadow-lg w-[55%] max-w-6xl">
         <h1 className="text-3xl font-bold text-center text-green-900 mb-8">
           Cadastro de Motorista
         </h1>

@@ -93,7 +93,7 @@ export default function Usuario() {
       )}
 
       {/* Perfil */}
-      <div className="bg-white w-[80%] mb-1 items-center rounded-2xl flex mt-10 p-4 justify-between">
+      <div className="bg-white w-[55%] mb-1 items-center rounded-2xl flex mt-10 p-4 justify-between">
         <div className="flex items-center">
           <img
             src="https://img.freepik.com/fotos-gratis/close-up-na-jovem-empresaria_23-2149153830.jpg?semt=ais_hybrid&w=740"
@@ -115,7 +115,7 @@ export default function Usuario() {
       </div>
 
       {/* Informações da Conta */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-[80%] space-y-4">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-[55%] space-y-4">
         <h1 className="text-3xl border-2 p-3 text-[#004d2b] font-bold text-center rounded-2xl">Informações da Conta</h1>
 
         {modoEdicao ? (
@@ -182,7 +182,7 @@ export default function Usuario() {
       </div>
 
       {/* Corridas Anteriores */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-[80%]">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-[55%]">
         <h1 className="text-xl text-green-800 font-bold border-2 p-3 mb-5 rounded-2xl">
           <FontAwesomeIcon icon={faRoute} className="mr-2" />Corridas Anteriores
         </h1>
@@ -200,7 +200,7 @@ export default function Usuario() {
       </div>
 
       {/* Corridas Agendadas */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-[80%]">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-[55%]">
         <h1 className="text-xl text-green-800 font-bold border-2 p-3 mb-5 rounded-2xl">
           <FontAwesomeIcon icon={faClock} className="mr-2" />Corridas Agendadas
         </h1>
