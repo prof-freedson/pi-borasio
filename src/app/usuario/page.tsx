@@ -8,8 +8,8 @@ import Link from 'next/link'
 export default function Usuario() {
   const [modoEdicao, setModoEdicao] = useState(false)
 
-  const [nome, setNome] = useState('Selina Kyle')
-  const [email, setEmail] = useState('mulhergato@exemplo.com')
+  const [nome, setNome] = useState('Sarah lima pereira')
+  const [email, setEmail] = useState('Sarah@exemplo.com')
   const [telefone, setTelefone] = useState('(98) 98877-8999')
   const [cpf, setCpf] = useState('123.456.789-00')
   const [endereco, setEndereco] = useState('Rua das Flores, 123 - Centro')
@@ -38,7 +38,7 @@ export default function Usuario() {
       <div className="bg-white w-[80%] mb-1 items-center rounded-2xl flex mt-10 p-4 justify-between">
         <div className="flex items-center">
           <img
-            src="mulher-gato2.jpg"
+            src="https://img.freepik.com/fotos-gratis/close-up-na-jovem-empresaria_23-2149153830.jpg?semt=ais_hybrid&w=740"
             className="w-32 h-32 rounded-full object-cover mr-4"
             alt="Foto do Usuario"
           />
