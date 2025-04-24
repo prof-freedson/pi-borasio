@@ -40,7 +40,7 @@ export default function EscolhaUsuarioPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-green-100  p-4">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md w-full max-w-md space-y-5">
         <h1 className="text-2xl font-bold text-center text-gray-800">Bem-vindo(a)!</h1>
         <label className="block">
