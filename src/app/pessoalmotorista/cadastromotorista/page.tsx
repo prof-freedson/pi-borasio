@@ -44,7 +44,7 @@ const Cadastromotorista = () => {
     try {
       console.log("Dados para cadastro:", form);
       await new Promise(resolve => setTimeout(resolve, 1000));
-      router.push("/usuario");
+      router.push("/motorista");
     } catch (err) {
       setError("Erro ao cadastrar. Tente novamente.");
     } finally {
