@@ -160,18 +160,6 @@ export default function Usuario() {
               <input type="text" value={endereco} onChange={(e) => setEndereco(e.target.value)} className="border w-full p-2 rounded" />
             </div>
             
-            {/* Editar Métodos de Pagamento */}
-            <div>
-              <h3 className="text-lg font-semibold mt-4">Métodos de Pagamento</h3>
-              <input 
-                type="text" 
-                value={pagamentos.join(', ')} 
-                onChange={(e) => setPagamentos(e.target.value.split(',').map(item => item.trim()))}
-                className="border w-full p-2 rounded mt-2"
-                placeholder="Métodos de pagamento separados por vírgula (ex: Cartão de Crédito, Pix)"
-              />
-            </div>
-            
             <button onClick={salvarEdicao} className="bg-green-800 hover:bg-green-900 text-white font-bold w-full p-2 mt-4">Salvar</button>
           </>
         ) : (
