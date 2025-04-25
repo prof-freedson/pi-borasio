@@ -11,16 +11,18 @@ export const metadata = {
   description: 'Corridas baratas, do seu jeito!',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+interface RootLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="pt-BR" className={poppins.variable}>
       <body className="flex flex-col min-h-screen bg-green-100">
         <Header />
-        
         <main className="flex-grow w-full">
           {children}
         </main>
-
         <ChatFlutuante />
         <Footer />
       </body>
