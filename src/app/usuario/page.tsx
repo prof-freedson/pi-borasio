@@ -1,6 +1,10 @@
 "use client"
 
-import { faClock, faCommentDots, faCreditCard, faEdit, faEnvelope, faIdBadge, faMapMarkerAlt, faMoneyBill, faPhone, faRoute, faTimes, faUser, faCarAlt, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faClock, faCommentDots, faCreditCard, faEdit, faEnvelope,
+  faIdBadge, faMapMarkerAlt, faMoneyBill, faPhone, faRoute,
+  faTimes, faUser, faCarAlt
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -27,7 +31,6 @@ export default function Usuario() {
   ])
 
   useEffect(() => {
-    // Check if we're coming from corridas selection
     const corridaSelected = searchParams.get('corridaSelected')
     if (corridaSelected) {
       const storedCorrida = localStorage.getItem('selectedCorrida')
@@ -49,7 +52,6 @@ export default function Usuario() {
 
   const confirmarCorrida = () => {
     if (selectedCorrida) {
-      // Add to scheduled corridas
       const newCorrida = {
         id: Date.now(),
         origem: selectedCorrida.origem,
@@ -63,24 +65,23 @@ export default function Usuario() {
 
   return (
     <div className="min-h-screen flex flex-col items-center space-y-10 bg-[#DAF3D7] p-4">
-      {/* Selected Corrida Modal */}
+      
+      {/* Modal de Confirmação */}
       {selectedCorrida && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-2xl w-[80%] max-w-md shadow-xl">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-xl">
             <h2 className="text-2xl font-bold text-[#004d2b] mb-4">Confirmar Corrida</h2>
-            <div className="mb-4">
-              <p><strong>Origem:</strong> {selectedCorrida.origem}</p>
-              <p><strong>Destino:</strong> {selectedCorrida.destino}</p>
-            </div>
-            <div className="flex justify-between">
-              <button 
+            <p><strong>Origem:</strong> {selectedCorrida.origem}</p>
+            <p><strong>Destino:</strong> {selectedCorrida.destino}</p>
+            <div className="flex justify-between mt-6">
+              <button
                 onClick={() => setSelectedCorrida(null)}
                 className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
               >
                 Cancelar
               </button>
-              <Link 
-                href="/pagamento" 
+              <Link
+                href="/pagamento"
                 className="bg-yellow-300 hover:bg-yellow-400 text-[#004d2b] font-bold py-2 px-4 rounded flex items-center"
                 onClick={confirmarCorrida}
               >
@@ -92,22 +93,22 @@ export default function Usuario() {
         </div>
       )}
 
-      {/* Perfil */}
-      <div className="bg-white w-[55%] mb-1 items-center rounded-2xl flex mt-10 p-4 justify-between">
-        <div className="flex items-center">
+      {/* Cabeçalho */}
+      <div className="bg-white w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[55%] rounded-2xl flex flex-col md:flex-row items-center justify-between p-4 mt-10 gap-4">
+        <div className="flex items-center flex-col md:flex-row">
           <img
             src="https://img.freepik.com/fotos-gratis/close-up-na-jovem-empresaria_23-2149153830.jpg?semt=ais_hybrid&w=740"
-            className="w-32 h-32 rounded-full object-cover mr-4"
-            alt="Foto do Usuario"
+            className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full object-cover mr-0 md:mr-4"
+            alt="Foto do Usuário"
           />
-          <div className="flex flex-col text-[#004d2b]">
-            <h1 className="text-4xl font-bold">{nome}</h1>
-            <h2 className="text-2xl text-black">Usuário</h2>
+          <div className="flex flex-col text-center md:text-left text-[#004d2b] mt-2 md:mt-0">
+            <h1 className="text-2xl sm:text-3xl font-bold">{nome}</h1>
+            <h2 className="text-lg sm:text-xl text-black">Usuário</h2>
           </div>
         </div>
-        <Link 
-          href="/corridas" 
-          className="bg-yellow-300 text-[#004d2b] px-6 py-3 rounded-2xl font-bold hover:bg-yellow-400 flex items-center h-fit"
+        <Link
+          href="/corridas"
+          className="bg-yellow-300 text-[#004d2b] px-6 py-3 rounded-2xl font-bold hover:bg-yellow-400 flex items-center"
         >
           <FontAwesomeIcon icon={faCarAlt} className="mr-2" />
           Pedir Corrida
@@ -115,65 +116,46 @@ export default function Usuario() {
       </div>
 
       {/* Informações da Conta */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-[55%] space-y-4">
-        <h1 className="text-3xl border-2 p-3 text-[#004d2b] font-bold text-center rounded-2xl">Informações da Conta</h1>
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[55%] space-y-4">
+        <h1 className="text-2xl sm:text-3xl border-2 p-3 text-[#004d2b] font-bold text-center rounded-2xl">Informações da Conta</h1>
 
         {modoEdicao ? (
           <>
-            {/* Nome */}
-            <div>
-              <label className="block text-gray-600 text-sm">
-                <FontAwesomeIcon icon={faUser} className="mr-2 text-green-800" /> Nome:
-              </label>
-              <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} className="border w-full p-2 rounded" />
-            </div>
-
-            {/* Telefone */}
-            <div>
-              <label className="block text-gray-600 text-sm">
-                <FontAwesomeIcon icon={faPhone} className="mr-2 text-green-800" /> Telefone:
-              </label>
-              <input type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} className="border w-full p-2 rounded" />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-gray-600 text-sm">
-                <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-green-800" /> E-mail:
-              </label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="border w-full p-2 rounded" />
-            </div>
-
-            {/* CPF */}
-            <div>
-              <label className="block text-gray-600 text-sm">
-                <FontAwesomeIcon icon={faIdBadge} className="mr-2 text-green-800" /> CPF:
-              </label>
-              <input type="text" value={cpf} onChange={(e) => setCpf(e.target.value)} className="border w-full p-2 rounded" />
-            </div>
-
-            {/* Endereço */}
-            <div>
-              <label className="block text-gray-600 text-sm">
-                <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-green-800" /> Endereço:
-              </label>
-              <input type="text" value={endereco} onChange={(e) => setEndereco(e.target.value)} className="border w-full p-2 rounded" />
-            </div>
-            
-            <button onClick={salvarEdicao} className="bg-green-800 hover:bg-green-900 text-white font-bold w-full p-2 mt-4">Salvar</button>
+            {/* Campos de edição */}
+            {[{ label: 'Nome', value: nome, setValue: setNome, icon: faUser },
+              { label: 'Telefone', value: telefone, setValue: setTelefone, icon: faPhone },
+              { label: 'E-mail', value: email, setValue: setEmail, icon: faEnvelope },
+              { label: 'CPF', value: cpf, setValue: setCpf, icon: faIdBadge },
+              { label: 'Endereço', value: endereco, setValue: setEndereco, icon: faMapMarkerAlt },
+            ].map(({ label, value, setValue, icon }, idx) => (
+              <div key={idx}>
+                <label className="block text-gray-600 text-sm">
+                  <FontAwesomeIcon icon={icon} className="mr-2 text-green-800" /> {label}:
+                </label>
+                <input
+                  type="text"
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  className="border w-full p-2 rounded"
+                />
+              </div>
+            ))}
+            <button onClick={salvarEdicao} className="bg-green-800 hover:bg-green-900 text-white font-bold w-full p-2 mt-4">
+              Salvar
+            </button>
           </>
         ) : (
           <>
-            <p><FontAwesomeIcon icon={faUser} className="mr-2 text-green-800" /> {nome}</p>
-            <p><FontAwesomeIcon icon={faPhone} className="mr-2 text-green-800" /> {telefone}</p>
-            <p><FontAwesomeIcon icon={faEnvelope} className="mr-2 text-green-800" /> {email}</p>
-            <p><FontAwesomeIcon icon={faIdBadge} className="mr-2 text-green-800" /> {cpf}</p>
-            <p><FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-green-800" /> {endereco}</p>
-                        
-
-            <div className="w-[60%] mb-10 mx-auto flex justify-center">
-              <button onClick={() => setModoEdicao(true)}
-              className="bg-yellow-300 text-[#004d2b] w-1/2 p-3 rounded-2xl font-bold hover:bg-yellow-400">
+            {[{ label: nome, icon: faUser },
+              { label: telefone, icon: faPhone },
+              { label: email, icon: faEnvelope },
+              { label: cpf, icon: faIdBadge },
+              { label: endereco, icon: faMapMarkerAlt },
+            ].map(({ label, icon }, idx) => (
+              <p key={idx}><FontAwesomeIcon icon={icon} className="mr-2 text-green-800" /> {label}</p>
+            ))}
+            <div className="flex justify-center mt-6">
+              <button onClick={() => setModoEdicao(true)} className="bg-yellow-300 text-[#004d2b] px-6 py-3 rounded-2xl font-bold hover:bg-yellow-400">
                 Editar Perfil
               </button>
             </div>
@@ -182,9 +164,9 @@ export default function Usuario() {
       </div>
 
       {/* Corridas Anteriores */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-[55%]">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[55%]">
         <h1 className="text-xl text-green-800 font-bold border-2 p-3 mb-5 rounded-2xl">
-          <FontAwesomeIcon icon={faRoute} className="mr-2" />Corridas Anteriores
+          <FontAwesomeIcon icon={faRoute} className="mr-2" /> Corridas Anteriores
         </h1>
         {corridasAnteriores.length > 0 ? (
           corridasAnteriores.map((c, index) => (
@@ -200,14 +182,14 @@ export default function Usuario() {
       </div>
 
       {/* Corridas Agendadas */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-[55%]">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[55%]">
         <h1 className="text-xl text-green-800 font-bold border-2 p-3 mb-5 rounded-2xl">
-          <FontAwesomeIcon icon={faClock} className="mr-2" />Corridas Agendadas
+          <FontAwesomeIcon icon={faClock} className="mr-2" /> Corridas Agendadas
         </h1>
         {corridasAgendadas.length > 0 ? (
           corridasAgendadas.map(c => (
-            <div key={c.id} className="border rounded p-2 mb-2 flex justify-between items-center">
-              <div>
+            <div key={c.id} className="border rounded p-2 mb-2 flex flex-col md:flex-row justify-between items-start md:items-center">
+              <div className="mb-2 md:mb-0">
                 <p><strong>Origem:</strong> {c.origem}</p>
                 <p><strong>Destino:</strong> {c.destino}</p>
                 <p><strong>Data:</strong> {c.data}</p>
@@ -223,16 +205,16 @@ export default function Usuario() {
         )}
       </div>
 
-      {/* Contato com Motorista */}
-      <div className="w-[60%] mb-10 flex justify-center">
-  <Link 
-    href="/contato" 
-    className="bg-yellow-300 text-[#004d2b] w-1/2 p-3 rounded-2xl font-bold hover:bg-yellow-400 flex justify-center items-center"
-  >
-    <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
-    Entrar em Contato com o Motorista
-  </Link>
-</div>
-</div>
+      {/* Contato */}
+      <div className="w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[55%] mb-10 flex justify-center">
+        <Link
+          href="/contato"
+          className="bg-yellow-300 text-[#004d2b] w-full sm:w-2/3 md:w-1/2 p-3 rounded-2xl font-bold hover:bg-yellow-400 flex justify-center items-center"
+        >
+          <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
+          Entrar em Contato com o Motorista
+        </Link>
+      </div>
+    </div>
   )
 }
