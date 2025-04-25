@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowRightOnRectangleIcon, XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline';
+import { XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
 interface NavLink {
@@ -18,7 +18,6 @@ const Header = () => {
   const toggleMenu = useCallback(() => setIsMenuOpen(prev => !prev), []);
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
 
-  // Handle click outside and escape key
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -33,11 +32,11 @@ const Header = () => {
     };
 
     if (isMenuOpen) {
-      document.body.style.overflow = 'hidden'; // Disable scrolling when menu is open
-      document.addEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = 'hidden'; 
       document.addEventListener('keydown', handleEscapeKey);
+      document.addEventListener('mousedown', handleClickOutside);
     } else {
-      document.body.style.overflow = ''; // Enable scrolling when menu is closed
+      document.body.style.overflow = ''; 
     }
 
     return () => {
@@ -45,11 +44,6 @@ const Header = () => {
       document.removeEventListener('keydown', handleEscapeKey);
     };
   }, [isMenuOpen, closeMenu]);
-
-  const handleLogout = useCallback(() => {
-    console.log('Logout realizado');
-    // Implement your logout logic here
-  }, []);
 
   const navLinks: NavLink[] = [
     { href: '/', label: 'Início' },
@@ -61,12 +55,12 @@ const Header = () => {
     { 
       href: '/escolha-usuario?acao=login', 
       label: 'Login',
-      className: 'bg-yellow-300 text-[#004d2b] hover:bg-yellow-400'
+      className: 'bg-white text-[#004d2b] hover:bg-yellow-400'
     },
     { 
       href: '/escolha-usuario?acao=cadastro', 
       label: 'Cadastre-se',
-      className: 'bg-white text-[#004d2b] hover:bg-gray-100'
+      className: 'bg-white text-[#004d2b] hover:bg-yellow-400'
     },
   ];
 
@@ -92,6 +86,7 @@ const Header = () => {
               key={link.href}
               href={link.href}
               className="text-white hover:text-yellow-300 transition-colors duration-200 font-medium"
+              onClick={closeMenu} // Fecha o menu ao clicar
             >
               {link.label}
             </Link>
@@ -105,22 +100,11 @@ const Header = () => {
               key={link.href}
               href={link.href}
               className={`px-4 py-2 rounded font-semibold transition-colors duration-200 ${link.className}`}
+              onClick={closeMenu} // Fecha o menu ao clicar
             >
               {link.label}
             </Link>
           ))}
-
-          {/* Logout Button */}
-          <button
-            onClick={handleLogout}
-            className="group relative p-2 text-yellow-300 hover:text-red-400 transition-colors"
-            aria-label="Sair"
-          >
-            <ArrowRightOnRectangleIcon className="h-6 w-6" />
-            <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-              Sair
-            </span>
-          </button>
         </div>
 
         {/* Mobile Menu Button */}
@@ -128,7 +112,7 @@ const Header = () => {
           onClick={toggleMenu}
           className="md:hidden text-white p-2 focus:outline-none"
           aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={isMenuOpen}
+          aria-expanded={isMenuOpen ? 'true' : 'false'}
         >
           {isMenuOpen ? (
             <XMarkIcon className="h-6 w-6" />
@@ -160,28 +144,31 @@ const Header = () => {
             </div>
 
             <nav className="px-6 py-4 space-y-6">
+              {/* Nav Links */}
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={closeMenu}
                   className={`block text-gray-800 hover:text-[#004d2b] text-lg font-medium py-2 ${link.className ? link.className.replace('px-4 py-2', 'px-3 py-2') : ''}`}
+                  onClick={closeMenu} // Fecha o menu ao clicar
                 >
                   {link.label}
                 </Link>
               ))}
 
-              {/* Logout Button in Mobile */}
-              <button
-                onClick={() => {
-                  handleLogout();
-                  closeMenu();
-                }}
-                className="w-full text-left text-gray-800 hover:text-red-500 text-lg font-medium py-2 flex items-center"
-              >
-                <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />
-                Sair
-              </button>
+              {/* Auth Links in Row */}
+              <div className="flex space-x-4 mt-4">
+                {authLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`px-4 py-2 rounded font-semibold transition-colors duration-200 ${link.className}`}
+                    onClick={closeMenu} // Fecha o menu ao clicar
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             </nav>
           </div>
         </div>
