@@ -9,12 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@djpfs/react-vlibras": "^2.0.2",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@heroicons/react": "^2.2.0",
+    "@vue-a11y/vlibras": "^1.0.4",
     "lucide-react": "^0.488.0",
-    "next": "15.3.0",
+    "next": "^15.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0"

@@ -91,219 +91,312 @@ function UsuarioContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center space-y-10 bg-[#DAF3D7] p-4">
+    <div className="min-h-screen bg-gradient-to-b from-[#DAF3D7] to-[#B8E1B3] p-4 md:p-8">
       {/* Modal de Confirmação */}
       {selectedCorrida && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-xl">
-            <h2 className="text-2xl font-bold text-[#004d2b] mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-xl animate-fade-in">
+            <h2 className="text-2xl font-bold text-[#004d2b] mb-4 border-b pb-2">
               Confirmar Corrida
             </h2>
-            <p>
-              <strong>Origem:</strong> {selectedCorrida.origem}
-            </p>
-            <p>
-              <strong>Destino:</strong> {selectedCorrida.destino}
-            </p>
-            <div className="flex justify-between mt-6">
+            <div className="space-y-3 mb-6">
+              <p className="flex items-center">
+                <FontAwesomeIcon 
+                  icon={faMapMarkerAlt} 
+                  className="text-green-600 mr-2 w-5" 
+                />
+                <span className="font-medium">Origem:</span> {selectedCorrida.origem}
+              </p>
+              <p className="flex items-center">
+                <FontAwesomeIcon 
+                  icon={faMapMarkerAlt} 
+                  className="text-red-500 mr-2 w-5" 
+                />
+                <span className="font-medium">Destino:</span> {selectedCorrida.destino}
+              </p>
+            </div>
+            <div className="flex justify-between gap-4">
               <button
                 onClick={() => setSelectedCorrida(null)}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-lg transition-colors"
               >
                 Cancelar
               </button>
               <Link
                 href="/pagamento"
-                className="bg-yellow-300 hover:bg-yellow-400 text-[#004d2b] font-bold py-2 px-4 rounded flex items-center"
+                className="flex-1 bg-[#FFD700] hover:bg-[#FFC000] text-[#004d2b] font-bold py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
                 onClick={confirmarCorrida}
               >
                 <FontAwesomeIcon icon={faCreditCard} className="mr-2" />
-                Selecionar Pagamento
+                Pagamento
               </Link>
             </div>
           </div>
         </div>
       )}
 
-      {/* Cabeçalho */}
-      <div className="bg-white w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[55%] rounded-2xl flex flex-col md:flex-row items-center justify-between p-4 mt-10 gap-4">
-        <div className="flex items-center flex-col md:flex-row">
-          <img
-            src="https://img.freepik.com/fotos-gratis/close-up-na-jovem-empresaria_23-2149153830.jpg?semt=ais_hybrid&w=740"
-            className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full object-cover mr-0 md:mr-4"
-            alt="Foto do Usuário"
-          />
-          <div className="flex flex-col text-center md:text-left text-[#004d2b] mt-2 md:mt-0">
-            <h1 className="text-2xl sm:text-3xl font-bold">{nome}</h1>
-            <h2 className="text-lg sm:text-xl text-black">Usuário</h2>
+      {/* Container Principal */}
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Cabeçalho */}
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+          <div className="p-6 flex flex-col md:flex-row items-center gap-6">
+            <div className="relative">
+              <img
+                src="https://img.freepik.com/fotos-gratis/close-up-na-jovem-empresaria_23-2149153830.jpg?semt=ais_hybrid&w=740"
+                className="w-32 h-32 rounded-full object-cover border-4 border-[#FFD700] shadow-md"
+                alt="Foto do Usuário"
+              />
+              <div className="absolute bottom-0 right-0 bg-[#004d2b] text-white rounded-full px-3 py-1 text-xs font-bold">
+                Usuário
+              </div>
+            </div>
+            
+            <div className="flex-1 text-center md:text-left">
+              <h1 className="text-2xl font-bold text-[#004d2b]">{nome}</h1>
+              <p className="text-gray-600 mt-1">Membro desde Abril 2024</p>
+              
+              <div className="mt-4 flex justify-center md:justify-start">
+                <Link
+                  href="/corridas"
+                  className="bg-[#FFD700] hover:bg-[#FFC000] text-[#004d2b] px-6 py-3 rounded-xl font-bold flex items-center transition-colors shadow-md"
+                >
+                  <FontAwesomeIcon icon={faCarAlt} className="mr-2" />
+                  Pedir Corrida
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-        <Link
-          href="/corridas"
-          className="bg-yellow-300 text-[#004d2b] px-6 py-3 rounded-2xl font-bold hover:bg-yellow-400 flex items-center"
-        >
-          <FontAwesomeIcon icon={faCarAlt} className="mr-2" />
-          Pedir Corrida
-        </Link>
-      </div>
 
-      {/* Informações da Conta */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[55%] space-y-4">
-        <h1 className="text-2xl sm:text-3xl border-2 p-3 text-[#004d2b] font-bold text-center rounded-2xl">
-          Informações da Conta
-        </h1>
-
-        {modoEdicao ? (
-          <>
-            {/* Campos de edição */}
-            {[
-              { label: "Nome", value: nome, setValue: setNome, icon: faUser },
-              {
-                label: "Telefone",
-                value: telefone,
-                setValue: setTelefone,
-                icon: faPhone,
-              },
-              {
-                label: "E-mail",
-                value: email,
-                setValue: setEmail,
-                icon: faEnvelope,
-              },
-              { label: "CPF", value: cpf, setValue: setCpf, icon: faIdBadge },
-              {
-                label: "Endereço",
-                value: endereco,
-                setValue: setEndereco,
-                icon: faMapMarkerAlt,
-              },
-            ].map(({ label, value, setValue, icon }, idx) => (
-              <div key={idx}>
-                <label className="block text-gray-600 text-sm">
-                  <FontAwesomeIcon
-                    icon={icon}
-                    className="mr-2 text-green-800"
-                  />{" "}
-                  {label}:
-                </label>
-                <input
-                  type="text"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  className="border w-full p-2 rounded"
-                />
-              </div>
-            ))}
-            <button
-              onClick={salvarEdicao}
-              className="bg-green-800 hover:bg-green-900 text-white font-bold w-full p-2 mt-4"
-            >
-              Salvar
-            </button>
-          </>
-        ) : (
-          <>
-            {[
-              { label: nome, icon: faUser },
-              { label: telefone, icon: faPhone },
-              { label: email, icon: faEnvelope },
-              { label: cpf, icon: faIdBadge },
-              { label: endereco, icon: faMapMarkerAlt },
-            ].map(({ label, icon }, idx) => (
-              <p key={idx}>
-                <FontAwesomeIcon icon={icon} className="mr-2 text-green-800" />{" "}
-                {label}
-              </p>
-            ))}
-            <div className="flex justify-center mt-6">
-              <button
-                onClick={() => setModoEdicao(true)}
-                className="bg-yellow-300 text-[#004d2b] px-6 py-3 rounded-2xl font-bold hover:bg-yellow-400"
-              >
-                Editar Perfil
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* Corridas Anteriores */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[55%]">
-        <h1 className="text-xl text-green-800 font-bold border-2 p-3 mb-5 rounded-2xl">
-          <FontAwesomeIcon icon={faRoute} className="mr-2" /> Corridas
-          Anteriores
-        </h1>
-        {corridasAnteriores.length > 0 ? (
-          corridasAnteriores.map((c, index) => (
-            <div key={index} className="border rounded p-2 mb-2">
-              <p>
-                <strong>Origem:</strong> {c.origem}
-              </p>
-              <p>
-                <strong>Destino:</strong> {c.destino}
-              </p>
-              <p>
-                <FontAwesomeIcon icon={faClock} className="mr-1" />
-                {c.data} -{" "}
-                <FontAwesomeIcon icon={faMoneyBill} className="ml-2 mr-1" />
-                {c.valor}
-              </p>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500">Nenhuma corrida anterior registrada</p>
-        )}
-      </div>
-
-      {/* Corridas Agendadas */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[55%]">
-        <h1 className="text-xl text-green-800 font-bold border-2 p-3 mb-5 rounded-2xl">
-          <FontAwesomeIcon icon={faClock} className="mr-2" /> Corridas Agendadas
-        </h1>
-        {corridasAgendadas.length > 0 ? (
-          corridasAgendadas.map((c) => (
-            <div
-              key={c.id}
-              className="border rounded p-2 mb-2 flex flex-col md:flex-row justify-between items-start md:items-center"
-            >
-              <div className="mb-2 md:mb-0">
-                <p>
-                  <strong>Origem:</strong> {c.origem}
-                </p>
-                <p>
-                  <strong>Destino:</strong> {c.destino}
-                </p>
-                <p>
-                  <strong>Data:</strong> {c.data}
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <button className="text-blue-600 hover:underline">
-                  <FontAwesomeIcon icon={faEdit} /> Alterar
-                </button>
+        {/* Informações da Conta */}
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-xl font-bold text-[#004d2b]">
+                Informações da Conta
+              </h1>
+              {!modoEdicao && (
                 <button
-                  onClick={() => cancelarCorrida(c.id)}
-                  className="text-red-600 hover:underline"
+                  onClick={() => setModoEdicao(true)}
+                  className="text-[#004d2b] hover:text-[#003320] font-medium flex items-center"
                 >
-                  <FontAwesomeIcon icon={faTimes} /> Cancelar
+                  <FontAwesomeIcon icon={faEdit} className="mr-2" />
+                  Editar
                 </button>
-              </div>
+              )}
             </div>
-          ))
-        ) : (
-          <p className="text-gray-500">Nenhuma corrida agendada</p>
-        )}
-      </div>
 
-      {/* Contato */}
-      <div className="w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[55%] mb-10 flex justify-center">
-        <Link
-          href="/contato"
-          className="bg-yellow-300 text-[#004d2b] w-full sm:w-2/3 md:w-1/2 p-3 rounded-2xl font-bold hover:bg-yellow-400 flex justify-center items-center"
-        >
-          <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
-          Entrar em Contato com o Motorista
-        </Link>
+            {modoEdicao ? (
+              <div className="space-y-4">
+                {[
+                  { label: "Nome", value: nome, setValue: setNome, icon: faUser },
+                  {
+                    label: "Telefone",
+                    value: telefone,
+                    setValue: setTelefone,
+                    icon: faPhone,
+                  },
+                  {
+                    label: "E-mail",
+                    value: email,
+                    setValue: setEmail,
+                    icon: faEnvelope,
+                  },
+                  { label: "CPF", value: cpf, setValue: setCpf, icon: faIdBadge },
+                  {
+                    label: "Endereço",
+                    value: endereco,
+                    setValue: setEndereco,
+                    icon: faMapMarkerAlt,
+                  },
+                ].map(({ label, value, setValue, icon }, idx) => (
+                  <div key={idx} className="space-y-1">
+                    <label className="flex items-center text-gray-600 text-sm">
+                      <FontAwesomeIcon
+                        icon={icon}
+                        className="mr-2 text-[#004d2b] w-4"
+                      />
+                      {label}
+                    </label>
+                    <input
+                      type="text"
+                      value={value}
+                      onChange={(e) => setValue(e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#004d2b] focus:border-transparent"
+                    />
+                  </div>
+                ))}
+                
+                <div className="flex gap-3 pt-2">
+                  <button
+                    onClick={salvarEdicao}
+                    className="flex-1 bg-[#004d2b] hover:bg-[#003320] text-white font-bold py-3 rounded-lg transition-colors"
+                  >
+                    Salvar Alterações
+                  </button>
+                  <button
+                    onClick={() => setModoEdicao(false)}
+                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-lg transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {[
+                  { label: nome, icon: faUser },
+                  { label: telefone, icon: faPhone },
+                  { label: email, icon: faEnvelope },
+                  { label: cpf, icon: faIdBadge },
+                  { label: endereco, icon: faMapMarkerAlt },
+                ].map(({ label, icon }, idx) => (
+                  <div key={idx} className="flex items-start">
+                    <FontAwesomeIcon 
+                      icon={icon} 
+                      className="text-[#004d2b] mr-3 mt-1 w-4" 
+                    />
+                    <p className="text-gray-700">{label}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Grid de Corridas */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Corridas Anteriores */}
+          <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+            <div className="p-6">
+              <div className="flex items-center mb-6">
+                <FontAwesomeIcon 
+                  icon={faRoute} 
+                  className="text-[#004d2b] mr-2" 
+                />
+                <h1 className="text-xl font-bold text-[#004d2b]">
+                  Corridas Anteriores
+                </h1>
+              </div>
+              
+              {corridasAnteriores.length > 0 ? (
+                <div className="space-y-4">
+                  {corridasAnteriores.map((c, index) => (
+                    <div 
+                      key={index} 
+                      className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-start mb-2">
+                        <FontAwesomeIcon 
+                          icon={faMapMarkerAlt} 
+                          className="text-green-600 mr-3 mt-1 w-4" 
+                        />
+                        <div>
+                          <p className="font-medium">{c.origem}</p>
+                          <div className="flex items-center text-gray-500 text-sm mt-1">
+                            <FontAwesomeIcon icon={faClock} className="mr-1" />
+                            {c.data}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <FontAwesomeIcon 
+                          icon={faMapMarkerAlt} 
+                          className="text-red-500 mr-3 mt-1 w-4" 
+                        />
+                        <p className="font-medium">{c.destino}</p>
+                      </div>
+                      <div className="mt-3 flex justify-end">
+                        <span className="bg-[#004d2b] text-white px-3 py-1 rounded-full text-sm font-bold">
+                          {c.valor}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  Nenhuma corrida anterior registrada
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Corridas Agendadas */}
+          <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+            <div className="p-6">
+              <div className="flex items-center mb-6">
+                <FontAwesomeIcon 
+                  icon={faClock} 
+                  className="text-[#004d2b] mr-2" 
+                />
+                <h1 className="text-xl font-bold text-[#004d2b]">
+                  Corridas Agendadas
+                </h1>
+              </div>
+              
+              {corridasAgendadas.length > 0 ? (
+                <div className="space-y-4">
+                  {corridasAgendadas.map((c) => (
+                    <div 
+                      key={c.id} 
+                      className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-start mb-2">
+                        <FontAwesomeIcon 
+                          icon={faMapMarkerAlt} 
+                          className="text-green-600 mr-3 mt-1 w-4" 
+                        />
+                        <div>
+                          <p className="font-medium">{c.origem}</p>
+                          <div className="flex items-center text-gray-500 text-sm mt-1">
+                            <FontAwesomeIcon icon={faClock} className="mr-1" />
+                            {c.data}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-start mb-3">
+                        <FontAwesomeIcon 
+                          icon={faMapMarkerAlt} 
+                          className="text-red-500 mr-3 mt-1 w-4" 
+                        />
+                        <p className="font-medium">{c.destino}</p>
+                      </div>
+                      <div className="flex justify-end gap-3">
+                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                          <FontAwesomeIcon icon={faEdit} className="mr-1" />
+                          Alterar
+                        </button>
+                        <button
+                          onClick={() => cancelarCorrida(c.id)}
+                          className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center"
+                        >
+                          <FontAwesomeIcon icon={faTimes} className="mr-1" />
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  Nenhuma corrida agendada
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Botão de Contato */}
+        <div className="flex justify-center">
+          <Link
+            href="/contato"
+            className="bg-[#FFD700] hover:bg-[#FFC000] text-[#004d2b] px-8 py-3 rounded-xl font-bold flex items-center transition-colors shadow-md"
+          >
+            <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
+            Falar com Motorista
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -311,7 +404,7 @@ function UsuarioContent() {
 
 export default function Usuario() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Carregando...</div>}>
       <UsuarioContent />
     </Suspense>
   );

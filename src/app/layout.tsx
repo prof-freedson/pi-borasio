@@ -3,8 +3,14 @@ import { Poppins } from 'next/font/google';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import ChatFlutuante from '@/app/components/ChatFlutuante';
+import Acessibilidade from '@/app/components/Acessibilidade';
 
-const poppins = Poppins({ subsets: ['latin'], weight: ['400', '600', '700'], variable: '--font-poppins' });
+
+const poppins = Poppins({ 
+  subsets: ['latin'], 
+  weight: ['400', '600', '700'], 
+  variable: '--font-poppins' 
+});
 
 export const metadata = {
   title: 'BoraSiô!',
@@ -24,6 +30,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           {children}
         </main>
         <ChatFlutuante />
+        <Acessibilidade />
         <Footer />
       </body>
     </html>
