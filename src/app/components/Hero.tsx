@@ -2,16 +2,22 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Tag,
-  ShieldCheck,
   Zap,
-  X
+  X,
+  MapPin,
+  Users,
+  Calendar,
+  Wifi,
+  Terminal,
+  TrendingUp,
 } from 'lucide-react';
 
 type BenefitItem = {
   title: string;
+  displayTitle?: string;
   desc: string;
   icon: React.ReactNode;
+  isLink?: boolean;
 };
 
 type MenuItem = {
@@ -52,22 +58,59 @@ const Hero = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const beneficios: BenefitItem[] = [
+  const regionalContent = {
+    title: 'Foco Regional',
+    desc: 'Nosso aplicativo foi desenvolvido especialmente para atender às necessidades únicas de mobilidade urbana em São Luís e região metropolitana do Maranhão.',
+    details: [
+      'Rotas otimizadas para a geografia insular da cidade',
+      'Cobertura especial para bairros periféricos',
+      'Integração com pontos de ônibus e terminais',
+      'Atendimento prioritário em áreas de difícil acesso'
+    ],
+    icon: <MapPin className="w-8 h-8 sm:w-10 sm:h-10 text-[#004d2b]" />
+  };
+
+  const efficiencyContent = {
+    title: 'Eficiência Borasio',
+    desc: 'Nosso aplicativo de caronas foi projetado para oferecer a melhor experiência em mobilidade urbana com máxima eficiência.',
+    details: [
+      'Tempo médio de espera reduzido em 40%',
+      'Algoritmos inteligentes de combinação de rotas',
+      'Economia de até 35% nos custos de transporte',
+      'Motoristas verificados e avaliação em tempo real'
+    ],
+    icon: <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-[#004d2b]" />
+  };
+
+  const linkItems: BenefitItem[] = [
     {
-      title: 'Preço Justo',
-      desc: 'Transparência e economia em cada corrida. Sem surpresas no final.',
-      icon: <Tag className="w-6 h-6 sm:w-8 sm:h-8 text-[#004d2b]" />,
+      title: 'transito-inteligente',
+      displayTitle: 'Trânsito Inteligente',
+      desc: 'Rotas otimizadas para vias congestionadas como Av. Guajajaras',
+      icon: <Terminal className="w-6 h-6 sm:w-8 sm:h-8 text-[#004d2b]" />,
+      isLink: true
     },
     {
-      title: 'Segurança',
-      desc: 'Prioridade para a sua segurança em cada trajeto.',
-      icon: <ShieldCheck className="w-6 h-6 sm:w-8 sm:h-8 text-[#004d2b]" />,
+      title: 'eventos-culturais',
+      displayTitle: 'Eventos Culturais',
+      desc: 'Cobertura especial para festas juninas e Bumba-Meu-Boi',
+      icon: <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-[#004d2b]" />,
+      isLink: true
     },
     {
-      title: 'Fácil e rápido',
-      desc: 'Cadastre-se e tenha corrida disponível sempre que desejar.',
-      icon: <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-[#004d2b]" />,
+      title: 'modo-ilha',
+      displayTitle: 'Modo Ilha',
+      desc: 'Conexão entre bairros com rotas inteligentes para a geografia de São Luís',
+      icon: <Wifi className="w-6 h-6 sm:w-8 sm:h-8 text-[#004d2b]" />,
+      isLink: true
     },
+    {
+      title: 'corrida-em-grupo',
+      displayTitle: 'Corrida em Grupo',
+      desc: 'Compartilhe o carro com pessoas do mesmo bairro e economize',
+      icon: <Users className="w-6 h-6 sm:w-8 sm:h-8 text-[#004d2b]" />,
+      isLink: true
+    }
   ];
 
   const menuItems: MenuItem[] = [
@@ -89,8 +132,9 @@ const Hero = () => {
   return (
     <section
       id="hero"
-      className="bg-green-100 px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20 relative"
+      className="bg-green-50 px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20 relative"
     >
+      {/* Modal */}
       {isModalOpen && (
         <div
           role="dialog"
@@ -136,68 +180,113 @@ const Hero = () => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 lg:gap-12">
-        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#004d2b] mb-4 leading-tight">
-            Corridas baratas,<br className="hidden sm:block" /> do seu jeito
-          </h1>
+      {/* Conteúdo principal */}
+      <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#004d2b] mb-4 leading-tight">
+          Mobilidade com <br className="hidden sm:block" />Jeito Maranhense
+        </h1>
 
-          <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-lg">
-            Encontre as melhores opções de transporte com praticidade, economia e conforto.
-          </p>
+        <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl">
+          Um app de carona mais humano, mais seguro e mais local.
+        </p>
 
-          <button
-            ref={buttonRef}
-            onClick={openModal}
-            className="bg-[#004d2b] hover:bg-[#003823] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 shadow-md focus:ring-2 focus:ring-offset-2 focus:ring-[#004d2b] focus:outline-none flex items-center gap-2"
-            aria-label="Abrir menu de navegação"
-          >
-            <Zap className="w-5 h-5" />
-            Ver seções
-          </button>
+        <button
+          ref={buttonRef}
+          onClick={openModal}
+          className="bg-[#004d2b] hover:bg-[#003823] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 shadow-md focus:ring-2 focus:ring-offset-2 focus:ring-[#004d2b] focus:outline-none flex items-center gap-2"
+          aria-label="Abrir menu de navegação"
+        >
+          <Zap className="w-5 h-5" />
+          Saiba mais
+        </button>
 
-          <div className="mt-12 w-full max-w-2xl">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-              {beneficios.map((item, index) => (
-                <div
-                  key={index}
-                  className="bg-yellow-50/80 border border-green-200 rounded-lg p-4 sm:p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow"
-                >
-                  <div className="mb-3">{item.icon}</div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#004d2b] mb-2">
-                    {item.title}
+        {/* Grid de Boxes maiores */}
+        <div className="mt-12 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-8">
+            {/* Box Foco Regional */}
+            <div className="bg-white border border-green-200 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
+              <div className="p-10">
+                <div className="flex items-center gap-5 mb-6">
+                  {regionalContent.icon}
+                  <h3 className="text-3xl font-bold text-[#004d2b]">
+                    {regionalContent.title}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-600">
-                    {item.desc}
-                  </p>
                 </div>
-              ))}
+                <p className="text-gray-700 mb-6 text-lg">{regionalContent.desc}</p>
+                <ul className="space-y-3 text-base text-gray-600">
+                  {regionalContent.details.map((detail, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="text-[#004d2b] text-xl">•</span>
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="w-full h-72 overflow-hidden">
+                <img
+                  src="https://i0.wp.com/www.grupoberimbau.com.br/wp-content/uploads/2016/01/www.grupoberimbau.com.br_carro-x-moto-qual-o-melhor_untitled-1.jpg"
+                  alt="Mobilidade urbana em São Luís"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+
+            {/* Box Eficiência Borasio */}
+            <div className="bg-white border border-green-200 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
+              <div className="p-10">
+                <div className="flex items-center gap-5 mb-6">
+                  {efficiencyContent.icon}
+                  <h3 className="text-3xl font-bold text-[#004d2b]">
+                    {efficiencyContent.title}
+                  </h3>
+                </div>
+                <p className="text-gray-700 mb-6 text-lg">{efficiencyContent.desc}</p>
+                <ul className="space-y-3 text-base text-gray-600">
+                  {efficiencyContent.details.map((detail, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="text-[#004d2b] text-xl">•</span>
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="w-full h-64 overflow-hidden"> {/* imagem menor */}
+                <img
+                  src="https://www.menosfios.com/wp-content/uploads/2023/12/Mobilidade_Angola_MenosFios.jpeg"
+                  alt="Aplicativo Borasio eficiente"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
+
+          {/* Seção de Links */}
+          <h3 className="text-2xl sm:text-3xl font-bold text-[#004d2b] mb-6 text-center">
+            Funcionalidades Inovadoras
+          </h3>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+            {linkItems.map((item, index) => (
+              <a
+                key={index}
+                href={`/${item.title}`}
+                className="bg-white border border-green-200 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow group"
+              >
+                <div className="mb-4 group-hover:scale-110 transition-transform">
+                  {item.icon}
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold text-[#004d2b] mb-2 group-hover:text-[#003823] transition-colors">
+                  {item.displayTitle || item.title}
+                </h3>
+                <p className="text-sm sm:text-base text-gray-600">
+                  {item.desc}
+                </p>
+              </a>
+            ))}
+          </div>
         </div>
-
-        <div className="w-full md:w-1/2 flex justify-end">
-          <img
-            src="/img/boraimg.png"
-            alt="Ilustração de opções de transporte: carro, moto e ônibus"
-            className="w-full max-w-md lg:max-w-lg xl:max-w-xl h-auto object-contain"
-            loading="lazy"
-            width={600}
-            height={400}
-          />
-        </div>
-        
-
-
-
-
-
-
-
-
-
-
-
       </div>
     </section>
   );

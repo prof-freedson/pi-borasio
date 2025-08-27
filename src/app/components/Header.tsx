@@ -2,14 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
-
-interface NavLink {
-  href: string;
-  label: string;
-  className?: string;
-}
+import { XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,87 +26,64 @@ const Header = () => {
     };
 
     if (isMenuOpen) {
-      document.body.style.overflow = 'hidden'; 
-      document.addEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'hidden';
       document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
     } else {
-      document.body.style.overflow = ''; 
+      document.body.style.overflow = '';
     }
 
     return () => {
+      document.body.style.overflow = '';
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscapeKey);
     };
   }, [isMenuOpen, closeMenu]);
 
-  const navLinks: NavLink[] = [
-    { href: '/', label: 'Início' },
-    { href: '/sobre', label: 'Sobre' },
-    { href: '/contato', label: 'Contato' },
-  ];
-
-  const authLinks: NavLink[] = [
-    { 
-      href: '/escolha-usuario?acao=login', 
-      label: 'Login',
-      className: 'bg-white text-[#004d2b] hover:bg-yellow-400'
-    },
-    { 
-      href: '/escolha-usuario?acao=cadastro', 
-      label: 'Cadastre-se',
-      className: 'bg-white text-[#004d2b] hover:bg-yellow-400'
-    },
-  ];
-
   return (
     <header className="bg-[#004d2b] text-white sticky top-0 z-50 shadow-md">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center" aria-label="Home" onClick={closeMenu}>
+        <Link href="/" aria-label="Home Bora Siô" onClick={closeMenu} className="flex items-center">
           <Image
             src="/logo.png"
-            alt="Logo Borasiô"
-            className="h-10 w-auto"
+            alt="Logo Bora Siô"
             width={120}
             height={40}
+            className="object-contain"
             priority
           />
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-white hover:text-yellow-300 transition-colors duration-200 font-medium"
-              onClick={closeMenu} // Fecha o menu ao clicar
-            >
-              {link.label}
-            </Link>
-          ))}
+        {/* Desktop Menu */}
+        <nav className="hidden md:flex space-x-8 font-medium">
+          <Link href="/" className="hover:text-yellow-400 transition-colors">Início</Link>
+          <Link href="/sobre" className="hover:text-yellow-400 transition-colors">Sobre</Link>
+          <Link href="/contato" className="hover:text-yellow-400 transition-colors">Contato</Link>
         </nav>
 
-        {/* Auth Buttons - Desktop */}
-        <div className="hidden md:flex items-center space-x-4">
-          {authLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`px-4 py-2 rounded font-semibold transition-colors duration-200 ${link.className}`}
-              onClick={closeMenu} // Fecha o menu ao clicar
-            >
-              {link.label}
-            </Link>
-          ))}
+        {/* Auth Buttons Desktop */}
+        <div className="hidden md:flex space-x-4">
+          <Link
+            href="/escolha-usuario?acao=login"
+            className="bg-white text-[#004d2b] font-semibold py-2 px-6 rounded hover:bg-yellow-400 transition"
+          >
+            Login
+          </Link>
+          <Link
+            href="/escolha-usuario?acao=cadastro"
+            className="bg-white text-[#004d2b] font-semibold py-2 px-6 rounded hover:bg-yellow-400 transition"
+          >
+            Cadastre-se
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
         <button
           onClick={toggleMenu}
-          className="md:hidden text-white p-2 focus:outline-none"
-          aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={isMenuOpen ? 'true' : 'false'}
+          aria-label={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}
+          aria-expanded={isMenuOpen}
+          className="md:hidden p-2 text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400"
         >
           {isMenuOpen ? (
             <XMarkIcon className="h-6 w-6" />
@@ -124,65 +95,58 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+        <div
           role="dialog"
           aria-modal="true"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
         >
           <div
             ref={menuRef}
-            className="bg-white h-full w-3/4 max-w-sm ml-auto shadow-xl transform transition-all ease-in-out duration-300 animate-slide-in"
+            className="bg-white w-3/4 max-w-sm ml-auto h-full shadow-xl p-6 overflow-y-auto"
           >
-            <div className="p-4 flex justify-end">
-              <button
+            <nav className="flex flex-col space-y-6">
+              <Link
+                href="/"
                 onClick={closeMenu}
-                className="text-gray-500 hover:text-gray-700 p-2"
-                aria-label="Fechar menu"
+                className="text-gray-800 hover:text-[#004d2b] text-lg font-medium"
               >
-                <XMarkIcon className="h-6 w-6" />
-              </button>
-            </div>
+                Início
+              </Link>
+              <Link
+                href="/sobre"
+                onClick={closeMenu}
+                className="text-gray-800 hover:text-[#004d2b] text-lg font-medium"
+              >
+                Sobre
+              </Link>
+              <Link
+                href="/contato"
+                onClick={closeMenu}
+                className="text-gray-800 hover:text-[#004d2b] text-lg font-medium"
+              >
+                Contato
+              </Link>
 
-            <nav className="px-6 py-4 space-y-6">
-              {/* Nav Links */}
-              {navLinks.map((link) => (
+              <div className="flex space-x-4 mt-8">
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`block text-gray-800 hover:text-[#004d2b] text-lg font-medium py-2 ${link.className ? link.className.replace('px-4 py-2', 'px-3 py-2') : ''}`}
-                  onClick={closeMenu} // Fecha o menu ao clicar
+                  href="/escolha-usuario?acao=login"
+                  onClick={closeMenu}
+                  className="flex-1 bg-[#004d2b] text-white py-2 rounded text-center font-semibold hover:bg-yellow-400 hover:text-[#004d2b] transition"
                 >
-                  {link.label}
+                  Login
                 </Link>
-              ))}
-
-              {/* Auth Links in Row */}
-              <div className="flex space-x-4 mt-4">
-                {authLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-4 py-2 rounded font-semibold transition-colors duration-200 ${link.className}`}
-                    onClick={closeMenu} // Fecha o menu ao clicar
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                <Link
+                  href="/escolha-usuario?acao=cadastro"
+                  onClick={closeMenu}
+                  className="flex-1 bg-[#004d2b] text-white py-2 rounded text-center font-semibold hover:bg-yellow-400 hover:text-[#004d2b] transition"
+                >
+                  Cadastre-se
+                </Link>
               </div>
             </nav>
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes slide-in {
-          from { transform: translateX(100%); }
-          to { transform: translateX(0); }
-        }
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out forwards;
-        }
-      `}</style>
     </header>
   );
 };
