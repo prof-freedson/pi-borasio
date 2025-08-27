@@ -137,24 +137,31 @@ export default function CaronaChatWidget() {
         }, 2000);
       }
     } else if (fluxo === "duvida") {
-      const respostas = {
-        "1": "O 'Modo Ilha' conecta bairros com rotas inteligentes, evitando pontes congestionadas. Ative no app e veja caronas que fazem o caminho completo!",
-        "2": "'Corrida em Grupo' é simples:\n1. Marque no app que aceita companhia\n2. O sistema agrupa pessoas do mesmo bairro\n3. Divida o custo da viagem!",
-        "3": "Nossa segurança:\n✔ Motoristas verificados\n✔ Rastreamento em tempo real\n✔ Botão de emergência\n✔ Avaliação após cada corrida",
-        "4": "Pagamentos aceitos:\n💳 Cartão\n📱 PIX\n💵 Dinheiro (apenas para corridas avulsas)"
-      };
-      
-      vitorinoResponse = respostas[userInput as "1" | "2" | "3" | "4"] || "Tem mais alguma dúvida? Manda aí!";
-      
-      if (!["1","2","3","4"].includes(userInput)) {
-        setStep(1); // Permite novas perguntas
-      } else {
-        setTimeout(() => {
-          setMessages(prev => [...prev, { 
-            from: "vitorino", 
-            text: "Precisa de mais alguma coisa? É só chamar!" 
-          }]);
-        }, 2000);
+      if (step === 1) {
+        const respostas = {
+          "1": "O 'Modo Ilha' conecta bairros com rotas inteligentes, evitando pontes congestionadas. Ative no app e veja caronas que fazem o caminho completo!",
+          "2": "'Corrida em Grupo' é simples:\n1. Marque no app que aceita companhia\n2. O sistema agrupa pessoas do mesmo bairro\n3. Divida o custo da viagem!",
+          "3": "Nossa segurança:\n✔ Motoristas verificados\n✔ Rastreamento em tempo real\n✔ Botão de emergência\n✔ Avaliação após cada corrida",
+          "4": "Pagamentos aceitos:\n💳 Cartão\n📱 PIX\n💵 Dinheiro (apenas para corridas avulsas)"
+        };
+        
+        vitorinoResponse = respostas[userInput as "1" | "2" | "3" | "4"] || "Tem mais alguma dúvida? Manda aí!";
+        
+        if (["1","2","3","4"].includes(userInput)) {
+          setStep(2); // Avança para o passo de encerramento
+          
+          setTimeout(() => {
+            setMessages(prev => [...prev, { 
+              from: "vitorino", 
+              text: "Espero ter ajudado! Precisa de mais alguma coisa?" 
+            }]);
+            
+            setTimeout(resetChat, 3000);
+          }, 2000);
+        } else {
+          // Permite novas perguntas se não for uma opção numérica válida
+          setStep(1);
+        }
       }
     }
 
