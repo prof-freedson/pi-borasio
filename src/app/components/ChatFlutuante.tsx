@@ -24,6 +24,78 @@ export default function CaronaChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Função para validar datas no formato brasileiro
+  const validarData = (data: string): boolean => {
+    // Padrões aceitos: DD/MM/YYYY, DD/MM, DD-MM-YYYY, DD-MM
+    const padraoData = /^(\d{1,2})[\/-](\d{1,2})([\/-](\d{4}))?$/;
+    const match = data.match(padraoData);
+    
+    if (!match) return false;
+    
+    const dia = parseInt(match[1], 10);
+    const mes = parseInt(match[2], 10);
+    const ano = match[4] ? parseInt(match[4], 10) : new Date().getFullYear();
+    
+    // Validar se mês está entre 1-12 e dia entre 1-31
+    if (mes < 1 || mes > 12 || dia < 1 || dia > 31) return false;
+    
+    // Validar meses com 30 dias
+    if ([4, 6, 9, 11].includes(mes) && dia > 30) return false;
+    
+    // Validar fevereiro (considerando ano bissexto)
+    if (mes === 2) {
+      const isBissexto = (ano % 4 === 0 && ano % 100 !== 0) || ano % 400 === 0;
+      if (dia > (isBissexto ? 29 : 28)) return false;
+    }
+    
+    return true;
+  };
+
+  // Função para validar horas no formato brasileiro
+  const validarHora = (hora: string): boolean => {
+    // Padrões aceitos: HH:MM, HHhMM, HHh, HH (com ou sem minutos)
+    const padraoHora = /^(\d{1,2})(?:h|:)?(\d{2})?$/;
+    const match = hora.toLowerCase().match(padraoHora);
+    
+    if (!match) {
+      // Aceita palavras como "agora", "tarde", "manhã", etc.
+      return ["agora", "tarde", "manhã", "noite", "madrugada", "amanhã", "hoje"].includes(hora.toLowerCase());
+    }
+    
+    const horas = parseInt(match[1], 10);
+    const minutos = match[2] ? parseInt(match[2], 10) : 0;
+    
+    // Validar se horas estão entre 0-23 e minutos entre 0-59
+    if (horas < 0 || horas > 23) return false;
+    if (minutos < 0 || minutos > 59) return false;
+    
+    return true;
+  };
+
+  // Função para formatar hora para exibição
+  const formatarHora = (hora: string): string => {
+    if (!validarHora(hora)) return hora;
+    
+    // Se for palavra como "agora", retorna sem alteração
+    if (["agora", "tarde", "manhã", "noite", "madrugada", "amanhã", "hoje"].includes(hora.toLowerCase())) {
+      return hora;
+    }
+    
+    const padraoHora = /^(\d{1,2})(?:h|:)?(\d{2})?$/;
+    const match = hora.toLowerCase().match(padraoHora);
+    
+    if (!match) return hora;
+    
+    const horas = parseInt(match[1], 10);
+    const minutos = match[2] ? parseInt(match[2], 10) : 0;
+    
+    // Formatar para HHhMM (com zero à esquerda se necessário)
+    const horasFormatadas = horas.toString().padStart(2, '0');
+    const minutosFormatados = minutos.toString().padStart(2, '0');
+    
+    return `${horasFormatadas}h${minutosFormatados}`;
+  };
+
   const handleSend = () => {
     if (!input.trim()) return;
 
@@ -49,7 +121,7 @@ export default function CaronaChatWidget() {
       } else if (userInput === "4") {
         setFluxo("duvida");
         setStep(1);
-        vitorinoResponse = "Tá com dúvida em que, meu rei?\n\n1 - Como funciona o Modo Ilha\n2 - Como usar Corrida em Grupo\n3 - Segurança\n4 - Pagamentos";
+        vitorinoResponse = "Em que posso esclarecer suas dúvidas?\n\n1 - Como funciona o Modo Ilha\n2 - Como usar Corrida em Grupo\n3 - Segurança\n4 - Pagamentos";
       } else {
         vitorinoResponse = "Vixe! Escolhe uma opção certa aí, de 1 a 4:\n\n1 - Agendar carona\n2 - Problemas com corrida\n3 - Eventos especiais\n4 - Dúvidas sobre o app";
       }
@@ -71,21 +143,27 @@ export default function CaronaChatWidget() {
           break;
         case 2:
           setDadosCarona(prev => ({ ...prev, destino: input }));
-          vitorinoResponse = "Anotado! Que horas você precisa da carona?\n(Ex: 8h, 14h30, 'agora')";
+          vitorinoResponse = "Anotado! Que horas você precisa da carona?\n(Ex: 8h, 14h30, 'agora', 09:45)";
           setStep(3);
           break;
         case 3:
-          setDadosCarona(prev => ({ ...prev, horario: input }));
-          vitorinoResponse = `✅ Tá marcado!\n\nCarona de ${dadosCarona.origem} para ${dadosCarona.destino} às ${input}.\n\nVou te avisar quando encontrar um motorista parceiro!`;
-          
-          setTimeout(() => {
-            setMessages(prev => [...prev, { 
-              from: "vitorino", 
-              text: "💡 Dica: Ative o 'Modo Ilha' pra encontrar caronas que fazem a ponte entre os bairros!" 
-            }]);
+          if (!validarHora(input)) {
+            vitorinoResponse = "Ops! Hora inválida. Informe um horário no formato brasileiro:\n\n• 8h ou 08h\n• 14h30 ou 14:30\n• 09:45\n• 'agora', 'tarde', 'manhã'\n\nLembrete: Horas de 0-23 e minutos de 0-59!";
+            setStep(3); // Permanece no mesmo passo
+          } else {
+            const horaFormatada = formatarHora(input);
+            setDadosCarona(prev => ({ ...prev, horario: horaFormatada }));
+            vitorinoResponse = `✅ Tá marcado!\n\nCarona de ${dadosCarona.origem} para ${dadosCarona.destino} às ${horaFormatada}.\n\nVou te avisar quando encontrar um motorista parceiro!`;
             
-            setTimeout(resetChat, 3000);
-          }, 2000);
+            setTimeout(() => {
+              setMessages(prev => [...prev, { 
+                from: "vitorino", 
+                text: "💡 Dica: Ative o 'Modo Ilha' pra encontrar caronas que fazem a ponte entre os bairros!" 
+              }]);
+              
+              setTimeout(resetChat, 3000);
+            }, 2000);
+          }
           break;
       }
     } else if (fluxo === "problema") {
@@ -122,19 +200,27 @@ export default function CaronaChatWidget() {
         };
         
         setEventoEscolhido(eventos[userInput as "1" | "2" | "3"] || "Outro evento");
-        vitorinoResponse = "Top! Qual o local e data? (Ex: 'Sábado, 29/06, arraial da Lagoa')";
+        vitorinoResponse = "Top! Qual o local e data? (Ex: 'Sábado, 29/06, arraial da Lagoa' ou '15/08 no Centro Histórico')";
         setStep(2);
       } else if (step === 2) {
-        vitorinoResponse = `Show! Pro ${eventoEscolhido} no ${input}, ative o 'Modo Evento' no app:\n\n1. Vá em Configurações\n2. Ative 'Rotas de Evento'\n3. Veja motoristas especiais pra esse rolê!`;
+        // Verificar se a entrada contém uma data válida
+        const contemDataValida = input.split(/[\s,]+/).some(part => validarData(part));
         
-        setTimeout(() => {
-          setMessages(prev => [...prev, { 
-            from: "vitorino", 
-            text: "💡 Dica: Combine 'Corrida em Grupo' com amigos do mesmo bairro pra economizar!" 
-          }]);
+        if (!contemDataValida) {
+          vitorinoResponse = "Para te ajudar melhor com o evento, preciso saber a data. Pode informar? (Ex: 25/12, sábado que vem, ou 15/08/2024)";
+          setStep(2); // Permanece no mesmo passo
+        } else {
+          vitorinoResponse = `Show! Pro ${eventoEscolhido} no ${input}, ative o 'Modo Evento' no app:\n\n1. Vá em Configurações\n2. Ative 'Rotas de Evento'\n3. Veja motoristas especiais pra esse rolê!`;
           
-          setTimeout(resetChat, 4000);
-        }, 2000);
+          setTimeout(() => {
+            setMessages(prev => [...prev, { 
+              from: "vitorino", 
+              text: "💡 Dica: Combine 'Corrida em Grupo' com amigos do mesmo bairro pra economizar!" 
+            }]);
+            
+            setTimeout(resetChat, 4000);
+          }, 2000);
+        }
       }
     } else if (fluxo === "duvida") {
       if (step === 1) {
@@ -186,7 +272,7 @@ export default function CaronaChatWidget() {
         text: "Olá! Eu sou o Vitorino, seu parceiro de carona maranhense.\n\nComo posso te ajudar hoje?\n\n1 - Agendar carona\n2 - Problemas com corrida\n3 - Eventos especiais\n4 - Dúvidas sobre o app",
       },
     ]);
-  };
+  }
 
   const handleCloseChat = () => {
     setOpen(false);
