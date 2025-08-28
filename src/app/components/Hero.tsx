@@ -181,7 +181,7 @@ const Hero = () => {
       )}
 
       {/* Conteúdo principal */}
-      <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
+      <div className="flex flex-col items-center text-center max-w-7xl mx-auto">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#004d2b] mb-4 leading-tight">
           Mobilidade com <br className="hidden sm:block" />Jeito Maranhense
         </h1>
@@ -201,69 +201,69 @@ const Hero = () => {
         </button>
 
         {/* Grid de Boxes maiores */}
-        <div className="mt-12 w-full">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-8">
+        <div className="mt-5 w-full">
+          <div className="flex flex-col lg:flex-row gap-2 mb-5">
             {/* Box Foco Regional */}
-            <div className="bg-white border border-green-200 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
-              <div className="p-10">
-                <div className="flex items-center gap-5 mb-6">
-                  {regionalContent.icon}
-                  <h3 className="text-3xl font-bold text-[#004d2b]">
-                    {regionalContent.title}
-                  </h3>
-                </div>
-                <p className="text-gray-700 mb-6 text-lg">{regionalContent.desc}</p>
-                <ul className="space-y-3 text-base text-gray-600">
-                  {regionalContent.details.map((detail, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <span className="text-[#004d2b] text-xl">•</span>
-                      <span>{detail}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className=" bg-green-700 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300 ">
               <div className="w-full h-72 overflow-hidden">
                 <img
-                  src="https://i0.wp.com/www.grupoberimbau.com.br/wp-content/uploads/2016/01/www.grupoberimbau.com.br_carro-x-moto-qual-o-melhor_untitled-1.jpg"
+                  src="img/carro.png"
                   alt="Mobilidade urbana em São Luís"
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
               </div>
-            </div>
-
-            {/* Box Eficiência Borasio */}
-            <div className="bg-white border border-green-200 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
               <div className="p-10">
                 <div className="flex items-center gap-5 mb-6">
-                  {efficiencyContent.icon}
-                  <h3 className="text-3xl font-bold text-[#004d2b]">
-                    {efficiencyContent.title}
+                  {regionalContent.icon}
+                  <h3 className="text-3xl font-bold text-[#f3ff05]">
+                    {regionalContent.title}
                   </h3>
                 </div>
-                <p className="text-gray-700 mb-6 text-lg">{efficiencyContent.desc}</p>
-                <ul className="space-y-3 text-base text-gray-600">
-                  {efficiencyContent.details.map((detail, index) => (
+                <p className="text-white mb-6 text-lg">{regionalContent.desc}</p>
+                <ul className="space-y-3 text-base text-amber-50">
+                  {regionalContent.details.map((detail, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <span className="text-[#004d2b] text-xl">•</span>
+                      <span className="text-[#ffee00] text-xl">•</span>
                       <span>{detail}</span>
                     </li>
                   ))}
                 </ul>
               </div>
+            </div>
+
+            {/* Box Eficiência Borasio */}
+            <div className=" bg-green-700 text-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
               <div className="w-full h-64 overflow-hidden"> {/* imagem menor */}
                 <img
-                  src="https://www.menosfios.com/wp-content/uploads/2023/12/Mobilidade_Angola_MenosFios.jpeg"
+                  src="img/mobilidade.png"
                   alt="Aplicativo Borasio eficiente"
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
               </div>
+              <div className="p-10">
+                <div className="flex items-center gap-5 mb-6">
+                  {efficiencyContent.icon}
+                  <h3 className="text-3xl font-bold text-[#fffb00]">
+                    {efficiencyContent.title}
+                  </h3>
+                </div>
+                <p className="text-white mb-6 text-lg">{efficiencyContent.desc}</p>
+                <ul className="space-y-3 text-base text-amber-50">
+                  {efficiencyContent.details.map((detail, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="text-[#ffff00] text-xl">•</span>
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
 
           {/* Seção de Links */}
-          <h3 className="text-2xl sm:text-3xl font-bold text-[#004d2b] mb-6 text-center">
+          <h3 className="text-2xl sm:text-3xl font-bold text-[#4d4300] mb-6 text-center">
             Funcionalidades Inovadoras
           </h3>
           
@@ -272,7 +272,7 @@ const Hero = () => {
               <a
                 key={index}
                 href={`/${item.title}`}
-                className="bg-white border border-green-200 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow group"
+                className="bg-white  rounded-lg p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow group"
               >
                 <div className="mb-4 group-hover:scale-110 transition-transform">
                   {item.icon}
