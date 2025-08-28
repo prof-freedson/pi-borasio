@@ -134,7 +134,6 @@ const Hero = () => {
       id="hero"
       className="bg-green-50 px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20 relative"
     >
-      {/* Modal */}
       {isModalOpen && (
         <div
           role="dialog"
@@ -152,7 +151,6 @@ const Hero = () => {
             >
               <X className="w-6 h-6" />
             </button>
-
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold text-[#004d2b] mb-1">
                 Por onde quer começar?
@@ -161,7 +159,6 @@ const Hero = () => {
                 Escolha uma seção para navegar na página
               </p>
             </div>
-
             <nav>
               <ul className="space-y-2">
                 {menuItems.map((item) => (
@@ -180,7 +177,6 @@ const Hero = () => {
         </div>
       )}
 
-      {/* Conteúdo principal */}
       <div className="flex flex-col items-center text-center max-w-7xl mx-auto">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#004d2b] mb-4 leading-tight">
           Mobilidade com <br className="hidden sm:block" />Jeito Maranhense
@@ -200,84 +196,87 @@ const Hero = () => {
           Saiba mais
         </button>
 
-        {/* Grid de Boxes maiores */}
-        <div className="mt-5 w-full">
-          <div className="flex flex-col lg:flex-row gap-2 mb-5">
-            {/* Box Foco Regional */}
-            <div className=" bg-green-700 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300 ">
-              <div className="w-full h-72 overflow-hidden">
-                <img
-                  src="img/carro.png"
-                  alt="Mobilidade urbana em São Luís"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-              <div className="p-10">
-                <div className="flex items-center gap-5 mb-6">
-                  {regionalContent.icon}
-                  <h3 className="text-3xl font-bold text-[#f3ff05]">
-                    {regionalContent.title}
-                  </h3>
+        <div className="mt-10 w-full">
+          <div className="flex flex-col lg:flex-row gap-6 mb-12">
+            {/* Foco Regional */}
+            <div className="bg-gradient-to-r from-green-600 to-green-800 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition duration-500 hover:scale-[1.01] flex-1">
+              <div className="p-6 sm:p-10 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center gap-4 mb-4 sm:mb-6">
+                    {regionalContent.icon}
+                    <h3 className="text-2xl sm:text-3xl font-bold text-yellow-400">
+                      {regionalContent.title}
+                    </h3>
+                  </div>
+                  <p className="text-white mb-4 sm:mb-6 text-base sm:text-lg">{regionalContent.desc}</p>
+                  <ul className="space-y-2 sm:space-y-3 text-amber-50 text-sm sm:text-base">
+                    {regionalContent.details.map((detail, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-yellow-300 text-xl">•</span>
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <p className="text-white mb-6 text-lg">{regionalContent.desc}</p>
-                <ul className="space-y-3 text-base text-amber-50">
-                  {regionalContent.details.map((detail, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <span className="text-[#ffee00] text-xl">•</span>
-                      <span>{detail}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-6 rounded-xl overflow-hidden aspect-[16/9] border border-white/10">
+                  <img
+                    src="img/carro.png"
+                    alt="Mobilidade urbana em São Luís"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Box Eficiência Borasio */}
-            <div className=" bg-green-700 text-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
-              <div className="w-full h-64 overflow-hidden"> {/* imagem menor */}
-                <img
-                  src="img/mobilidade.png"
-                  alt="Aplicativo Borasio eficiente"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-              <div className="p-10">
-                <div className="flex items-center gap-5 mb-6">
-                  {efficiencyContent.icon}
-                  <h3 className="text-3xl font-bold text-[#fffb00]">
-                    {efficiencyContent.title}
-                  </h3>
+            {/* Eficiência Borasio */}
+            <div className="bg-gradient-to-r from-green-800 to-green-600 text-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition duration-500 hover:scale-[1.01] flex-1">
+              <div className="p-6 sm:p-10 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center gap-4 mb-4 sm:mb-6">
+                    {efficiencyContent.icon}
+                    <h3 className="text-2xl sm:text-3xl font-bold text-yellow-400">
+                      {efficiencyContent.title}
+                    </h3>
+                  </div>
+                  <p className="mb-4 sm:mb-6 text-base sm:text-lg">{efficiencyContent.desc}</p>
+                  <ul className="space-y-2 sm:space-y-3 text-amber-50 text-sm sm:text-base">
+                    {efficiencyContent.details.map((detail, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-yellow-300 text-xl">•</span>
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <p className="text-white mb-6 text-lg">{efficiencyContent.desc}</p>
-                <ul className="space-y-3 text-base text-amber-50">
-                  {efficiencyContent.details.map((detail, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <span className="text-[#ffff00] text-xl">•</span>
-                      <span>{detail}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-6 rounded-xl overflow-hidden aspect-[4/3] border border-white/10">
+                  <img
+                    src="img/mobilidade.png"
+                    alt="Aplicativo Borasio eficiente"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Seção de Links */}
+          {/* Funcionalidades */}
           <h3 className="text-2xl sm:text-3xl font-bold text-[#4d4300] mb-6 text-center">
             Funcionalidades Inovadoras
           </h3>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {linkItems.map((item, index) => (
               <a
                 key={index}
                 href={`/${item.title}`}
-                className="bg-white  rounded-lg p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow group"
+                className="bg-white rounded-xl p-6 flex flex-col items-center text-center shadow hover:shadow-lg transition duration-300 group hover:scale-105"
               >
-                <div className="mb-4 group-hover:scale-110 transition-transform">
+                <div className="mb-4 text-[#004d2b] group-hover:text-[#002d1a] transition-colors duration-300">
                   {item.icon}
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-[#004d2b] mb-2 group-hover:text-[#003823] transition-colors">
+                <h3 className="text-base sm:text-lg font-bold text-[#004d2b] mb-2 group-hover:text-[#003823] transition-colors">
                   {item.displayTitle || item.title}
                 </h3>
                 <p className="text-sm sm:text-base text-gray-600">
