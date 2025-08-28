@@ -216,7 +216,7 @@ const Hero = () => {
               <div className="p-10">
                 <div className="flex items-center gap-5 mb-6">
                   {regionalContent.icon}
-                  <h3 className="text-3xl font-bold text-[#f3ff05]">
+                  <h3 className="text-3xl font-bold text-yellow-500">
                     {regionalContent.title}
                   </h3>
                 </div>
@@ -245,7 +245,7 @@ const Hero = () => {
               <div className="p-10">
                 <div className="flex items-center gap-5 mb-6">
                   {efficiencyContent.icon}
-                  <h3 className="text-3xl font-bold text-[#fffb00]">
+                  <h3 className="text-3xl font-bold text-yellow-500">
                     {efficiencyContent.title}
                   </h3>
                 </div>
