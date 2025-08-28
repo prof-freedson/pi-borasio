@@ -119,7 +119,7 @@ export default function TempoRealPage() {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-blue-100 text-blue-800';
+      case 'low': return 'bg-green-100 text-green-800';
       case 'medium': return 'bg-yellow-100 text-yellow-800';
       case 'high': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
@@ -127,11 +127,11 @@ export default function TempoRealPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-50">
       {/* Header */}
-      <header className="bg-gradient-to-r from-blue-800 to-green-800 text-white py-5 px-4 sm:px-6 lg:px-8 shadow-md">
+      <header className="bg-gradient-to-r from-[#004d2b] to-green-700 text-white py-5 px-4 sm:px-6 lg:px-8 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/transito-inteligente" className="flex items-center gap-2 hover:text-blue-200 transition-colors">
+          <Link href="/transito-inteligente" className="flex items-center gap-2 hover:text-green-200 transition-colors">
             <ChevronLeft className="w-5 h-5" />
             <span>Voltar</span>
           </Link>
@@ -151,7 +151,7 @@ export default function TempoRealPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <MapPin className="text-blue-600" />
+                <MapPin className="text-[#004d2b]" />
                 Rotas em Tempo Real
               </h2>
               
@@ -160,7 +160,7 @@ export default function TempoRealPage() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center text-gray-500">
                     <div className="mx-auto bg-white p-4 rounded-lg shadow-md inline-block">
-                      <Car className="w-12 h-12 mx-auto text-blue-600 mb-2" />
+                      <Car className="w-12 h-12 mx-auto text-[#004d2b] mb-2" />
                       <p className="font-semibold">Mapa de tráfego em tempo real</p>
                       <p className="text-sm">Visualização das condições do trânsito</p>
                     </div>
@@ -207,8 +207,8 @@ export default function TempoRealPage() {
                     key={route.id}
                     className={`border rounded-lg p-4 cursor-pointer transition-all ${
                       selectedRoute === index 
-                        ? 'border-blue-500 bg-blue-50 shadow-md' 
-                        : 'border-gray-200 hover:border-blue-300'
+                        ? 'border-[#004d2b] bg-green-50 shadow-md' 
+                        : 'border-gray-200 hover:border-green-300'
                     }`}
                     onClick={() => setSelectedRoute(index)}
                   >
@@ -267,7 +267,7 @@ export default function TempoRealPage() {
                         <p className="text-sm text-gray-600 mt-1">{incident.description}</p>
                         <div className="flex justify-between items-center mt-2">
                           <span className="text-xs text-gray-500">{incident.time}</span>
-                          <button className="text-xs text-blue-600 hover:text-blue-800">
+                          <button className="text-xs text-[#004d2b] hover:text-green-800">
                             Ver detalhes
                           </button>
                         </div>
@@ -281,9 +281,9 @@ export default function TempoRealPage() {
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <h3 className="font-semibold text-gray-700 mb-4">Estatísticas do Trânsito</h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-blue-50 p-3 rounded-lg text-center">
-                    <p className="text-2xl font-bold text-blue-700">12</p>
-                    <p className="text-xs text-blue-600">Incidentes ativos</p>
+                  <div className="bg-green-50 p-3 rounded-lg text-center">
+                    <p className="text-2xl font-bold text-green-700">12</p>
+                    <p className="text-xs text-green-600">Incidentes ativos</p>
                   </div>
                   <div className="bg-green-50 p-3 rounded-lg text-center">
                     <p className="text-2xl font-bold text-green-700">78%</p>
@@ -307,7 +307,7 @@ export default function TempoRealPage() {
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Dicas para o Seu Trajeto</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="border-l-4 border-blue-500 pl-4 py-2">
+              <div className="border-l-4 border-[#004d2b] pl-4 py-2">
                 <h4 className="font-semibold text-gray-800">Melhor Horário</h4>
                 <p className="text-sm text-gray-600">Evite as vias entre 7h-9h e 17h-19h</p>
               </div>
@@ -326,7 +326,7 @@ export default function TempoRealPage() {
           
           {/* Atualização de Dados */}
           <div className="text-center">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center gap-2 mx-auto">
+            <button className="bg-[#004d2b] hover:bg-green-800 text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center gap-2 mx-auto">
               <Clock className="w-5 h-5" />
               Atualizar Dados de Trânsito
             </button>
