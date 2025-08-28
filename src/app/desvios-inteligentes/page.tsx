@@ -122,7 +122,7 @@ export default function DesviosInteligentesPage() {
             </div>
             <div className="flex justify-center">
               <img
-                src="/img/rota-inteligente.webp"
+                src="img/rota-inteligente.jpg"
                 alt="Ilustração de desvios inteligentes"
                 className="rounded-lg w-full max-w-xs md:max-w-sm h-auto"
               />

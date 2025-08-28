@@ -372,7 +372,8 @@ const AccessibilityWidget = () => {
         }
       `}</style>
 
-      <div className="fixed bottom-20 left-5 z-[99999] flex items-center">
+      {/* Alteração principal: bottom-20 para bottom-10 */}
+      <div className="fixed bottom-10 left-5 z-[99999] flex items-center">
         <button
           onClick={toggleMenu}
           aria-label="Menu de Acessibilidade"
