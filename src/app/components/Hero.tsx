@@ -251,7 +251,7 @@ const Hero = () => {
                 </div>
                 <div className="mt-6 rounded-xl overflow-hidden aspect-[4/3] border border-white/10">
                   <img
-                    src="img/mobilidade.png"
+                    src="img/mobilidade-app.png"
                     alt="Aplicativo Borasio eficiente"
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                     loading="lazy"
