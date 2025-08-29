@@ -1,11 +1,16 @@
 "use client"
 
+
 import { MapPin, Users, ArrowRight, Clock, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
+import * as Sentry from "@sentry/nextjs";
+import { useState } from "react";
 
 export default function CorridasPage() {
   const router = useRouter();
-  
+  // Simule o destino esperado pelo usuário (poderia vir de um formulário, contexto, etc)
+  const [destinoEsperado] = useState("UFMA");
+
   const corridas = [
     {
       id: 1,
@@ -43,6 +48,20 @@ export default function CorridasPage() {
   ];
 
   const handleSelectCorrida = (corrida: any) => {
+    // Validação: se o destino da corrida for diferente do esperado, reporta ao Sentry
+    if (corrida.destino !== destinoEsperado) {
+      const error = new Error(
+        `Destino selecionado (${corrida.destino}) é diferente do destino esperado (${destinoEsperado})`
+      );
+      Sentry.captureException(error, {
+        extra: {
+          corridaSelecionada: corrida,
+          destinoEsperado,
+        },
+      });
+      alert("Erro: Destino diferente do esperado! O erro foi reportado.");
+      return;
+    }
     localStorage.setItem('selectedCorrida', JSON.stringify(corrida));
     router.push('/usuario?corridaSelected=true');
   };

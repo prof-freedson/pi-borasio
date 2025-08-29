@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import * as Sentry from "@sentry/nextjs"; // Adicione esta linha
 
 const Cadastromotorista = () => {
   const router = useRouter();
