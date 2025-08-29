@@ -11,6 +11,7 @@ import {
   Terminal,
   TrendingUp,
 } from "lucide-react";
+import Link from "next/link";
 
 type BenefitItem = {
   title: string;
@@ -117,11 +118,11 @@ const Hero = () => {
   ];
 
   const menuItems: MenuItem[] = [
-    { id: "inicio", label: "Início" },
+    { id: "/", label: "Início" },
     { id: "sobre", label: "Sobre" },
-    { id: "contatos", label: "Contatos" },
-    { id: "login", label: "Login" },
-    { id: "cadastrar", label: "Cadastrar" },
+    { id: "contato", label: "Contato" },
+    { id: "pessoal/login", label: "Login" },
+    { id: "pessoal/cadastro", label: "Cadastrar" },
   ];
 
   const scrollToSection = (id: string) => {
@@ -166,12 +167,22 @@ const Hero = () => {
               <ul className="space-y-2">
                 {menuItems.map((item) => (
                   <li key={item.id}>
-                    <button
-                      onClick={() => scrollToSection(item.id)}
-                      className="w-full text-left py-3 px-4 hover:bg-green-50 rounded-lg transition-colors text-gray-800 font-medium"
-                    >
-                      {item.label}
-                    </button>
+                    {item.id === "/" ? (
+                      <button
+                        onClick={closeModal}
+                        className="block w-full text-left py-3 px-4 hover:bg-green-50 rounded-lg transition-colors text-gray-800 font-medium"
+                      >
+                        {item.label}
+                      </button>
+                    ) : (
+                      <Link
+                        href={`/${item.id}`}
+                        className="block w-full text-left py-3 px-4 hover:bg-green-50 rounded-lg transition-colors text-gray-800 font-medium"
+                        onClick={closeModal}
+                      >
+                        {item.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
