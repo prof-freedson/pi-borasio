@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
+// Importa o wrapper do Sentry
+const { withSentryConfig } = require("@sentry/nextjs");
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Suas opções de configuração aqui
 };
 
-export default nextConfig;
+const sentryWebpackPluginOptions = {
+  // Opções extras do Sentry (opcional)
+  silent: true, // Suprime logs do Sentry durante o build
+};
+
+export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);

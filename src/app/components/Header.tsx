@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline';
 
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
