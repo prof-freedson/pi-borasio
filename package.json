@@ -15,6 +15,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@heroicons/react": "^2.2.0",
     "@vue-a11y/vlibras": "^1.0.4",
+    "groq-sdk": "^0.30.0",
     "lucide-react": "^0.488.0",
     "next": "^15.4.6",
     "react": "^19.0.0",
