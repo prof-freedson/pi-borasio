@@ -31,13 +31,70 @@ const Cadastromotorista = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Função de validação aprimorada
+  const validate = () => {
+    // Nome: obrigatório, apenas letras e espaços
+    if (!form.nome) return "O nome é obrigatório";
+    if (!/^[A-Za-zÀ-ÿ\s]+$/.test(form.nome)) return "O nome deve conter apenas letras e espaços";
+
+    // CPF: obrigatório, 11 dígitos numéricos
+    if (!form.cpf) return "O CPF é obrigatório";
+    if (!/^\d{11}$/.test(form.cpf)) return "CPF deve ter 11 dígitos numéricos";
+
+    // CNH: obrigatório, 11 dígitos numéricos
+    if (!form.cnh) return "A CNH é obrigatória";
+    if (!/^\d{11}$/.test(form.cnh)) return "CNH deve ter 11 dígitos numéricos";
+
+    // Endereço: obrigatório
+    if (!form.endereco) return "O endereço é obrigatório";
+
+    // E-mail: obrigatório, formato válido
+    if (!form.email) return "O e-mail é obrigatório";
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) return `E-mail inválido: ${form.email}`;
+
+    // Telefone: obrigatório, mínimo 8 dígitos
+    if (!form.telefone) return "O telefone é obrigatório";
+    if (!/^\d{8,}$/.test(form.telefone.replace(/\D/g, ""))) return "Telefone deve ter pelo menos 8 dígitos";
+
+    // Senha: obrigatório, mínimo 6 caracteres
+    if (!form.senha) return "A senha é obrigatória";
+    if (form.senha.length < 6) return "A senha deve ter pelo menos 6 caracteres";
+
+    // Confirmar senha: obrigatório, igual à senha
+    if (!form.confirmarSenha) return "Confirme a senha";
+    if (form.senha !== form.confirmarSenha) return "As senhas não coincidem";
+
+    // Marca: obrigatório, apenas letras
+    if (!form.veiculoMarca) return "A marca do veículo é obrigatória";
+    if (!/^[A-Za-zÀ-ÿ\s]+$/.test(form.veiculoMarca)) return "A marca deve conter apenas letras";
+
+    // Modelo: obrigatório
+    if (!form.veiculoModelo) return "O modelo do veículo é obrigatório";
+
+    // Cor: obrigatório, apenas letras
+    if (!form.veiculoCor) return "A cor do veículo é obrigatória";
+    if (!/^[A-Za-zÀ-ÿ\s]+$/.test(form.veiculoCor)) return "A cor deve conter apenas letras";
+
+    // Combustível: obrigatório
+    if (!form.veiculoCombustivel) return "O combustível é obrigatório";
+
+    // Assentos: obrigatório, apenas números, mínimo 1
+    if (!form.veiculoAssentos) return "O número de assentos é obrigatório";
+    if (!/^\d+$/.test(form.veiculoAssentos)) return "Assentos deve conter apenas números";
+    if (parseInt(form.veiculoAssentos) < 1) return "Assentos deve ser pelo menos 1";
+
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    if (form.senha !== form.confirmarSenha) {
-      setError("As senhas não coincidem");
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      Sentry.captureException(new Error(validationError));
       setIsLoading(false);
       return;
     }
@@ -48,6 +105,7 @@ const Cadastromotorista = () => {
       router.push("/motorista");
     } catch (err) {
       setError("Erro ao cadastrar. Tente novamente.");
+      Sentry.captureException(err);
     } finally {
       setIsLoading(false);
     }

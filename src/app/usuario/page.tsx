@@ -67,6 +67,37 @@ function UsuarioContent() {
   }, [searchParams]);
 
   const salvarEdicao = () => {
+    // Validação dos campos
+    if (!nome || !/^[A-Za-zÀ-ÿ\s]+$/.test(nome)) {
+      const errMsg = "Nome inválido. Use apenas letras e espaços.";
+      window.alert(errMsg);
+      import('@sentry/nextjs').then(Sentry => Sentry.captureException(new Error(errMsg)));
+      return;
+    }
+    if (!cpf || !/^\d{11}$/.test(cpf.replace(/\D/g, ""))) {
+      const errMsg = "CPF inválido. Deve conter 11 dígitos numéricos.";
+      window.alert(errMsg);
+      import('@sentry/nextjs').then(Sentry => Sentry.captureException(new Error(errMsg)));
+      return;
+    }
+    if (!telefone || !/^\d{8,}$/.test(telefone.replace(/\D/g, ""))) {
+      const errMsg = "Telefone inválido. Deve conter pelo menos 8 dígitos numéricos.";
+      window.alert(errMsg);
+      import('@sentry/nextjs').then(Sentry => Sentry.captureException(new Error(errMsg)));
+      return;
+    }
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      const errMsg = "E-mail inválido.";
+      window.alert(errMsg);
+      import('@sentry/nextjs').then(Sentry => Sentry.captureException(new Error(errMsg)));
+      return;
+    }
+    if (!endereco) {
+      const errMsg = "Endereço obrigatório.";
+      window.alert(errMsg);
+      import('@sentry/nextjs').then(Sentry => Sentry.captureException(new Error(errMsg)));
+      return;
+    }
     setModoEdicao(false);
     alert("Perfil atualizado com sucesso!");
   };

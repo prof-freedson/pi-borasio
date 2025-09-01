@@ -1,7 +1,8 @@
 'use client'; // Adicione esta linha no topo do arquivo
 
-import { useRouter } from 'next/navigation'; // Alterado de next/router para next/navigation
+import { useRouter } from 'next/navigation';
 import { useState, FormEvent, ChangeEvent } from 'react';
+import * as Sentry from '@sentry/nextjs';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,18 +16,30 @@ export default function LoginPage() {
     setIsLoading(true);
     setError('');
 
+    // Validação simples
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      const errMsg = 'E-mail inválido';
+      setError(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      setIsLoading(false);
+      return;
+    }
+    if (!password || password.length < 6) {
+      const errMsg = 'A senha deve ter pelo menos 6 caracteres';
+      setError(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      setIsLoading(false);
+      return;
+    }
+
     try {
       // Simulação de chamada API
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       // Redirecionamento após login bem-sucedido
       router.push('/motorista');
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message || 'Ocorreu um erro ao fazer login');
-      } else {
-        setError('Ocorreu um erro desconhecido ao fazer login');
-      }
+      setError('Ocorreu um erro ao fazer login');
+      Sentry.captureException(err);
     } finally {
       setIsLoading(false);
     }

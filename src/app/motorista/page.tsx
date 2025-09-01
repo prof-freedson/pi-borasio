@@ -3,6 +3,7 @@
 import { faClock, faRulerCombined, faCreditCard, faCheckCircle, faStar, faCommentDots } from '@fortawesome/free-solid-svg-icons'
 
 import React, { useState } from 'react'
+import * as Sentry from '@sentry/nextjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faPhone, faIdCard, faCar, faMapMarkerAlt, faIdBadge, faUser, faCarSide, faPalette, faGasPump, faChair } from '@fortawesome/free-solid-svg-icons'
 
@@ -35,6 +36,68 @@ export default function Motorista() {
   }
 
   const salvarEdicao = () => {
+    // Validação dos campos pessoais
+    if (!nome || !/^[A-Za-zÀ-ÿ\s]+$/.test(nome)) {
+      const errMsg = 'Nome inválido. Use apenas letras e espaços.';
+      window.alert(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      return;
+    }
+    if (!cpf || !/^\d{11}$/.test(cpf.replace(/\D/g, ''))) {
+      const errMsg = 'CPF inválido. Deve conter 11 dígitos numéricos.';
+      window.alert(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      return;
+    }
+    if (!cnh || !/^\d{11}$/.test(cnh.replace(/\D/g, ''))) {
+      const errMsg = 'CNH inválida. Deve conter 11 dígitos numéricos.';
+      window.alert(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      return;
+    }
+    if (!telefone || !/^\d{8,}$/.test(telefone.replace(/\D/g, ''))) {
+      const errMsg = 'Telefone inválido. Deve conter pelo menos 8 dígitos numéricos.';
+      window.alert(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      return;
+    }
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      const errMsg = 'E-mail inválido.';
+      window.alert(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      return;
+    }
+    // Validação dos campos do veículo
+    if (!marca || !/^[A-Za-zÀ-ÿ\s]+$/.test(marca)) {
+      const errMsg = 'Marca inválida. Use apenas letras.';
+      window.alert(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      return;
+    }
+    if (!modelo) {
+      const errMsg = 'Modelo do veículo é obrigatório.';
+      window.alert(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      return;
+    }
+    if (!cor || !/^[A-Za-zÀ-ÿ\s]+$/.test(cor)) {
+      const errMsg = 'Cor inválida. Use apenas letras.';
+      window.alert(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      return;
+    }
+    if (!combustivel) {
+      const errMsg = 'Combustível é obrigatório.';
+      window.alert(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      return;
+    }
+    if (!assentos || isNaN(Number(assentos)) || Number(assentos) < 1) {
+      const errMsg = 'Assentos deve ser um número maior que zero.';
+      window.alert(errMsg);
+      Sentry.captureException(new Error(errMsg));
+      return;
+    }
     setModoEdicao(false)
     alert('Perfil atualizado com sucesso!')
   }
@@ -76,7 +139,13 @@ export default function Motorista() {
                   <input
                     type={item.type}
                     value={item.value}
-                    onChange={(e) => item.setValue(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Impede números em campos de texto e letras em campos numéricos
+                      if (["Nome", "Marca", "Cor"].includes(item.label) && /[^A-Za-zÀ-ÿ\s]/.test(value)) return;
+                      if (["CPF", "CNH", "Telefone", "Assentos"].includes(item.label) && /[^0-9]/.test(value)) return;
+                      item.setValue(value);
+                    }}
                     className="border w-full p-2 rounded bg-gray-100"
                   />
                 </div>
