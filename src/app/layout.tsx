@@ -4,7 +4,7 @@ import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import ChatFlutuante from '@/app/components/ChatFlutuante';
 import Acessibilidade from '@/app/components/Acessibilidade';
-import "../../sentry.client.config";
+
 
 const poppins = Poppins({ 
   subsets: ['latin'], 
