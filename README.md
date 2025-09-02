@@ -36,26 +36,4 @@ Aviso de buracos e alagamentos pelos próprios usuários
 
 Corrida em Grupo por Bairro para dividir custos
 
-🎉 Modos Divertidos
-
-Pau-de-Arara: corridas coletivas baratas
-
-Retadaço: corrida de emergência com prioridade
-
-Sussa: viagem silenciosa, sem conversa
-
-Ligeiro: corridas curtas e rápidas
-
-Zoe: ida e volta para festas e shows
-
-📊 Extras que diferenciam
-
-Mais oportunidades para motoristas da própria comunidade
-
-Opção de corrida só com motoristas mulheres (para segurança)
-
-Benefícios e descontos para quem compartilha boas práticas
-
-Integração com comércio local e venda de créditos em mercadinhos
-
 👉 Em resumo: um app de carona feito sob medida para São Luís, valorizando a cultura local, resolvendo problemas de mobilidade da ilha e trazendo inovação com modos divertidos, preços acessíveis e segurança reforçada.
