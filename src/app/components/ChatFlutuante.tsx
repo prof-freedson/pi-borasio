@@ -44,38 +44,30 @@ export default function CaronaChatWidget() {
     setInput("");
     setLoading(true);
 
-    setMessages((prev) => {
-      const updatedMessages = [...prev, userMsg];
+    // Cria o histórico completo incluindo a nova mensagem do usuário
+    const updatedMessages = [...messages, userMsg];
 
-      // Debug: verificar o que está sendo enviado
-      console.log("Enviando para API:", updatedMessages);
-
-      fetch("/api/chat", {
+    try {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: updatedMessages }),
-      })
-        .then(async (res) => {
-          if (!res.ok) throw new Error(await res.text());
-          return res.json();
-        })
-        .then((json: { content?: string; error?: string }) => {
-          const botText = json.content ?? "Desculpe, não consegui responder agora.";
-          setMessages((prev) => [...prev, { from: "vitorino", text: botText }]);
-        })
-        .catch(() => {
-          setMessages((prev) => [
-            ...prev,
-            {
-              from: "vitorino",
-              text: "⚠️ Ops! Tive um problema ao falar com a IA. Tente novamente em instantes.",
-            },
-          ]);
-        })
-        .finally(() => setLoading(false));
-
-      return updatedMessages;
-    });
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const json: { content?: string; error?: string } = await res.json();
+      const botText = json.content ?? "Desculpe, não consegui responder agora.";
+      setMessages([...updatedMessages, { from: "vitorino", text: botText }]);
+    } catch {
+      setMessages([
+        ...updatedMessages,
+        {
+          from: "vitorino",
+          text: "⚠️ Ops! Tive um problema ao falar com a IA. Tente novamente em instantes.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleCloseChat = () => {
