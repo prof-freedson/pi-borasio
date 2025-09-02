@@ -44,6 +44,6 @@ next-env.d.ts
 .env.sentry-build-plugin
 
 # Lock files
-package-lock.json
 yarn.lock
+package-lock.json
 pnpm-lock.yaml

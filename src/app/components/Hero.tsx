@@ -288,10 +288,9 @@ const Hero = () => {
         </div>
 
         {/* Funcionalidades */}
-        <h3 className="text-2xl sm:text-3xl font-bold text-[#4d4300] mb-6 text-center">
+        <h3 className="text-2xl sm:text-3xl font-bold text-[#004d2b] mb-6 text-center">
           Funcionalidades Inovadoras
         </h3>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {linkItems.map((item, index) => (
             <a

@@ -11,6 +11,7 @@ import {
   FaApple,
   FaGooglePlay
 } from 'react-icons/fa';
+import Image from 'next/image'; // Importe o componente Image do Next.js
 
 export default function ContatoPage() {
   const [form, setForm] = useState({ nome: '', email: '', mensagem: '' });
@@ -98,9 +99,15 @@ export default function ContatoPage() {
           {/* Cabeçalho com logo e saudação maranhense */}
           <div className="w-full">
             <div className="flex items-center mb-2">
-              {/* Logo com inspiração maranhense */}
-              <div className="w-14 h-14 bg-gradient-to-br from-green-700 to-amber-600 rounded-full mr-3 flex items-center justify-center text-white font-bold text-xl shadow-md">
-                BS
+              {/* Logo do BoraSiô - substituindo o círculo BS */}
+              <div className="w-16 h-16 mr-3 flex items-center justify-center">
+                <Image
+                  src="/img/borasio.jpg" // Caminho para a imagem da logo
+                  alt="Logo BoraSiô"
+                  width={64}
+                  height={64}
+                  className="object-contain"
+                />
               </div>
               <h2 className="text-3xl font-bold text-green-900 sm:text-4xl">BoraSiô</h2>
             </div>
