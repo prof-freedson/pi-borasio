@@ -141,9 +141,8 @@ export default function Motorista() {
                     value={item.value}
                     onChange={(e) => {
                       const value = e.target.value;
-                      // Impede números em campos de texto e letras em campos numéricos
-                      if (["Nome", "Marca", "Cor"].includes(item.label) && /[^A-Za-zÀ-ÿ\s]/.test(value)) return;
-                      if (["CPF", "CNH", "Telefone", "Assentos"].includes(item.label) && /[^0-9]/.test(value)) return;
+                      // Permite qualquer valor temporariamente para CPF e Telefone durante edição
+                      if (["Nome", "Marca", "Cor"].includes(item.label) && value !== "" && /[^A-Za-zÀ-ÿ\s]/.test(value)) return;
                       item.setValue(value);
                     }}
                     className="border w-full p-2 rounded bg-gray-100"
