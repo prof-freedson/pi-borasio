@@ -5,6 +5,7 @@ const { withSentryConfig } = require("@sentry/nextjs");
 
 const nextConfig: NextConfig = {
   // Suas opções de configuração aqui
+  outputFileTracingRoot: __dirname,
 };
 
 const sentryWebpackPluginOptions = {
