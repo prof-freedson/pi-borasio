@@ -82,7 +82,7 @@ export default function EventosCulturaisPage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
-                href="/cadastrar"
+                href="/pessoal/cadastro"
                 className="bg-yellow-400 hover:bg-yellow-300 text-[#004d2b] font-semibold py-3 px-6 rounded-lg transition-colors shadow-md"
               >
                 Quero Participar
