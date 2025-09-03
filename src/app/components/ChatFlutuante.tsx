@@ -44,38 +44,30 @@ export default function CaronaChatWidget() {
     setInput("");
     setLoading(true);
 
-    setMessages((prev) => {
-      const updatedMessages = [...prev, userMsg];
+    // Cria o histórico completo incluindo a nova mensagem do usuário
+    const updatedMessages = [...messages, userMsg];
 
-      // Debug: verificar o que está sendo enviado
-      console.log("Enviando para API:", updatedMessages);
-
-      fetch("/api/chat", {
+    try {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: updatedMessages }),
-      })
-        .then(async (res) => {
-          if (!res.ok) throw new Error(await res.text());
-          return res.json();
-        })
-        .then((json: { content?: string; error?: string }) => {
-          const botText = json.content ?? "Desculpe, não consegui responder agora.";
-          setMessages((prev) => [...prev, { from: "vitorino", text: botText }]);
-        })
-        .catch(() => {
-          setMessages((prev) => [
-            ...prev,
-            {
-              from: "vitorino",
-              text: "⚠️ Ops! Tive um problema ao falar com a IA. Tente novamente em instantes.",
-            },
-          ]);
-        })
-        .finally(() => setLoading(false));
-
-      return updatedMessages;
-    });
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const json: { content?: string; error?: string } = await res.json();
+      const botText = json.content ?? "Desculpe, não consegui responder agora.";
+      setMessages([...updatedMessages, { from: "vitorino", text: botText }]);
+    } catch {
+      setMessages([
+        ...updatedMessages,
+        {
+          from: "vitorino",
+          text: "⚠️ Ops! Tive um problema ao falar com a IA. Tente novamente em instantes.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleCloseChat = () => {
@@ -131,15 +123,15 @@ export default function CaronaChatWidget() {
                 key={i}
                 className={`whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm ${
                   msg.from === "vitorino"
-                    ? "bg-white text-gray-800 border border-yellow-100 rounded-tl-none shadow-sm"
-                    : "bg-green-700 text-white self-end rounded-tr-none"
+                    ? "bg-gradient-to-r from-yellow-400  to-yellow-600 text-gray-800 border border-yellow-300 rounded-tl-none shadow-sm"
+                    : "bg-gradient-to-r from-green-600 to-green-800 text-white self-end rounded-tr-none"
                 }`}
               >
                 {msg.text}
               </div>
             ))}
             {loading && (
-              <div className="whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm bg-white text-gray-800 border border-yellow-100 rounded-tl-none shadow-sm">
+              <div className="whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm bg-gradient-to-r from-yellow-200 via-yellow-100 to-yellow-200 text-gray-800 border border-yellow-300 rounded-tl-none shadow-sm">
                 digitando…
               </div>
             )}
