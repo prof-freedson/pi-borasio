@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   tracesSampleRate: 1.0,
   // environment: process.env.NODE_ENV, // opcional
   // release: "pi-borasio@1.0.0", // opcional
@@ -11,3 +11,4 @@ Sentry.init({
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 // ...existing code...
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+
