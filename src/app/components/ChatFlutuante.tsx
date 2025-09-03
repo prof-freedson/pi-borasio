@@ -123,15 +123,15 @@ export default function CaronaChatWidget() {
                 key={i}
                 className={`whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm ${
                   msg.from === "vitorino"
-                    ? "bg-white text-gray-800 border border-yellow-100 rounded-tl-none shadow-sm"
-                    : "bg-green-700 text-white self-end rounded-tr-none"
+                    ? "bg-gradient-to-r from-yellow-400  to-yellow-600 text-gray-800 border border-yellow-300 rounded-tl-none shadow-sm"
+                    : "bg-gradient-to-r from-green-600 to-green-800 text-white self-end rounded-tr-none"
                 }`}
               >
                 {msg.text}
               </div>
             ))}
             {loading && (
-              <div className="whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm bg-white text-gray-800 border border-yellow-100 rounded-tl-none shadow-sm">
+              <div className="whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm bg-gradient-to-r from-yellow-200 via-yellow-100 to-yellow-200 text-gray-800 border border-yellow-300 rounded-tl-none shadow-sm">
                 digitando…
               </div>
             )}
