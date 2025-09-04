@@ -166,7 +166,7 @@ export default function ContatoPage() {
               Baixe nosso aplicativo
             </h3>
             <p className="text-gray-700 text-center mb-4 text-sm sm:text-base">
-              Já pensou em chamá um BoraSiô pelo celular? É rapidim!
+              Já pensou em chamar um BoraSiô pelo celular? É rapidim!
             </p>
             <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
               <a 
@@ -217,7 +217,7 @@ export default function ContatoPage() {
                 type="text"
                 id="nome"
                 name="nome"
-                placeholder="Como a gente pode te chamá?"
+                placeholder="Como a gente pode te chamar?"
                 value={form.nome}
                 onChange={handleChange}
                 className={`w-full p-3 rounded-lg border ${errors.nome ? 'border-red-500' : 'border-green-200'} focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition`}
@@ -235,7 +235,7 @@ export default function ContatoPage() {
                 type="email"
                 id="email"
                 name="email"
-                placeholder="pra gente retorná o contato"
+                placeholder="pra gente retornar o contato"
                 value={form.email}
                 onChange={handleChange}
                 className={`w-full p-3 rounded-lg border ${errors.email ? 'border-red-500' : 'border-green-200'} focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition`}
@@ -293,7 +293,7 @@ export default function ContatoPage() {
           
           {/* Elemento decorativo no rodapé do formulário */}
           <div className="mt-6 text-xs text-gray-500 italic">
-            A gente responde rapidim, pode confiá!
+            A gente responde rapidim, pode confiar!
           </div>
         </div>
       </div>
