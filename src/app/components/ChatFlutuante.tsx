@@ -44,7 +44,6 @@ export default function CaronaChatWidget() {
     setInput("");
     setLoading(true);
 
-    // Cria o histórico completo incluindo a nova mensagem do usuário
     const updatedMessages = [...messages, userMsg];
 
     try {
@@ -123,15 +122,15 @@ export default function CaronaChatWidget() {
                 key={i}
                 className={`whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm ${
                   msg.from === "vitorino"
-                    ? "bg-gradient-to-r from-white to-gray-100 text-green-900 border border-green-800 rounded-tl-none shadow-sm"
-                    : "bg-gradient-to-r from-green-600 to-green-800 text-white self-end rounded-tr-none"
+                    ? "bg-yellow-100 text-green-900 rounded-tl-none shadow-sm"
+                    : "bg-green-600 text-white self-end rounded-tr-none"
                 }`}
               >
                 {msg.text}
               </div>
             ))}
             {loading && (
-              <div className="whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm bg-gradient-to-r from-gray-100  to-gray-300 text-green-900 border border-green-800 rounded-tl-none shadow-sm">
+              <div className="whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm bg-gray-100 text-green-700 rounded-tl-none shadow-sm">
                 digitando…
               </div>
             )}
@@ -177,3 +176,4 @@ export default function CaronaChatWidget() {
     </div>
   );
 }
+
