@@ -14,6 +14,7 @@ import {
   faTimes,
   faUser,
   faCarAlt,
+  faStar, // Ícone adicionado para feedback
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, Suspense } from "react";
@@ -337,10 +338,17 @@ function UsuarioContent() {
                         />
                         <p className="font-medium">{c.destino}</p>
                       </div>
-                      <div className="mt-3 flex justify-end">
+                      <div className="mt-3 flex justify-between items-center">
                         <span className="bg-[#004d2b] text-white px-3 py-1 rounded-full text-sm font-bold">
                           {c.valor}
                         </span>
+                        <Link
+                          href="/feedback"
+                          className="bg-[#FFD700] hover:bg-[#FFC000] text-[#004d2b] px-3 py-1 rounded-lg text-sm font-medium flex items-center transition-colors"
+                        >
+                          <FontAwesomeIcon icon={faStar} className="mr-1" />
+                          Avaliar
+                        </Link>
                       </div>
                     </div>
                   ))}
@@ -418,14 +426,21 @@ function UsuarioContent() {
           </div>
         </div>
 
-        {/* Botão de Contato */}
-        <div className="flex justify-center">
+        {/* Botões de Ação */}
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link
             href="/contato"
-            className="bg-[#FFD700] hover:bg-[#FFC000] text-[#004d2b] px-8 py-3 rounded-xl font-bold flex items-center transition-colors shadow-md"
+            className="bg-[#FFD700] hover:bg-[#FFC000] text-[#004d2b] px-8 py-3 rounded-xl font-bold flex items-center justify-center transition-colors shadow-md"
           >
             <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
             Falar com Motorista
+          </Link>
+          <Link
+            href="/feedback"
+            className="bg-[#004d2b] hover:bg-[#003320] text-white px-8 py-3 rounded-xl font-bold flex items-center justify-center transition-colors shadow-md"
+          >
+            <FontAwesomeIcon icon={faStar} className="mr-2" />
+            Registrar Feedback
           </Link>
         </div>
       </div>

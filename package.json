@@ -14,7 +14,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@heroicons/react": "^2.2.0",
-    "@sentry/nextjs": "^10.8.0",
+    "@sentry/nextjs": "^10.9.0",
     "@vue-a11y/vlibras": "^1.0.6",
     "lucide-react": "^0.488.0",
     "next": "^15.4.6",
