@@ -1,17 +1,20 @@
 # Etapa de build
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
-COPY pom.xml ./
-COPY src ./src
-RUN mvn clean package -DskipTests
+COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
+RUN npm install --frozen-lockfile
+
+COPY . .
+RUN npm run build
 
 # Etapa de produção
-FROM eclipse-temurin:21-jre-alpine
+FROM node:20-alpine AS production
 
 WORKDIR /app
-COPY --from=builder /app/target/*.jar app.jar
+COPY --from=builder /app ./
+ENV NODE_ENV=production
 
-EXPOSE 8080
+EXPOSE 3000
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["npm", "start"]
