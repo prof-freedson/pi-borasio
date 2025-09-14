@@ -102,7 +102,7 @@ export default function ContatoPage() {
               {/* Logo do BoraSiô - substituindo o círculo BS */}
               <div className="w-16 h-16 mr-3 flex items-center justify-center">
                 <Image
-                  src="/img/borasio.jpg" // Caminho para a imagem da logo
+                  src="/img/borasio.png" // Caminho para a imagem da logo
                   alt="Logo BoraSiô"
                   width={64}
                   height={64}

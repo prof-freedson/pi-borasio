@@ -43,7 +43,7 @@ export default function SobrePage() {
               </div>
               <div className="md:w-1/2 flex justify-center">
                 <img 
-                  src="/img/borasio.jpg" 
+                  src="/img/borasio.png" 
                   alt="Equipe BoraSiô no início" 
                   className="rounded-lg shadow-md w-full max-w-[300px] h-auto object-cover"
                 />
