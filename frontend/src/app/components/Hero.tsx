@@ -121,8 +121,8 @@ const Hero = () => {
     { id: "/", label: "Início" },
     { id: "sobre", label: "Sobre" },
     { id: "contato", label: "Contato" },
-    { id: "pessoal/login", label: "Login" },
-    { id: "pessoal/cadastro", label: "Cadastrar" },
+    { id: "escolha-usuario?acao=login", label: "Login" },
+    { id: "escolha-usuario?acao=cadastro", label: "Cadastrar" },
   ];
 
   const scrollToSection = (id: string) => {

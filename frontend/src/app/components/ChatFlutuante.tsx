@@ -94,7 +94,7 @@ export default function CaronaChatWidget() {
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <img
-                  src="/vitorino.png"
+                  src="/img/vitorino.png"
                   alt="Vitorino"
                   className="w-9 h-9 rounded-full border-2 border-yellow-400 object-cover"
                 />
