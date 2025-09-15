@@ -61,6 +61,7 @@ const Header = () => {
           <Link href="/" className="hover:text-yellow-400 transition-colors">Início</Link>
           <Link href="/sobre" className="hover:text-yellow-400 transition-colors">Sobre</Link>
           <Link href="/contato" className="hover:text-yellow-400 transition-colors">Contato</Link>
+          <Link href="/recuperar-senha" className="hover:text-yellow-400 transition-colors">Esqueci minha senha</Link>
         </nav>
 
         {/* Auth Buttons Desktop */}
@@ -142,6 +143,13 @@ const Header = () => {
                   className="flex-1 bg-[#004d2b] text-white py-2 rounded text-center font-semibold hover:bg-yellow-400 hover:text-[#004d2b] transition"
                 >
                   Cadastre-se
+                </Link>
+                <Link
+                  href="/recuperar-senha"
+                  onClick={closeMenu}
+                  className="flex-1 bg-[#004d2b] text-white py-2 rounded text-center font-semibold hover:bg-yellow-400 hover:text-[#004d2b] transition"
+                >
+                  Esqueci minha senha
                 </Link>
               </div>
             </nav>
