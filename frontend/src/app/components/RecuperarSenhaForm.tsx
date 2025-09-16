@@ -8,7 +8,6 @@ export default function RecuperarSenhaForm() {
   const [mensagem, setMensagem] = useState('')
   const [carregando, setCarregando] = useState(false)
   const [storedCodigo, setStoredCodigo] = useState('')
-  const [showCodeInput, setShowCodeInput] = useState(false) // New state to control visibility
 
   const handleSubmitEmail = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -19,8 +18,7 @@ export default function RecuperarSenhaForm() {
       const novoCodigo = Math.floor(100000 + Math.random() * 900000).toString()
       setStoredCodigo(novoCodigo)
       alert(`Código de verificação enviado para seu e-mail: ${novoCodigo}`)
-      setMensagem('Código de verificação enviado! Verifique a mensagem acima.')
-      setShowCodeInput(true) // Show the code input section
+      setMensagem('Código de verificação enviado! Por favor, verifique a mensagem.')
     } catch {
       setMensagem('Erro ao solicitar recuperação. Tente novamente.')
     }
@@ -28,9 +26,9 @@ export default function RecuperarSenhaForm() {
   }
 
   const handleVerificarCodigo = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setCarregando(true)
-    const codigoVerificacao = codigo.join('')
+      e.preventDefault()
+      setCarregando(true)
+      const codigoVerificacao = codigo.join('')
 
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -116,26 +114,26 @@ export default function RecuperarSenhaForm() {
               </div>
             </div>
 
-            {showCodeInput && (
-              <div className="mb-4 pt-4">
-                <label className="block text-green-800 mb-2">
-                  Código de verificação
-                </label>
-                <div className="flex justify-start space-x-2 mb-4">
-                  {codigo.map((digit, index) => (
-                    <input
-                      key={index}
-                      id={`codigo-${index}`}
-                      type="text"
-                      maxLength={1}
-                      value={digit}
-                      onChange={e => handleCodigoChange(index, e.target.value)}
-                      onKeyDown={e => handleCodigoKeyDown(index, e)}
-                      className="w-12 h-12 border border-green-300 rounded text-center text-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                      required
-                    />
-                  ))}
-                </div>
+            <div className="mb-4">
+              <label className="block text-green-800 mb-2">
+                Código de verificação
+              </label>
+              <div className="flex justify-start space-x-2 mb-4">
+                {codigo.map((digit, index) => (
+                  <input
+                    key={index}
+                    id={`codigo-${index}`}
+                    type="text"
+                    maxLength={1}
+                    value={digit}
+                    onChange={e => handleCodigoChange(index, e.target.value)}
+                    onKeyDown={e => handleCodigoKeyDown(index, e)}
+                    className="w-12 h-12 border border-green-300 rounded text-center text-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
+                  />
+                ))}
+              </div>
+              <div className="mt-4">
                 <button
                   type="button"
                   onClick={handleVerificarCodigo}
@@ -147,7 +145,7 @@ export default function RecuperarSenhaForm() {
                   {carregando ? 'Verificando...' : 'Recuperar Senha'}
                 </button>
               </div>
-            )}
+            </div>
           </div>
         </form>
 
