@@ -7,26 +7,21 @@ export default function RecuperarSenhaForm() {
   const [codigo, setCodigo] = useState(['', '', '', '', '', ''])
   const [mensagem, setMensagem] = useState('')
   const [carregando, setCarregando] = useState(false)
-  const [codigoEnviado, setCodigoEnviado] = useState(false)
+  const [storedCodigo, setStoredCodigo] = useState('') // New state to store the generated code
 
   const handleSubmitEmail = async (e: React.FormEvent) => {
     e.preventDefault()
     setCarregando(true)
     setMensagem('')
     try {
-      const res = await fetch('/api/recuperar-senha', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      })
-      if (res.ok) {
-        setMensagem('Código de verificação enviado para seu e-mail.')
-        setCodigoEnviado(true)
-      } else {
-        setMensagem('Erro ao solicitar recuperação. Tente novamente.')
-      }
+      // Simulate API call and code generation
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      const novoCodigo = Math.floor(100000 + Math.random() * 900000).toString()
+      setStoredCodigo(novoCodigo)
+      alert(`Código de verificação enviado para seu e-mail: ${novoCodigo}`) // Display the code
+      setMensagem('Código de verificação enviado para seu e-mail. Por favor, verifique a mensagem.')
     } catch {
-      setMensagem('Erro de conexão. Tente novamente.')
+      setMensagem('Erro ao solicitar recuperação. Tente novamente.')
     }
     setCarregando(false)
   }
@@ -37,14 +32,19 @@ export default function RecuperarSenhaForm() {
     const codigoVerificacao = codigo.join('')
 
     try {
-      // Simular verificação do código
       await new Promise(resolve => setTimeout(resolve, 1000))
-      setMensagem('Código verificado com sucesso! Redirecionando...')
-      setTimeout(() => {
-        window.location.href = '/pessoal/login'
-      }, 2000)
+
+      if (codigoVerificacao === storedCodigo) {
+        setMensagem('Código verificado com sucesso! Redirecionando para a página de reset de senha...')
+        setTimeout(() => {
+          // Redirect to the password reset page as requested
+          window.location.href = 'resetar-senha'
+        }, 2000)
+      } else {
+        setMensagem('Código inválido. Tente novamente.')
+      }
     } catch {
-      setMensagem('Código inválido. Tente novamente.')
+      setMensagem('Ocorreu um erro durante a verificação. Tente novamente.')
     }
 
     setCarregando(false)
