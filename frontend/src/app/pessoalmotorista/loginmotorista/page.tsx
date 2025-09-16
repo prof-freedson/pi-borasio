@@ -1,4 +1,4 @@
-'use client'; // Adicione esta linha no topo do arquivo
+'use client';
 
 import { useRouter } from 'next/navigation';
 import { useState, FormEvent, ChangeEvent } from 'react';
@@ -53,6 +53,11 @@ export default function LoginPage() {
     setPassword(e.target.value);
   };
 
+  const handleForgotPassword = () => {
+    // Redirecionamento para a rota de recuperação de senha
+    router.push('/recuperar-senha');
+  };
+
   return (
     <main className="min-h-screen bg-green-100 flex flex-col items-center justify-center">
       <div className="bg-green-50 mt-10 p-8 rounded-xl shadow-lg w-full max-w-md">
@@ -99,9 +104,20 @@ export default function LoginPage() {
             {isLoading ? 'Carregando...' : 'Login'}
           </button>
         </form>
+        
+        <div className="text-center mt-4 text-sm text-green-900">
+          <span>Esqueceu a senha? </span>
+          <button
+            onClick={handleForgotPassword}
+            className="text-green-700 hover:text-green-900 hover:underline font-medium transition-colors"
+          >
+            Recupere já!
+          </button>
+        </div>
+        
         <p className="text-center text-sm text-green-900 mt-4">
           Não tem uma conta?{' '}
-          <a href="/pessoalmotorista/cadastromotorista" className="hover:underline">
+          <a href="/pessoalmotorista/cadastromotorista" className="hover:underline text-green-700 font-medium">
             Cadastre-se
           </a>
         </p>
