@@ -61,7 +61,6 @@ const Header = () => {
           <Link href="/" className="hover:text-yellow-400 transition-colors">Início</Link>
           <Link href="/sobre" className="hover:text-yellow-400 transition-colors">Sobre</Link>
           <Link href="/contato" className="hover:text-yellow-400 transition-colors">Contato</Link>
-          <Link href="/recuperar-senha" className="hover:text-yellow-400 transition-colors">Esqueci minha senha</Link>
         </nav>
 
         {/* Auth Buttons Desktop */}

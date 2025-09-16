@@ -1,4 +1,4 @@
-'use client'; // Adicione esta linha no topo do arquivo
+'use client';
 
 import { useRouter } from 'next/navigation';
 import { useState, FormEvent, ChangeEvent } from 'react';
@@ -53,9 +53,14 @@ export default function LoginPage() {
     setPassword(e.target.value);
   };
 
+  const handleForgotPassword = () => {
+    // Lógica para redirecionar ou abrir modal de recuperação de senha
+    alert('Redirecionando para recuperação de senha...');
+  };
+
   return (
-    <main className="min-h-screen bg-green-100 flex flex-col items-center justify-center">
-      <div className="bg-green-50 mt-10 p-8 rounded-xl shadow-lg w-full max-w-md">
+    <main className="min-h-screen bg-green-100 flex flex-col items-center justify-center p-4">
+      <div className="bg-green-50 p-8 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-bold mb-6 text-green-800 text-center">Entrar</h2>
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
@@ -99,9 +104,20 @@ export default function LoginPage() {
             {isLoading ? 'Carregando...' : 'Login'}
           </button>
         </form>
+        
+        <div className="text-center mt-4 text-sm text-green-900">
+          <span>Esqueceu a senha? </span>
+          <button
+            onClick={handleForgotPassword}
+            className="text-green-700 hover:text-green-900 hover:underline font-medium transition-colors"
+          >
+            Recupere já!
+          </button>
+        </div>
+        
         <p className="text-center text-sm text-green-900 mt-4">
           Não tem uma conta?{' '}
-          <a href="/pessoal/cadastro" className="hover:underline">
+          <a href="/pessoal/cadastro" className="hover:underline text-green-700 font-medium">
             Cadastre-se
           </a>
         </p>
