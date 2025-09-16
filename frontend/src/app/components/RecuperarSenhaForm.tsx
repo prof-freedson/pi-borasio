@@ -7,26 +7,22 @@ export default function RecuperarSenhaForm() {
   const [codigo, setCodigo] = useState(['', '', '', '', '', ''])
   const [mensagem, setMensagem] = useState('')
   const [carregando, setCarregando] = useState(false)
-  const [codigoEnviado, setCodigoEnviado] = useState(false)
+  const [storedCodigo, setStoredCodigo] = useState('')
+  const [showCodeInput, setShowCodeInput] = useState(false) // New state to control visibility
 
   const handleSubmitEmail = async (e: React.FormEvent) => {
     e.preventDefault()
     setCarregando(true)
     setMensagem('')
     try {
-      const res = await fetch('/api/recuperar-senha', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      })
-      if (res.ok) {
-        setMensagem('Código de verificação enviado para seu e-mail.')
-        setCodigoEnviado(true)
-      } else {
-        setMensagem('Erro ao solicitar recuperação. Tente novamente.')
-      }
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      const novoCodigo = Math.floor(100000 + Math.random() * 900000).toString()
+      setStoredCodigo(novoCodigo)
+      alert(`Código de verificação enviado para seu e-mail: ${novoCodigo}`)
+      setMensagem('Código de verificação enviado! Verifique a mensagem acima.')
+      setShowCodeInput(true) // Show the code input section
     } catch {
-      setMensagem('Erro de conexão. Tente novamente.')
+      setMensagem('Erro ao solicitar recuperação. Tente novamente.')
     }
     setCarregando(false)
   }
@@ -37,14 +33,18 @@ export default function RecuperarSenhaForm() {
     const codigoVerificacao = codigo.join('')
 
     try {
-      // Simular verificação do código
       await new Promise(resolve => setTimeout(resolve, 1000))
-      setMensagem('Código verificado com sucesso! Redirecionando...')
-      setTimeout(() => {
-        window.location.href = '/pessoal/login'
-      }, 2000)
+
+      if (codigoVerificacao === storedCodigo) {
+        setMensagem('Código verificado com sucesso! Redirecionando para a página de reset de senha...')
+        setTimeout(() => {
+          window.location.href = 'resetar-senha'
+        }, 2000)
+      } else {
+        setMensagem('Código inválido. Tente novamente.')
+      }
     } catch {
-      setMensagem('Código inválido. Tente novamente.')
+      setMensagem('Ocorreu um erro durante a verificação. Tente novamente.')
     }
 
     setCarregando(false)
@@ -78,70 +78,76 @@ export default function RecuperarSenhaForm() {
         </h2>
 
         {mensagem && (
-          <div className={`mb-4 p-3 rounded text-sm ${
+          <div className={`mb-4 p-3 rounded text-sm flex items-center gap-2 ${
             mensagem.includes('sucesso') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
           }`}>
+            <span role="img" aria-label="emoji" className="text-lg">
+              {mensagem.includes('sucesso') ? '✔️' : '❌'}
+            </span>
             {mensagem}
           </div>
         )}
 
         <form onSubmit={e => e.preventDefault()}>
-          <div className="flex items-end space-x-2 mb-4">
-            <div className="flex-grow">
+          <div className="space-y-4">
+            <div>
               <label className="block text-green-800 mb-1" htmlFor="email">
                 E-mail
               </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="w-full border border-green-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-                required
-              />
-            </div>
-            <button
-              type="button"
-              onClick={handleSubmitEmail}
-              disabled={carregando}
-              className={`bg-green-800 text-white py-3 px-4 rounded hover:bg-green-900 transition ${
-                carregando ? 'opacity-70 cursor-not-allowed' : ''
-              }`}
-              style={{ height: 'fit-content' }}
-            >
-              {carregando ? 'Enviando...' : 'Enviar'}
-            </button>
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-green-800 mb-2">
-              Código de verificação
-            </label>
-            <div className="flex justify-start space-x-2 mb-4">
-              {codigo.map((digit, index) => (
+              <div className="flex items-end gap-2">
                 <input
-                  key={index}
-                  id={`codigo-${index}`}
-                  type="text"
-                  maxLength={1}
-                  value={digit}
-                  onChange={e => handleCodigoChange(index, e.target.value)}
-                  onKeyDown={e => handleCodigoKeyDown(index, e)}
-                  className="w-12 h-12 border border-green-300 rounded text-center text-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="w-full border border-green-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                   required
                 />
-              ))}
+                <button
+                  type="button"
+                  onClick={handleSubmitEmail}
+                  disabled={carregando}
+                  className={`bg-green-800 text-white py-3 px-4 rounded hover:bg-green-900 transition ${
+                    carregando ? 'opacity-70 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {carregando ? 'Enviando...' : 'Enviar'}
+                </button>
+              </div>
             </div>
-            <button
-              type="button"
-              onClick={handleVerificarCodigo}
-              disabled={carregando || codigo.some(d => d === '')}
-              className={`w-full bg-green-800 text-white py-3 rounded hover:bg-green-900 transition ${
-                carregando ? 'opacity-70 cursor-not-allowed' : ''
-              }`}
-            >
-              {carregando ? 'Verificando...' : 'Recuperar Senha'}
-            </button>
+
+            {showCodeInput && (
+              <div className="mb-4 pt-4">
+                <label className="block text-green-800 mb-2">
+                  Código de verificação
+                </label>
+                <div className="flex justify-start space-x-2 mb-4">
+                  {codigo.map((digit, index) => (
+                    <input
+                      key={index}
+                      id={`codigo-${index}`}
+                      type="text"
+                      maxLength={1}
+                      value={digit}
+                      onChange={e => handleCodigoChange(index, e.target.value)}
+                      onKeyDown={e => handleCodigoKeyDown(index, e)}
+                      className="w-12 h-12 border border-green-300 rounded text-center text-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                      required
+                    />
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={handleVerificarCodigo}
+                  disabled={carregando || codigo.some(d => d === '')}
+                  className={`w-full bg-green-800 text-white py-3 rounded hover:bg-green-900 transition ${
+                    carregando ? 'opacity-70 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {carregando ? 'Verificando...' : 'Recuperar Senha'}
+                </button>
+              </div>
+            )}
           </div>
         </form>
 
