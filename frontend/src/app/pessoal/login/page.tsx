@@ -54,8 +54,8 @@ export default function LoginPage() {
   };
 
   const handleForgotPassword = () => {
-    // Lógica para redirecionar ou abrir modal de recuperação de senha
-    alert('Redirecionando para recuperação de senha...');
+    // Redirecionamento para a rota de recuperação de senha
+    router.push('/recuperar-senha');
   };
 
   return (
