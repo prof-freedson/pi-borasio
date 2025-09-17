@@ -143,13 +143,7 @@ const Header = () => {
                 >
                   Cadastre-se
                 </Link>
-                <Link
-                  href="/recuperar-senha"
-                  onClick={closeMenu}
-                  className="flex-1 bg-[#004d2b] text-white py-2 rounded text-center font-semibold hover:bg-yellow-400 hover:text-[#004d2b] transition"
-                >
-                  Esqueci minha senha
-                </Link>
+        
               </div>
             </nav>
           </div>
