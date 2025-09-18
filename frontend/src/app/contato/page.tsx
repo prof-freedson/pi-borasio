@@ -111,8 +111,8 @@ export default function ContatoPage() {
               </div>
               <h2 className="text-3xl font-bold text-green-900 sm:text-4xl">BoraSiô</h2>
             </div>
-            <p className="text-amber-700 italic font-light mt-2">
-              "Vambora conversar? É só chamar!"
+            <p className="text-amber-600 italic font-light mt-2">
+              Vamos conversar? É só chamar!
             </p>
           </div>
 
@@ -145,7 +145,7 @@ export default function ContatoPage() {
           <div className="w-full">
             <h3 className="text-xl font-semibold text-green-800 mb-4 sm:text-2xl flex items-center">
               <span className="w-3 h-3 bg-amber-500 rounded-full mr-2"></span>
-              Bora seguir nós?
+              Segue a gente:
             </h3>
             <div className="flex space-x-4 text-gray-700 text-2xl bg-green-50 p-4 rounded-lg border border-green-100">
               <a href="https://facebook.com" aria-label="Facebook" className="hover:text-green-700 transition-transform hover:scale-110 p-2 bg-white rounded-full shadow-sm">
@@ -166,7 +166,7 @@ export default function ContatoPage() {
               Baixe nosso aplicativo
             </h3>
             <p className="text-gray-700 text-center mb-4 text-sm sm:text-base">
-              Já pensou em chamar um BoraSiô pelo celular? É rapidim!
+              Já pensou em chamar um BoraSiô pelo celular? É rapidinho!
             </p>
             <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
               <a 
@@ -217,7 +217,7 @@ export default function ContatoPage() {
                 type="text"
                 id="nome"
                 name="nome"
-                placeholder="Como a gente pode te chamar?"
+                placeholder="Como podemos te chamar?"
                 value={form.nome}
                 onChange={handleChange}
                 className={`w-full p-3 rounded-lg border ${errors.nome ? 'border-red-500' : 'border-green-200'} focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition`}
@@ -235,7 +235,7 @@ export default function ContatoPage() {
                 type="email"
                 id="email"
                 name="email"
-                placeholder="pra gente retornar o contato"
+                placeholder="Pra gente retornar o contato"
                 value={form.email}
                 onChange={handleChange}
                 className={`w-full p-3 rounded-lg border ${errors.email ? 'border-red-500' : 'border-green-200'} focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition`}
@@ -293,7 +293,7 @@ export default function ContatoPage() {
           
           {/* Elemento decorativo no rodapé do formulário */}
           <div className="mt-6 text-xs text-gray-500 italic">
-            A gente responde rapidim, pode confiar!
+            A gente responde rapidinho, pode confiar!
           </div>
         </div>
       </div>

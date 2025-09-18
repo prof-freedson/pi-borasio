@@ -152,7 +152,7 @@ export default function SobrePage() {
           <section className="bg-gradient-to-r from-green-700 to-[#004d2b] text-white p-8 md:p-12 text-center">
             <h2 className="text-3xl font-bold mb-6">Pronto para uma nova experiência em transporte?</h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Junte-se aos milhares de ludoviscenses que já escolheram o BoraSiô para suas viagens.
+              Junte-se aos milhares de ludovicenses que já escolheram o BoraSiô para suas viagens.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <button className="bg-white text-green-800 hover:bg-green-100 font-semibold py-3 px-8 rounded-lg transition-colors shadow-md text-lg">
