@@ -1,31 +1,17 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
+  FaTextHeight,
   FaSearchPlus,
   FaSearchMinus,
   FaAdjust,
   FaAssistiveListeningSystems,
   FaKeyboard,
+  FaSignLanguage,
 } from "react-icons/fa";
-import { X, ChevronDown, ChevronUp, Eye, EyeOff } from "lucide-react";
-
-interface Sign {
-  emoji: string;
-  title: string;
-  description: string;
-  demo: string;
-}
-
-interface SignData {
-  [key: string]: Sign;
-}
-
-interface Category {
-  id: string;
-  title: string;
-  icon: string;
-  signs: string[];
-}
+import { X } from "lucide-react";
+import VirtualKeyboard from "./VirtualKeyboard"; // Importar o novo componente
+import { usePathname } from "next/navigation";
 
 const AccessibilityIcon = ({ highContrast }: { highContrast?: boolean }) => (
   <svg
@@ -79,146 +65,11 @@ const AccessibilityIcon = ({ highContrast }: { highContrast?: boolean }) => (
 const AccessibilityWidget = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isHighContrast, setIsHighContrast] = useState<boolean>(false);
-  const [isLibrasMenuOpen, setIsLibrasMenuOpen] = useState<boolean>(false);
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set()
-  );
-  const [selectedSign, setSelectedSign] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState<boolean>(false);
+  const [isVlibrasReady, setIsVlibrasReady] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
-
-  const signData: SignData = {
-    oi: {
-      emoji: "👋",
-      title: "OI / OLÁ",
-      description:
-        "Levante a mão e faça um movimento de acenar, como se estivesse cumprimentando alguém. Este é o sinal mais básico e universal para cumprimentar.",
-      demo: "🤚 → 👋",
-    },
-    "bom-dia": {
-      emoji: "🌅",
-      title: "BOM DIA",
-      description:
-        'Faça o sinal de "BOM" (polegar para cima) seguido de "DIA" (movimento circular com a mão representando o sol nascendo).',
-      demo: "👍 + ☀️",
-    },
-    obrigado: {
-      emoji: "🙏",
-      title: "OBRIGADO/A",
-      description:
-        "Leve a mão direita ao peito, próximo ao coração, e faça um movimento para frente. Expressa gratidão e agradecimento.",
-      demo: "❤️ → 🫴",
-    },
-    tchau: {
-      emoji: "👋",
-      title: "TCHAU",
-      description:
-        "Levante a mão e balance os dedos para frente e para trás, como uma despedida tradicional.",
-      demo: "✋ 🔄 👋",
-    },
-    pai: {
-      emoji: "👨",
-      title: "PAI",
-      description:
-        "Coloque o polegar da mão direita na testa, próximo à têmpora.",
-      demo: "👍 → 🧠",
-    },
-    mae: {
-      emoji: "👩",
-      title: "MÃE",
-      description: "Coloque o polegar da mão direita no queixo.",
-      demo: "👍 → 😊",
-    },
-    irmao: {
-      emoji: "👦",
-      title: "IRMÃO/Ã",
-      description: "Una os dedos indicadores das duas mãos, mostrando união.",
-      demo: "👆 + 👆 = 🤝",
-    },
-    bebe: {
-      emoji: "👶",
-      title: "BEBÊ",
-      description: "Faça o movimento de embalar um bebê nos braços.",
-      demo: "🤱 🔄",
-    },
-    feliz: {
-      emoji: "😊",
-      title: "FELIZ",
-      description:
-        "Sorria amplamente e faça movimentos ascendentes com as mãos.",
-      demo: "😊 + 🙌 ↗️",
-    },
-    triste: {
-      emoji: "😢",
-      title: "TRISTE",
-      description:
-        "Passe os dedos pelo rosto de cima para baixo, como lágrimas.",
-      demo: "😭 👆 ↘️",
-    },
-    amor: {
-      emoji: "❤️",
-      title: "AMOR",
-      description: "Cruze as mãos sobre o peito, próximo ao coração.",
-      demo: "🤗 ❤️",
-    },
-    odio: {
-      emoji: "💢",
-      title: "ÓDIO",
-      description: "Cerre os punhos e faça expressão de raiva ou frustração.",
-      demo: "😠 ✊💢",
-    },
-    um: {
-      emoji: "1️⃣",
-      title: "UM",
-      description: "Levante apenas o dedo indicador.",
-      demo: "☝️",
-    },
-    dois: {
-      emoji: "2️⃣",
-      title: "DOIS",
-      description: 'Levante o indicador e médio, formando o "V".',
-      demo: "✌️",
-    },
-    tres: {
-      emoji: "3️⃣",
-      title: "TRÊS",
-      description: "Levante três dedos: indicador, médio e anelar.",
-      demo: "🤟 → 👆👆👆",
-    },
-    cinco: {
-      emoji: "5️⃣",
-      title: "CINCO",
-      description: "Abra completamente a mão, mostrando todos os dedos.",
-      demo: "🖐️",
-    },
-  };
-
-  const categories: Category[] = [
-    {
-      id: "cumprimentos",
-      title: "Cumprimentos",
-      icon: "👋",
-      signs: ["oi", "bom-dia", "obrigado", "tchau"],
-    },
-    {
-      id: "familia",
-      title: "Família",
-      icon: "👨‍👩‍👧‍👦",
-      signs: ["pai", "mae", "irmao", "bebe"],
-    },
-    {
-      id: "sentimentos",
-      title: "Sentimentos",
-      icon: "😊",
-      signs: ["feliz", "triste", "amor", "odio"],
-    },
-    {
-      id: "numeros",
-      title: "Números",
-      icon: "🔢",
-      signs: ["um", "dois", "tres", "cinco"],
-    },
-  ];
+  const [notification, setNotification] = useState<string | null>(null);
+  const [isVirtualKeyboardOpen, setIsVirtualKeyboardOpen] = useState<boolean>(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     setIsMounted(true);
@@ -227,8 +78,72 @@ const AccessibilityWidget = () => {
       const savedHighContrast = localStorage.getItem("highContrast") === "true";
       setIsHighContrast(savedHighContrast);
       applyHighContrast(savedHighContrast);
+
+      // --- Início da Integração VLibras (Lógica Refatorada para SPA) ---
+      // Resetamos o estado de prontidão a cada mudança de rota.
+      setIsVlibrasReady(false);
+      let observer: MutationObserver;
+
+      // Esta função é o coração da inicialização: ela instancia o widget e observa sua criação.
+      const setupVlibras = () => {
+        // 1. Garante que uma nova instância do Widget seja criada para a página atual.
+        // Isso é crucial para que o VLibras funcione em navegações de cliente (SPA).
+        new window.VLibras.Widget("https://vlibras.gov.br/app");
+
+        // 2. Se o botão já estiver no DOM, marca como pronto.
+        if (document.querySelector(".vw-access-button")) {
+          setIsVlibrasReady(true);
+          return;
+        }
+
+        // 3. Se não, observa o DOM para saber quando o botão for adicionado.
+        observer = new MutationObserver((mutations, obs) => {
+          if (document.querySelector(".vw-access-button")) {
+            setIsVlibrasReady(true);
+            obs.disconnect();
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+      };
+
+      // Verifica se a biblioteca VLibras já foi carregada no navegador.
+      if (!window.VLibras) {
+        const script = document.createElement("script");
+        script.src = "https://vlibras.gov.br/app/vlibras-plugin.js";
+        script.async = true;
+        script.onload = setupVlibras; // Após o script carregar, executa a configuração.
+        document.body.appendChild(script);
+      } else {
+        // Se a biblioteca já existe, apenas executa a configuração para a nova página.
+        setupVlibras();
+      }
+
+      // Função de limpeza: desconecta o observador para evitar memory leaks.
+      return () => {
+        if (observer) observer.disconnect();
+      };
     }
-  }, []);
+  }, [pathname]); // A dependência no `pathname` garante que o efeito rode a cada mudança de rota.
+
+  const menuContainerRef = useRef<HTMLDivElement>(null);
+
+  // Hook para lidar com cliques fora do menu para fechá-lo
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isMenuOpen &&
+        menuContainerRef.current &&
+        !menuContainerRef.current.contains(event.target as Node)
+      ) {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]); // Executa apenas quando o menu está aberto
 
   const applyHighContrast = (enabled: boolean) => {
     if (typeof document === "undefined") return;
@@ -249,7 +164,6 @@ const AccessibilityWidget = () => {
   const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen);
   const closeMenu = (): void => {
     setIsMenuOpen(false);
-    setIsLibrasMenuOpen(false);
   };
 
   const adjustFontSize = (change: number): void => {
@@ -268,6 +182,14 @@ const AccessibilityWidget = () => {
     }
   };
 
+  const resetFontSize = (): void => {
+    if (typeof document === "undefined") return;
+    const html = document.querySelector("html");
+    if (html) {
+      html.style.fontSize = ""; // Remove o estilo inline, voltando ao padrão do CSS
+    }
+  };
+
   const toggleContrast = (): void => {
     const newContrastState = !isHighContrast;
     setIsHighContrast(newContrastState);
@@ -275,77 +197,94 @@ const AccessibilityWidget = () => {
     applyHighContrast(newContrastState);
   };
 
+  const showNotification = (message: string) => {
+    setNotification(message);
+    // A notificação desaparecerá após 5 segundos
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  };
+
   const activateScreenReader = (): void => {
-    alert(
-      "Leitor de tela ativado. Navegue usando o teclado (Tab, Shift+Tab, Enter)"
-    );
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+
+      // Tenta encontrar o conteúdo principal da página para ler.
+      const mainElement = document.querySelector("main");
+      const firstHeading = document.querySelector("h1");
+      let textToRead = "";
+
+      if (mainElement?.innerText) {
+        // Limita o texto para não ser uma leitura muito longa na demonstração
+        textToRead = `Iniciando leitura do conteúdo principal. ${mainElement.innerText.substring(
+          0,
+          300
+        )}`;
+      } else if (firstHeading?.innerText) {
+        textToRead = `Lendo o título principal: ${firstHeading.innerText}`;
+      } else {
+        textToRead =
+          "Não foi possível encontrar um conteúdo principal para ler. Navegue com seu leitor de tela para explorar a página.";
+      }
+
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+      utterance.lang = "pt-BR";
+      window.speechSynthesis.speak(utterance);
+      showNotification("Iniciando leitura da página...");
+    } else {
+      showNotification("Seu navegador não suporta esta funcionalidade.");
+    }
+    closeMenu();
   };
 
   const activateVirtualKeyboard = (): void => {
-    alert("Teclado virtual ativado. Use as teclas na tela para navegar");
+    setIsVirtualKeyboardOpen(!isVirtualKeyboardOpen);
+    closeMenu();
   };
 
-  const toggleLibrasMenu = (): void => {
-    setIsLibrasMenuOpen(!isLibrasMenuOpen);
-    setIsMenuOpen(false);
-  };
-
-  const toggleCategory = (categoryId: string): void => {
-    const newExpanded = new Set(expandedCategories);
-    if (newExpanded.has(categoryId)) {
-      newExpanded.delete(categoryId);
+  const activateVlibras = (): void => {
+    // Esta função só é chamada quando o botão está habilitado (isVlibrasReady é true).
+    const vlibrasButton = document.querySelector('.vw-access-button');
+    if (vlibrasButton) {
+      (vlibrasButton as HTMLElement).click();
     } else {
-      newExpanded.add(categoryId);
+      // Mensagem de fallback caso algo inesperado ocorra.
+      alert('Não foi possível ativar a ferramenta VLibras. Por favor, recarregue a página.');
     }
-    setExpandedCategories(newExpanded);
   };
-
-  const toggleShowAll = (): void => {
-    if (showAll) {
-      setExpandedCategories(new Set());
-    } else {
-      setExpandedCategories(new Set(categories.map((c) => c.id)));
-    }
-    setShowAll(!showAll);
-  };
-
-  const LibrasIcon = () => (
-    <svg
-      viewBox="0 0 100 100"
-      className={`w-5 h-5 fill-current ${
-        isHighContrast ? "brightness-125 contrast-125" : ""
-      }`}
-      aria-label="Ícone de Libras"
-    >
-      <path
-        d="M20 30 Q25 20 35 25 L35 35 Q30 40 25 35 Z"
-        className="fill-blue-300"
-      />
-      <path
-        d="M35 25 Q45 15 55 25 L55 40 Q50 45 45 40 L35 35 Z"
-        className="fill-blue-400"
-      />
-      <path
-        d="M55 25 Q65 20 70 30 L70 45 Q65 50 60 45 L55 40 Z"
-        className="fill-blue-500"
-      />
-      <path
-        d="M70 30 Q75 25 80 35 L80 50 Q75 55 70 50 L70 45 Z"
-        className="fill-blue-600"
-      />
-      <circle cx="30" cy="70" r="8" className="fill-pink-400" />
-      <path
-        d="M25 75 Q35 85 45 75 Q50 80 45 85 Q30 90 25 85 Z"
-        className="fill-pink-300"
-      />
-    </svg>
-  );
 
   if (!isMounted) return null;
 
   return (
     <>
-      {/* Adicione isso ao seu arquivo global.css */}
+      {isVirtualKeyboardOpen && (
+        <VirtualKeyboard
+          onClose={() => setIsVirtualKeyboardOpen(false)}
+          onKeyPress={(key) => {
+            showNotification(`Tecla pressionada: ${key}`);
+          }}
+        />
+      )}
+      {notification && (
+        <div
+          className={`
+            fixed bottom-28 left-5 z-[100001] max-w-sm bg-gray-800 text-white px-4 py-3 rounded-lg shadow-xl transition-opacity duration-300
+            ${
+              isHighContrast
+                ? "bg-yellow-400 text-black border-2 border-black"
+                : ""
+            }
+          `}
+        >
+          {notification}
+        </div>
+      )}
+      {/* 
+        A div abaixo é necessária para o funcionamento do VLibras. 
+        Ela serve como um ponto de ancoragem para o widget, mas não é visível na tela.
+      */}
+      <div vw="true" className="enabled"></div>
+
       <style jsx global>{`
         .high-contrast {
           background-color: #000 !important;
@@ -370,10 +309,24 @@ const AccessibilityWidget = () => {
             #0596c6
           ) !important;
         }
+        /* Oculta o botão flutuante padrão do VLibras, pois teremos um botão customizado no menu */
+        .vw-access-button {
+          display: none !important;
+        }
+        @keyframes slide-up {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+        .animate-slide-up {
+          animation: slide-up 0.3s ease-out;
+        }
       `}</style>
 
       {/* Alteração principal: bottom-20 para bottom-10 */}
-      <div className="fixed bottom-10 left-5 z-[99999] flex items-center">
+      <div
+        ref={menuContainerRef}
+        className="fixed bottom-10 left-5 z-[99999] flex items-center"
+      >
         <button
           onClick={toggleMenu}
           aria-label="Menu de Acessibilidade"
@@ -417,10 +370,10 @@ const AccessibilityWidget = () => {
             </button>
           </div>
 
-          <div
+          <button
             onClick={() => adjustFontSize(1)}
             className={`
-              cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
+              w-full text-left cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
               ${
                 isHighContrast
                   ? "text-yellow-400 border-yellow-400 hover:bg-black"
@@ -430,12 +383,12 @@ const AccessibilityWidget = () => {
           >
             <FaSearchPlus className="mr-2 text-lg w-5 text-center" /> Aumentar
             Texto
-          </div>
+          </button>
 
-          <div
+          <button
             onClick={() => adjustFontSize(-1)}
             className={`
-              cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
+              w-full text-left cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
               ${
                 isHighContrast
                   ? "text-yellow-400 border-yellow-400 hover:bg-black"
@@ -445,12 +398,27 @@ const AccessibilityWidget = () => {
           >
             <FaSearchMinus className="mr-2 text-lg w-5 text-center" /> Diminuir
             Texto
-          </div>
+          </button>
 
-          <div
+          <button
+            onClick={resetFontSize}
+            className={`
+              w-full text-left cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
+              ${
+                isHighContrast
+                  ? "text-yellow-400 border-yellow-400 hover:bg-black"
+                  : "hover:bg-gray-100"
+              }
+            `}
+          >
+            <FaTextHeight className="mr-2 text-lg w-5 text-center" /> Fonte
+            Padrão
+          </button>
+
+          <button
             onClick={toggleContrast}
             className={`
-              cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
+              w-full text-left cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
               ${
                 isHighContrast
                   ? "text-yellow-400 border-yellow-400 hover:bg-black"
@@ -459,12 +427,12 @@ const AccessibilityWidget = () => {
             `}
           >
             <FaAdjust className="mr-2 text-lg w-5 text-center" /> Alto Contraste
-          </div>
+          </button>
 
-          <div
+          <button
             onClick={activateScreenReader}
             className={`
-              cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
+              w-full text-left cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
               ${
                 isHighContrast
                   ? "text-yellow-400 border-yellow-400 hover:bg-black"
@@ -474,12 +442,12 @@ const AccessibilityWidget = () => {
           >
             <FaAssistiveListeningSystems className="mr-2 text-lg w-5 text-center" />{" "}
             Leitor de Tela
-          </div>
+          </button>
 
-          <div
+          <button
             onClick={activateVirtualKeyboard}
             className={`
-              cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
+              w-full text-left cursor-pointer flex items-center px-4 py-3 border-b border-gray-200
               ${
                 isHighContrast
                   ? "text-yellow-400 border-yellow-400 hover:bg-black"
@@ -489,227 +457,29 @@ const AccessibilityWidget = () => {
           >
             <FaKeyboard className="mr-2 text-lg w-5 text-center" /> Teclado
             Virtual
-          </div>
+          </button>
 
-          <div
-            onClick={toggleLibrasMenu}
+          <button
+            onClick={activateVlibras}
+            disabled={!isVlibrasReady}
             className={`
-              cursor-pointer flex items-center px-4 py-3
+              w-full text-left cursor-pointer flex items-center px-4 py-3 transition-opacity
               ${
                 isHighContrast
                   ? "text-yellow-400 hover:bg-black"
                   : "hover:bg-gray-100"
               }
+              ${!isVlibrasReady ? "opacity-50 cursor-not-allowed" : ""}
             `}
           >
-            <LibrasIcon />
-            <span className="ml-2">VLibras</span>
-          </div>
+            <FaSignLanguage className="mr-2 text-lg w-5 text-center" />
+            <span>
+              VLibras (Língua de Sinais)
+              {!isVlibrasReady && <span className="text-xs ml-1">(Carregando...)</span>}
+            </span>
+          </button>
         </div>
       </div>
-
-      {isLibrasMenuOpen && (
-        <div
-          className={`fixed inset-0 ${
-            isHighContrast ? "bg-black/90" : "bg-black/80"
-          } backdrop-blur-sm flex items-center justify-center p-4 z-[100001]`}
-        >
-          <div
-            className={`bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto
-            ${isHighContrast ? "border-2 border-yellow-400" : ""}`}
-          >
-            <div className="flex justify-between items-center mb-6">
-              <div className="flex items-center gap-3">
-                <LibrasIcon />
-                <h1
-                  className={`text-3xl font-bold ${
-                    isHighContrast ? "text-yellow-400" : "text-white"
-                  }`}
-                >
-                  Menu de Libras
-                </h1>
-                <LibrasIcon />
-              </div>
-              <button
-                onClick={() => setIsLibrasMenuOpen(false)}
-                className={
-                  isHighContrast
-                    ? "text-yellow-400 hover:text-yellow-300"
-                    : "text-white hover:text-gray-300"
-                }
-              >
-                <X size={24} />
-              </button>
-            </div>
-
-            <p
-              className={`text-center mb-6 ${
-                isHighContrast ? "text-yellow-300" : "text-gray-300"
-              }`}
-            >
-              Aprenda os sinais básicos da Língua Brasileira de Sinais
-            </p>
-
-            <div className="flex justify-center mb-6">
-              <button
-                onClick={toggleShowAll}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold transition-all duration-300
-                  ${
-                    isHighContrast
-                      ? "bg-yellow-600 hover:bg-yellow-700 text-black"
-                      : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-                  }`}
-              >
-                {showAll ? <EyeOff size={16} /> : <Eye size={16} />}
-                {showAll ? "Ocultar Tudo" : "Mostrar Tudo"}
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {categories.map((category) => (
-                <div
-                  key={category.id}
-                  className={`backdrop-blur-lg rounded-xl p-4
-                    ${
-                      isHighContrast
-                        ? "bg-yellow-400/10 border-2 border-yellow-400"
-                        : "bg-white/10 border border-white/20"
-                    }`}
-                >
-                  <button
-                    onClick={() => toggleCategory(category.id)}
-                    className="w-full flex items-center justify-between mb-3"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="text-2xl">{category.icon}</div>
-                      <h3
-                        className={`text-lg font-bold ${
-                          isHighContrast ? "text-yellow-400" : "text-white"
-                        }`}
-                      >
-                        {category.title}
-                      </h3>
-                    </div>
-                    {expandedCategories.has(category.id) ? (
-                      <ChevronUp
-                        className={
-                          isHighContrast ? "text-yellow-400" : "text-white"
-                        }
-                        size={20}
-                      />
-                    ) : (
-                      <ChevronDown
-                        className={
-                          isHighContrast ? "text-yellow-400" : "text-white"
-                        }
-                        size={20}
-                      />
-                    )}
-                  </button>
-
-                  {expandedCategories.has(category.id) && (
-                    <div className="grid grid-cols-2 gap-2">
-                      {category.signs.map((signId) => {
-                        const sign = signData[signId];
-                        return (
-                          <button
-                            key={signId}
-                            onClick={() => setSelectedSign(signId)}
-                            className={`rounded-lg p-3 text-center transition-all duration-200 transform hover:scale-105
-                              ${
-                                isHighContrast
-                                  ? "bg-yellow-400/20 hover:bg-yellow-400/30"
-                                  : "bg-white/20 hover:bg-white/30"
-                              }`}
-                          >
-                            <div className="text-2xl mb-1">{sign.emoji}</div>
-                            <div
-                              className={`font-semibold text-sm mb-1 ${
-                                isHighContrast
-                                  ? "text-yellow-400"
-                                  : "text-white"
-                              }`}
-                            >
-                              {sign.title}
-                            </div>
-                            <div
-                              className={
-                                isHighContrast
-                                  ? "text-yellow-300"
-                                  : "text-gray-300"
-                              }
-                            >
-                              {sign.demo}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {selectedSign && (
-        <div
-          className={`fixed inset-0 ${
-            isHighContrast ? "bg-black/95" : "bg-black/90"
-          } backdrop-blur-sm flex items-center justify-center p-4 z-[100002]`}
-        >
-          <div
-            className={`rounded-2xl p-6 max-w-md w-full relative
-            ${
-              isHighContrast
-                ? "bg-black border-2 border-yellow-400"
-                : "bg-white"
-            }`}
-          >
-            <button
-              onClick={() => setSelectedSign(null)}
-              className={`absolute top-4 right-4 transition-colors
-                ${
-                  isHighContrast
-                    ? "text-yellow-400 hover:text-yellow-300"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-            >
-              <X size={20} />
-            </button>
-
-            <div className="text-center">
-              <div className="text-5xl mb-4">
-                {signData[selectedSign].emoji}
-              </div>
-              <h3
-                className={`text-2xl font-bold mb-3 ${
-                  isHighContrast ? "text-yellow-400" : "text-gray-800"
-                }`}
-              >
-                {signData[selectedSign].title}
-              </h3>
-              <div
-                className={`text-lg font-mono mb-3 ${
-                  isHighContrast ? "text-yellow-300" : "text-blue-600"
-                }`}
-              >
-                {signData[selectedSign].demo}
-              </div>
-              <p
-                className={
-                  isHighContrast
-                    ? "text-yellow-200 leading-relaxed"
-                    : "text-gray-600 leading-relaxed"
-                }
-              >
-                {signData[selectedSign].description}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
