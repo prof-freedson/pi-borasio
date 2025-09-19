@@ -1,37 +1,37 @@
 package com.borasio_back.backend.controller;
 
-import com.borasio_back.backend.model.entity.Pagamento;
-import com.borasio_back.backend.service.PagamentoService;
+import com.borasio_back.backend.model.entity.Passageiro;
+import com.borasio_back.backend.service.PassageiroService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/pagamento")
-public class PagamentoController {
+@RequestMapping("/passageiro")
+public class PassageiroController {
 
-    private final PagamentoService service;
+    private final PassageiroService service;
 
-    public PagamentoController(PagamentoService service) {
+    public PassageiroController(PassageiroService service) {
         this.service = service;
     }
 
     @GetMapping
-    public List<Pagamento> listarTodos() {
+    public List<Passageiro> listarTodos() {
         return service.listarTodos();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pagamento> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<Passageiro> buscarPorId(@PathVariable Integer id) {
         return service.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Pagamento salvar(@RequestBody Pagamento pagamento) {
-        return service.salvar(pagamento);
+    public Passageiro salvar(@RequestBody Passageiro passageiro) {
+        return service.salvar(passageiro);
     }
 
     @DeleteMapping("/{id}")
