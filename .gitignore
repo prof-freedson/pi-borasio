@@ -81,3 +81,10 @@ docker-compose.override.yml
 *.swp
 *.swo
 *.lock
+
+# =========================
+# Arquivos específicos do projeto
+# =========================
+Help.md
+next-env.d.ts
+package-lock.json
