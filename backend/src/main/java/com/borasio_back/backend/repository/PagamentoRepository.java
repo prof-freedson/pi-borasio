@@ -1,5 +1,7 @@
 package com.borasio_back.backend.repository;
 
-public class PagamentoRepository {
-    
+import com.borasio_back.backend.model.entity.Pagamento;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PagamentoRepository extends JpaRepository<Pagamento, Integer> {
 }
