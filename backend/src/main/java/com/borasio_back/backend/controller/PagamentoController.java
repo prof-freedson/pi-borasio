@@ -1,41 +1,5 @@
 package com.borasio_back.backend.controller;
 
-import com.borasio_back.backend.model.entity.Pagamento;
-import com.borasio_back.backend.service.PagamentoService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-@RestController
-@RequestMapping("/pagamento")
 public class PagamentoController {
-
-    private final PagamentoService service;
-
-    public PagamentoController(PagamentoService service) {
-        this.service = service;
-    }
-
-    @GetMapping
-    public List<Pagamento> listarTodos() {
-        return service.listarTodos();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Pagamento> buscarPorId(@PathVariable Integer id) {
-        return service.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public Pagamento salvar(@RequestBody Pagamento pagamento) {
-        return service.salvar(pagamento);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Integer id) {
-        service.deletar(id);
-    }
+    
 }
