@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Arquivo de variáveis de ambiente local
+.env.local*
+.env.*
+
+
+
