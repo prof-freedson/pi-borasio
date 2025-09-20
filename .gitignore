@@ -29,6 +29,22 @@ out/
 .classpath
 .settings/
 
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+/build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Spring Tools Suite
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+
 # VSCode
 .vscode/
 .history/
@@ -37,25 +53,46 @@ out/
 # =========================
 # Backend - Java / Spring Boot
 # =========================
-backend/target/
-backend/.mvn/
-backend/mvnw
-backend/mvnw.cmd
-backend/logs/
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/
+mvnw
+mvnw.cmd
+logs/
 *.log
 
 # =========================
-# Frontend - Node/React/Vue/Angular
+# Frontend - Node/React/Vue/Next.js
 # =========================
-frontend/node_modules/
-frontend/dist/
-frontend/.next/
-frontend/.nuxt/
-frontend/out/
+node_modules/
+dist/
+.next/
+.nuxt/
+out/
+build/
+
+# Coverage / test
+coverage/
+
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Package managers
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+
+# Yarn Plug'n'Play
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
 # =========================
 # Docker
@@ -63,12 +100,18 @@ pnpm-debug.log*
 docker-compose.override.yml
 *.env
 .env.*
+.env.local*
 *.bak
+
+# Vercel (Next.js hosting)
+.vercel
+
+# Sentry Config
+.env.sentry-build-plugin
 
 # =========================
 # Banco de dados / SQL
 # =========================
-# (mantém os scripts versionados, só ignora dumps grandes)
 *.sql.gz
 *.dump
 *.bak
@@ -81,10 +124,12 @@ docker-compose.override.yml
 *.swp
 *.swo
 *.lock
+*.tsbuildinfo
+*.pem
 
 # =========================
 # Arquivos específicos do projeto
 # =========================
 Help.md
+HELP.md
 next-env.d.ts
-package-lock.json
