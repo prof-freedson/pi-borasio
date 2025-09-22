@@ -1,5 +1,8 @@
 package com.borasio_back.backend.enums;
 
-public class StatusPagamento {
-    
+public enum StatusPagamento {
+    PENDENTE,
+    APROVADO,
+    RECUSADO,
+    REEMBOLSADO
 }
