@@ -1,5 +1,7 @@
 package com.borasio_back.backend.enums;
 
-public class Role {
-    
+public enum Role {
+    PASSAGEIRO,
+    MOTORISTA,
+    ADMIN
 }
