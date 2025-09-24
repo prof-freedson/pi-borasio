@@ -47,10 +47,17 @@ export default function ResetarSenhaForm() {
         </h2>
 
         {mensagem && (
-          <div className={`mb-4 p-3 rounded text-sm ${
-            mensagem.includes('sucesso') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-          }`}>
-            {mensagem}
+          <div
+            className={`mb-4 p-3 rounded text-sm flex items-center gap-2 shadow ${
+              mensagem.includes('sucesso')
+                ? 'bg-green-100 text-green-700 border border-green-300'
+                : 'bg-red-100 text-red-700 border border-red-300'
+            }`}
+          >
+            <span role="img" aria-label="emoji" className="text-lg">
+              {mensagem.includes('sucesso') ? '✔️' : '❌'}
+            </span>
+            <span>{mensagem}</span>
           </div>
         )}
 
