@@ -18,7 +18,7 @@ class SentryTest {
 
         Sentry.init(options -> {
             options.setDsn(sentryDsn);
-            options.setDebug(true); // Habilita o debug para vermos o que acontece
+            options.setDebug(true); 
         });
 
         try {
