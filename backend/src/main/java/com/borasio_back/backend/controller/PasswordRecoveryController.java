@@ -17,7 +17,8 @@ public class PasswordRecoveryController {
 	public ResponseEntity<String> requestRecovery(@RequestBody PasswordRecoveryRequestDTO request) {
 		String token = passwordRecoveryService.createRecoveryToken(request.getEmail());
 		// Aqui você enviaria o e-mail com o token
-		return ResponseEntity.ok("Token de recuperação enviado para o e-mail.");
+		// Exemplo: emailService.sendRecoveryEmail(request.getEmail(), token);
+		return ResponseEntity.ok("Token de recuperação enviado para o e-mail. Token: " + token);
 	}
 
 	@PostMapping("/reset")

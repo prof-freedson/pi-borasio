@@ -1,7 +1,7 @@
-
+"use client";
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-// Adiciona declaração global para JSX se necessário
+
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -26,7 +26,6 @@ const CorridasAdmin: React.FC = () => {
   const [editId, setEditId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Navegação entre páginas administrativas
   const adminPages = [
     { label: 'Motoristas', path: '/admin/motoristas' },
     { label: 'Passageiros', path: '/admin/passageiros' },
@@ -128,7 +127,7 @@ const CorridasAdmin: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {corridas.map((c) => (
+          {corridas.map((c: Corrida) => (
             <tr key={c.id}>
               <td>{c.id}</td>
               <td>{c.origem}</td>
