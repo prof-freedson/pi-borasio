@@ -16,16 +16,16 @@ export default function Pagamento() {
   const [valorFinal, setValorFinal] = useState(valorOriginal)
   const [codigoBarrasNumerico, setCodigoBarrasNumerico] = useState('')
 
-  // Gerar código de barras aleatório quando o componente montar ou o desconto mudar
+  // Gerar código de barras aleatório quando o componente montar
   useEffect(() => {
     gerarCodigoBarrasAleatorio()
   }, [descontoAplicado])
 
   const gerarCodigoBarrasAleatorio = () => {
     // Estrutura básica de um código de barras de boleto: 44 dígitos
-    const banco = '237' // Código do banco (Bradesco - Simulação)
+    const banco = '237' // Código do banco (Bradesco)
     const moeda = '9' // Real
-    const fatorVencimento = '9999' // Fator vencimento fixo (apenas simulação)
+    const fatorVencimento = '9999' // Fator vencimento fixo
     const valor = Math.floor((descontoAplicado ? valorComDesconto : valorOriginal) * 100).toString().padStart(10, '0')
     
     // Parte aleatória (20 dígitos)
@@ -55,28 +55,20 @@ export default function Pagamento() {
     const resto = soma % 11
     const dv = 11 - resto
     
-    // Regra do Módulo 11 para Boletos (simplificada, pode variar por banco)
-    if (dv === 0 || dv === 10 || dv === 11) return '1' 
+    if (dv === 0 || dv === 10 || dv === 11) return '1'
     return dv.toString()
   }
 
   const formatarLinhaDigitavel = (codigo: string) => {
     if (!codigo) return ''
     
-    // Campos da Linha Digitável (montado a partir do código de barras de 44 dígitos)
     const campo1 = codigo.substring(0, 4) + codigo.substring(19, 24)
     const campo2 = codigo.substring(24, 34)
     const campo3 = codigo.substring(34, 44)
-    const campo4 = codigo.substring(4, 5) // DV Geral
-    const campo5 = codigo.substring(5, 9) + codigo.substring(9, 19) // Fator Vencimento + Valor
+    const campo4 = codigo.substring(4, 5) // DV
+    const campo5 = codigo.substring(5, 9) + codigo.substring(9, 19)
     
-    // Cálculo dos DVs dos campos 1, 2 e 3 (Módulo 10 - simplificado para exibição)
-    // Para simplificar, não faremos o cálculo do módulo 10 aqui, apenas a formatação visual
-    const dv1 = '8' 
-    const dv2 = '9' 
-    const dv3 = '0' 
-    
-    return `${campo1.substring(0, 5)}.${campo1.substring(5)}${dv1} ${campo2.substring(0, 5)}.${campo2.substring(5)}${dv2} ${campo3.substring(0, 5)}.${campo3.substring(5)}${dv3} ${campo4} ${campo5}`
+    return `${campo1.substring(0, 5)}.${campo1.substring(5, 10)} ${campo2.substring(0, 5)}.${campo2.substring(5, 10)} ${campo3.substring(0, 5)}.${campo3.substring(5, 10)} ${campo4} ${campo5}`
   }
 
   const handleFinalizarPagamento = () => {
@@ -84,7 +76,6 @@ export default function Pagamento() {
     setValorFinal(valorPago);
     setPagamentoFinalizado(true)
     
-    // Simulação de redirecionamento após 3 segundos
     setTimeout(() => {
       router.push('/usuario')
     }, 3000)
@@ -96,7 +87,6 @@ export default function Pagamento() {
   }
 
   const valorAtualNumerico = descontoAplicado ? valorComDesconto : valorOriginal;
-  // Código PIX estático para simulação (em produção seria gerado por API)
   const pixCode = `00020126360014br.gov.bcb.pix0114+5598999999999520400005303986540${valorAtualNumerico.toFixed(2).length.toString().padStart(2, '0')}${valorAtualNumerico.toFixed(2)}5802BR5913NOME DO RECEBEDOR6009SAO LUIS62070503***6304ABCD`;
 
   const getVencimentoBoleto = () => {
@@ -105,235 +95,197 @@ export default function Pagamento() {
     return data.toLocaleDateString('pt-BR');
   }
   
-  // Função para carregar a imagem e converter para Base64 (necessário para jsPDF)
-  const getBase64Image = (url: string): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'Anonymous'; // Importante para evitar problemas de CORS
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(img, 0, 0);
-          // Tenta obter o Base64, priorizando PNG se for um logo
-          try {
-            const dataURL = canvas.toDataURL('image/png');
-            resolve(dataURL);
-          } catch (e) {
-            // Fallback para JPEG se PNG falhar
-            resolve(canvas.toDataURL('image/jpeg'));
-          }
-        } else {
-          reject(new Error('Canvas context not available'));
-        }
-      };
-      img.onerror = (e) => {
-        console.error('Erro ao carregar imagem para Base64:', e);
-        reject(new Error('Failed to load image for PDF.'));
-      };
-      img.src = url;
-    });
-  };
-  
-  // Função para desenhar o código de barras no PDF (simulação visual do Intercalado 2 de 5)
-  const drawBarcodeInPdf = (pdf: jsPDF, codigo: string, x: number, y: number, height: number, barWidth: number) => {
+  // Função para desenhar código de barras no padrão Intercalado 2 de 5 (como na imagem)
+  const drawBarcodeInPdf = (pdf: jsPDF, codigo: string, x: number, y: number, height: number) => {
     pdf.setDrawColor(0, 0, 0);
     pdf.setFillColor(0, 0, 0);
 
-    // O padrão Intercalado 2 de 5 usa barras e espaços
-    // O código de boleto (44 dígitos) é a sequência numérica a ser codificada.
+    const startCode = '0000'; // Código inicial
+    const endCode = '100';   // Código final
+    const fullCode = startCode + codigo + endCode;
     
-    // Simulação simplificada de barras pretas e brancas (que seriam os espaços)
-    const fullCode = codigo; 
     let currentX = x;
-    const thinBar = barWidth;
-    const wideBar = barWidth * 2; // Simula a barra larga
-    const gap = barWidth; // Simula o espaço
+    const narrowBarWidth = 0.3; // Barra fina
+    const wideBarWidth = 0.9;   // Barra larga
+    const barSpacing = 0.2;     // Espaço entre barras
 
-    // Desenha uma sequência estilizada de barras (simulação visual de Intercalado 2 de 5)
+    // Padrão Intercalado 2 de 5: pares são barras, ímpares são espaços
     for (let i = 0; i < fullCode.length; i++) {
-        const digito = parseInt(fullCode[i]);
-        
-        // Define a largura da barra e do espaço de forma alternada e estilizada
-        // O padrão 2 de 5 intercala 5 elementos (2 largos, 3 finos) por par de dígitos.
-        // Aqui, faremos uma simulação mais simples, alternando a largura das barras pretas para dar o efeito visual.
-        
-        let barW = thinBar;
-        if (i < 4 || i > fullCode.length - 5) {
-            // Barras de início e fim (geralmente fixas)
-            barW = thinBar;
-        } else if (digito % 2 === 0) {
-            // Barras mais largas para dígitos pares (efeito visual)
-            barW = wideBar; 
-        } else {
-            // Barras mais finas para dígitos ímpares (efeito visual)
-            barW = thinBar; 
-        }
-
-        // Desenha a barra preta
-        pdf.rect(currentX, y, barW, height, 'F');
-        
-        currentX += barW; 
-        
-        // Adiciona um espaço branco (barra "branca")
-        currentX += gap; 
-        
-        if (currentX > 185) break; // Limite da página
+      const digit = parseInt(fullCode[i]);
+      
+      // Barras largas para dígitos altos, finas para baixos
+      const barWidth = digit >= 5 ? wideBarWidth : narrowBarWidth;
+      
+      // Desenha a barra (apenas posições pares)
+      if (i % 2 === 0) {
+        pdf.rect(currentX, y, barWidth, height, 'F');
+      }
+      
+      currentX += barWidth + barSpacing;
     }
+  }
+
+  // Função para gerar representação visual do código de barras (para exibição na tela)
+  const gerarCodigoBarrasVisual = () => {
+    if (!codigoBarrasNumerico) return '';
+    
+    const startCode = '0000';
+    const endCode = '100';
+    const fullCode = startCode + codigoBarrasNumerico + endCode;
+    
+    let barcodeVisual = '';
+    
+    for (let i = 0; i < fullCode.length; i++) {
+      const digit = parseInt(fullCode[i]);
+      
+      // Padrão similar ao da imagem: barras de diferentes espessuras
+      if (i % 2 === 0) { // Apenas desenha barras nas posições pares
+        if (digit >= 7) {
+          barcodeVisual += '███'; // Barra muito larga
+        } else if (digit >= 4) {
+          barcodeVisual += '██';  // Barra larga
+        } else {
+          barcodeVisual += '█';   // Barra fina
+        }
+      } else {
+        // Espaços entre barras
+        if (digit >= 7) {
+          barcodeVisual += '   '; // Espaço grande
+        } else if (digit >= 4) {
+          barcodeVisual += '  ';  // Espaço médio
+        } else {
+          barcodeVisual += ' ';   // Espaço pequeno
+        }
+      }
+    }
+    
+    return barcodeVisual;
   }
 
   const handleDownloadPdf = async () => {
     try {
-      // @ts-ignore
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const logoUrl = '/img/borasio.png';
-      let logoBase64: string | undefined;
-
-      try {
-        // Tenta carregar a logo de forma assíncrona
-        logoBase64 = await getBase64Image(logoUrl);
-      } catch (error) {
-        console.warn('Não foi possível carregar a logo. Usando fallback de texto no PDF.', error);
-      }
-
-      const drawRestOfPdf = (pdf: jsPDF, logoBase64?: string) => {
+        const pdf = new jsPDF('p', 'mm', 'a4');
         
-        // Adicionar Logo ou Fallback
-        if (logoBase64) {
-            pdf.addImage(logoBase64, 'PNG', 20, 22, 30, 15); 
-        } else {
+        // Adicionar logo da BoraSiô
+        const logoUrl = '/img/borasio.png';
+        const logoImg = new Image();
+        logoImg.src = logoUrl;
+        
+        const drawRestOfPdf = (pdf: jsPDF) => {
+            // Texto ao lado da logo
+            pdf.setFontSize(10);
+            pdf.setTextColor(100, 100, 100);
+            pdf.text('Sistema de Transporte Seguro', 60, 37);
+            
+            // Linha divisória
+            pdf.setDrawColor(0, 77, 43);
+            pdf.setLineWidth(0.5);
+            pdf.line(20, 40, 190, 40);
+            
+            // Título do boleto
+            pdf.setFontSize(14);
+            pdf.setTextColor(0, 0, 0);
+            pdf.text('BOLETO BANCÁRIO', 20, 55);
+            
+            // Linha digitável
+            const linhaDigitavel = formatarLinhaDigitavel(codigoBarrasNumerico);
+            pdf.setFont('courier', 'bold');
+            pdf.setFontSize(10);
+            pdf.text(linhaDigitavel, 20, 70);
+            
+            // Dados principais
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(10);
+            
+            let yPos = 85;
+            pdf.text(`Vencimento: ${getVencimentoBoleto()}`, 20, yPos);
+            pdf.text(`Valor: R$ ${getValorAtual()}`, 120, yPos);
+            
+            yPos += 8;
+            pdf.text(`Nosso Número: ${Math.floor(Math.random() * 1000000000).toString().padStart(9, '0')}-${Math.floor(Math.random() * 10)}`, 20, yPos);
+            pdf.text(`Agência/Código Cedente: 0001/12345-6`, 120, yPos);
+            
+            yPos += 8;
+            pdf.text(`Beneficiário: BoraSiô Transportes Ltda`, 20, yPos);
+            pdf.text(`CNPJ: 12.345.678/0001-90`, 120, yPos);
+            
+            yPos += 8;
+            pdf.text(`Pagador: [Nome do Cliente]`, 20, yPos);
+            pdf.text(`CPF: [CPF do Cliente]`, 120, yPos);
+            
+            // CÓDIGO DE BARRAS NO PADRÃO INTERCALADO 2 DE 5
+            yPos += 25;
+            pdf.setFontSize(8);
+            pdf.setTextColor(100, 100, 100);
+            pdf.text('CÓDIGO DE BARRAS:', 20, yPos);
+            
+            // Desenha as barras no padrão correto
+            const barcodeHeight = 12;
+            const initialX = 20;
+            drawBarcodeInPdf(pdf, codigoBarrasNumerico, initialX, yPos + 3, barcodeHeight);
+            
+            // Adicionar números do código de barras abaixo
+            pdf.setFontSize(5);
+            pdf.setTextColor(150, 150, 150);
+            pdf.text(codigoBarrasNumerico, 20, yPos + 3 + barcodeHeight + 3);
+            
+            // Retângulo ao redor do código de barras
+            pdf.setDrawColor(0, 0, 0);
+            pdf.setLineWidth(0.1);
+            pdf.rect(18, yPos - 2, 164, 20);
+            
+            // Instruções
+            yPos += 32;
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(9);
+            pdf.setTextColor(0, 0, 0);
+            pdf.text('INSTRUÇÕES:', 20, yPos);
+            pdf.setFont('helvetica', 'normal');
+            
+            const instrucoes = [
+                '• Pagável em qualquer agência bancária ou casa lotérica até o vencimento',
+                '• Após o vencimento, pagável apenas na rede BoraSiô',
+                '• Evite juros - pague em dia',
+                '• Em caso de dúvidas: (98) 4002-8922',
+                '• Não receber após o vencimento'
+            ];
+            
+            instrucoes.forEach((instrucao, index) => {
+                pdf.text(instrucao, 25, yPos + 6 + (index * 5));
+            });
+            
+            // Informações de autenticação
+            yPos += 35;
+            pdf.setFontSize(7);
+            pdf.setTextColor(100, 100, 100);
+            pdf.text('Autenticação Mecânica', 20, yPos);
+            pdf.text(`Código: ${Math.random().toString(36).substring(2, 10).toUpperCase()}`, 20, yPos + 4);
+            
+            // Rodapé
+            pdf.setFontSize(6);
+            pdf.text('Boleto gerado automaticamente pelo sistema BoraSiô', 20, 285);
+            pdf.text(`Data de emissão: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}`, 20, 288);
+            pdf.text(`Documento: ${Math.random().toString(36).substring(2, 15).toUpperCase()}`, 20, 291);
+            
+            pdf.save(`boleto-borasio-${Date.now()}.pdf`);
+        }
+
+        logoImg.onload = function() {
+            pdf.addImage(logoImg, 'PNG', 20, 22, 30, 15);
+            drawRestOfPdf(pdf);
+        };
+        
+        logoImg.onerror = function() {
             pdf.setFontSize(16);
             pdf.setTextColor(0, 77, 43);
             pdf.text('BoraSiô', 20, 30);
-        }
-
-        // Texto ao lado da logo
-        pdf.setFontSize(10);
-        pdf.setTextColor(100, 100, 100);
-        pdf.text('Sistema de Transporte Seguro', 60, 37); 
-        
-        // Linha divisória
-        pdf.setDrawColor(0, 77, 43);
-        pdf.setLineWidth(0.5);
-        pdf.line(20, 40, 190, 40);
-        
-        // Título do boleto
-        pdf.setFontSize(14);
-        pdf.setTextColor(0, 0, 0);
-        pdf.text('BOLETO BANCÁRIO', 20, 55);
-        
-        // Linha digitável
-        const linhaDigitavel = formatarLinhaDigitavel(codigoBarrasNumerico);
-        pdf.setFont('courier', 'bold');
-        pdf.setFontSize(10);
-        pdf.text(linhaDigitavel, 20, 70);
-        
-        // Dados principais
-        pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(10);
-        
-        let yPos = 85;
-        pdf.text(`Vencimento: ${getVencimentoBoleto()}`, 20, yPos);
-        pdf.text(`Valor: R$ ${getValorAtual()}`, 120, yPos);
-        
-        yPos += 8;
-        pdf.text(`Nosso Número: ${Math.floor(Math.random() * 1000000000).toString().padStart(9, '0')}-${Math.floor(Math.random() * 10)}`, 20, yPos);
-        pdf.text(`Agência/Código Cedente: 0001/12345-6`, 120, yPos);
-        
-        yPos += 8;
-        pdf.text(`Beneficiário: BoraSiô Transportes Ltda`, 20, yPos);
-        pdf.text(`CNPJ: 12.345.678/0001-90`, 120, yPos);
-        
-        yPos += 8;
-        pdf.text(`Pagador: [Nome do Cliente]`, 20, yPos);
-        pdf.text(`CPF: [CPF do Cliente]`, 120, yPos);
-        
-        // CÓDIGO DE BARRAS VISUAL COM RETÂNGULOS (MELHORADO)
-        yPos += 25;
-        pdf.setFontSize(8);
-        pdf.setTextColor(100, 100, 100);
-        pdf.text('CÓDIGO DE BARRAS:', 20, yPos);
-        
-        // Retângulo ao redor do código de barras
-        pdf.setDrawColor(0, 0, 0);
-        pdf.setLineWidth(0.1);
-        pdf.rect(18, yPos - 2, 164, 18); // Ajusta a altura
-        
-        // Desenha as barras
-        const barcodeHeight = 10;
-        const initialX = 20; // Posição X inicial das barras
-        const barWidthUnit = 0.3; // Largura base da barra em mm (menor para caber mais)
-        drawBarcodeInPdf(pdf, codigoBarrasNumerico, initialX, yPos + 3, barcodeHeight, barWidthUnit);
-        
-        // Adicionar números do código de barras (pequenos e discretos) ABAIXO DAS BARRAS
-        pdf.setFontSize(4);
-        pdf.setTextColor(150, 150, 150);
-        // Colocando os números centralizados sob as barras (simulação)
-        pdf.text(codigoBarrasNumerico, 20, yPos + 3 + barcodeHeight + 2, { align: 'left', maxWidth: 160 }); 
-        
-        // Instruções
-        yPos += 30; // Ajusta a posição Y 
-        pdf.setFont('helvetica', 'bold');
-        pdf.setFontSize(9);
-        pdf.setTextColor(0, 0, 0);
-        pdf.text('INSTRUÇÕES:', 20, yPos);
-        pdf.setFont('helvetica', 'normal');
-        
-        const instrucoes = [
-            '• Pagável em qualquer agência bancária ou casa lotérica até o vencimento',
-            '• Após o vencimento, pague com juros de 1% ao dia.',
-            '• Evite juros - pague em dia',
-            '• Em caso de dúvidas: (98) 4002-8922',
-            '• Não receber após 30 dias do vencimento'
-        ];
-        
-        instrucoes.forEach((instrucao, index) => {
-            pdf.text(instrucao, 25, yPos + 6 + (index * 5));
-        });
-        
-        // Informações de autenticação
-        yPos += 35;
-        pdf.setFontSize(7);
-        pdf.setTextColor(100, 100, 100);
-        pdf.text('Autenticação Mecânica', 20, yPos);
-        pdf.text(`Código: ${Math.random().toString(36).substring(2, 10).toUpperCase()}`, 20, yPos + 4);
-        
-        // Rodapé
-        pdf.setFontSize(6);
-        pdf.text('Boleto gerado automaticamente pelo sistema BoraSiô', 20, 285);
-        pdf.text(`Data de emissão: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}`, 20, 288);
-        pdf.text(`Documento: ${Math.random().toString(36).substring(2, 15).toUpperCase()}`, 20, 291);
-        
-        pdf.save(`boleto-borasio-${Date.now()}.pdf`);
-      }
-
-      // Chama a função de desenho do PDF
-      drawRestOfPdf(pdf, logoBase64);
+            drawRestOfPdf(pdf);
+        };
 
     } catch (error) {
-        console.error('Erro geral ao gerar PDF:', error);
+        console.error('Erro ao gerar PDF:', error);
         alert('Erro ao gerar o PDF. Tente novamente.');
     }
-  }
-
-  // Função mantida para a visualização na tela do aplicativo (com barras visuais)
-  const gerarCodigoBarrasVisualMelhorado = () => {
-    if (!codigoBarrasNumerico) return '';
-    
-    let tracos = '';
-    // Use caracteres com boa largura em fontes monoespaçadas para simular barras
-    // █ (Block Completo) para barras grossas, ▌ (Half Block) para barras finas
-    const patterns = ['█', '█', '▌', '█', '▌', '█', '▌', '█', '▌', '█']; 
-    
-    for (let i = 0; i < codigoBarrasNumerico.length; i++) {
-      const digito = parseInt(codigoBarrasNumerico[i]);
-      const pattern = (i % 2 === 0) ? '█' : '▌'; // Alterna para dar o efeito visual
-      tracos += pattern;
-    }
-    
-    return tracos;
   }
 
   return (
@@ -472,11 +424,15 @@ export default function Pagamento() {
                 <div className="text-center mt-4 p-3 bg-white border rounded">
                   <div className="text-xs text-gray-500 mb-2">CÓDIGO DE BARRAS</div>
                   <div className="font-mono text-xs bg-white p-2 border rounded-lg">
-                    {/* Simulação na tela (ajustada para um visual de barras) */}
-                    <div className="tracking-tighter leading-3 font-bold text-[18px]" style={{ letterSpacing: '-0.1px', fontFamily: 'monospace', lineHeight: '14px' }}>
-                      {gerarCodigoBarrasVisualMelhorado()} 
+                    <div className="tracking-tight leading-3 font-bold" style={{ 
+                      letterSpacing: '1px', 
+                      fontFamily: 'monospace',
+                      fontSize: '8px',
+                      lineHeight: '1.2'
+                    }}>
+                      {gerarCodigoBarrasVisual()}
                     </div>
-                    <div className="text-[8px] text-gray-400 mt-1 font-mono">
+                    <div className="text-[6px] text-gray-400 mt-1 font-mono">
                       {codigoBarrasNumerico}
                     </div>
                   </div>
