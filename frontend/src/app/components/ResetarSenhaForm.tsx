@@ -8,6 +8,20 @@ export default function ResetarSenhaForm() {
   const [mensagem, setMensagem] = useState('')
   const [carregando, setCarregando] = useState(false)
 
+  // Função para validar força da senha
+  function validarForcaSenha(senha: string) {
+    const requisitos = [
+      /.{8,}/, // mínimo 8 caracteres
+      /[A-Z]/, // letra maiúscula
+      /[a-z]/, // letra minúscula
+      /[0-9]/, // número
+      /[^A-Za-z0-9]/ // caractere especial
+    ];
+    return requisitos.every((regex) => regex.test(senha));
+  }
+
+  const senhaForte = validarForcaSenha(novaSenha);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setMensagem('')
@@ -74,6 +88,24 @@ export default function ResetarSenhaForm() {
               className="w-full border border-green-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               required
             />
+            {novaSenha && (
+              <div className={`mt-2 text-xs p-2 rounded ${senhaForte ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-red-100 text-red-700 border border-red-300'}`}>
+                {senhaForte ? (
+                  <span className="flex items-center gap-1"><span role="img" aria-label="forte">💪</span>Senha forte</span>
+                ) : (
+                  <span>
+                    A senha deve conter:
+                    <ul className="list-disc ml-4">
+                      <li>Ao menos 8 caracteres</li>
+                      <li>Letra maiúscula</li>
+                      <li>Letra minúscula</li>
+                      <li>Número</li>
+                      <li>Caractere especial</li>
+                    </ul>
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="mb-6">
@@ -92,9 +124,9 @@ export default function ResetarSenhaForm() {
 
           <button
             type="submit"
-            disabled={carregando || novaSenha === '' || confirmarNovaSenha === ''}
+            disabled={carregando || novaSenha === '' || confirmarNovaSenha === '' || !senhaForte}
             className={`w-full bg-green-800 text-white py-3 rounded hover:bg-green-900 transition ${
-              carregando ? 'opacity-70 cursor-not-allowed' : ''
+              carregando || !senhaForte ? 'opacity-70 cursor-not-allowed' : ''
             }`}
           >
             {carregando ? 'Redefinindo...' : 'Redefinir Senha'}
