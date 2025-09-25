@@ -68,6 +68,7 @@ const AccessibilityWidget = () => {
   const [isVlibrasReady, setIsVlibrasReady] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [notification, setNotification] = useState<string | null>(null);
+  const [hasInteracted, setHasInteracted] = useState<boolean>(false); // Estado para rastrear a interação do usuário
   const [isVirtualKeyboardOpen, setIsVirtualKeyboardOpen] = useState<boolean>(false);
   const pathname = usePathname();
 
@@ -78,51 +79,45 @@ const AccessibilityWidget = () => {
       const savedHighContrast = localStorage.getItem("highContrast") === "true";
       setIsHighContrast(savedHighContrast);
       applyHighContrast(savedHighContrast);
-
-      // --- Início da Integração VLibras (Lógica Refatorada para SPA) ---
-      // Resetamos o estado de prontidão a cada mudança de rota.
-      setIsVlibrasReady(false);
-      let observer: MutationObserver;
-
-      // Esta função é o coração da inicialização: ela instancia o widget e observa sua criação.
-      const setupVlibras = () => {
-        // 1. Garante que uma nova instância do Widget seja criada para a página atual.
-        // Isso é crucial para que o VLibras funcione em navegações de cliente (SPA).
-        new window.VLibras.Widget("https://vlibras.gov.br/app");
-
-        // 2. Se o botão já estiver no DOM, marca como pronto.
-        if (document.querySelector(".vw-access-button")) {
-          setIsVlibrasReady(true);
-          return;
-        }
-
-        // 3. Se não, observa o DOM para saber quando o botão for adicionado.
-        observer = new MutationObserver((mutations, obs) => {
-          if (document.querySelector(".vw-access-button")) {
-            setIsVlibrasReady(true);
-            obs.disconnect();
-          }
-        });
-        observer.observe(document.body, { childList: true, subtree: true });
-      };
-
-      // Verifica se a biblioteca VLibras já foi carregada no navegador.
-      if (!window.VLibras) {
-        const script = document.createElement("script");
-        script.src = "https://vlibras.gov.br/app/vlibras-plugin.js";
-        script.async = true;
-        script.onload = setupVlibras; // Após o script carregar, executa a configuração.
-        document.body.appendChild(script);
-      } else {
-        // Se a biblioteca já existe, apenas executa a configuração para a nova página.
-        setupVlibras();
-      }
-
-      // Função de limpeza: desconecta o observador para evitar memory leaks.
-      return () => {
-        if (observer) observer.disconnect();
-      };
     }
+  }, [pathname]); // A dependência no `pathname` garante que o efeito rode a cada mudança de rota.
+
+  // Efeito para carregar o VLibras apenas uma vez
+  useEffect(() => {
+    // Esta função inicializa ou reinicializa o widget do VLibras.
+    const setupVlibras = () => {
+      if (window.VLibras) {
+        new window.VLibras.Widget("https://vlibras.gov.br/app");
+        setIsVlibrasReady(true);
+      }
+    };
+
+    // Verifica se o script já foi injetado para não duplicar
+    if (!document.getElementById("vlibras-script")) {
+      setIsVlibrasReady(false);
+
+      // Cria a div de ancoragem que o VLibras precisa
+      const vwDiv = document.createElement('div');
+      vwDiv.setAttribute('vw', 'true');
+      vwDiv.className = 'enabled';
+      document.body.appendChild(vwDiv);
+
+      // Cria e injeta o script do VLibras
+      const script = document.createElement("script");
+      script.id = "vlibras-script";
+      script.src = "https://vlibras.gov.br/app/vlibras-plugin.js";
+      script.async = true;
+      script.onload = setupVlibras; // Chama o setup quando o script carregar
+      document.body.appendChild(script);
+    } else {
+      // Se o script já existe, apenas reinicializa o widget para a nova página
+      setupVlibras();
+    }
+
+    // Função de limpeza para remover o botão flutuante ao trocar de página
+    return () => {
+      document.querySelector('.vw-access-button')?.remove();
+    };
   }, [pathname]); // A dependência no `pathname` garante que o efeito rode a cada mudança de rota.
 
   const menuContainerRef = useRef<HTMLDivElement>(null);
@@ -161,7 +156,13 @@ const AccessibilityWidget = () => {
     }
   };
 
-  const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = (): void => {
+    setIsMenuOpen(!isMenuOpen);
+    // Na primeira vez que o usuário clica, marcamos que ele interagiu.
+    if (!hasInteracted) {
+      setHasInteracted(true);
+    }
+  };
   const closeMenu = (): void => {
     setIsMenuOpen(false);
   };
@@ -253,6 +254,20 @@ const AccessibilityWidget = () => {
     }
   };
 
+  const playHoverSound = () => {
+    // Só tenta tocar o som se o usuário já tiver interagido (clicado) no widget.
+    if (!hasInteracted) return;
+
+    try {
+      // Certifique-se de que o arquivo de som está na pasta /public, por exemplo: /sounds/hover.mp3
+      const audio = new Audio('/sounds/hover.mp3');
+      audio.volume = 0.2; // Ajuste o volume se necessário (0.0 a 1.0)
+      audio.play().catch(error => console.error("Erro ao tocar o som:", error));
+    } catch (error) {
+      console.error("Não foi possível carregar o arquivo de som.", error);
+    }
+  };
+
   if (!isMounted) return null;
 
   return (
@@ -279,12 +294,6 @@ const AccessibilityWidget = () => {
           {notification}
         </div>
       )}
-      {/* 
-        A div abaixo é necessária para o funcionamento do VLibras. 
-        Ela serve como um ponto de ancoragem para o widget, mas não é visível na tela.
-      */}
-      <div vw="true" className="enabled"></div>
-
       <style jsx global>{`
         .high-contrast {
           background-color: #000 !important;
@@ -329,6 +338,7 @@ const AccessibilityWidget = () => {
       >
         <button
           onClick={toggleMenu}
+          onMouseEnter={playHoverSound}
           aria-label="Menu de Acessibilidade"
           aria-expanded={isMenuOpen}
           className={`
