@@ -34,9 +34,38 @@ public class Usuario implements UserDetails {
     @Column(nullable = false, length = 20)
     private String tipo; // "passageiro" ou "motorista"
 
-    @Column(name = "data_cadastro")
+    @Column(name = "data_cadastro", updatable = false)
     private LocalDateTime dataCadastro;
 
+    // ----------------------------------------
+    // Normaliza o tipo e define dataCadastro
+    // ----------------------------------------
+    @PrePersist
+    public void prePersist() {
+        if (this.tipo != null) {
+            this.tipo = this.tipo.toLowerCase();
+            if (!this.tipo.equals("passageiro") && !this.tipo.equals("motorista")) {
+                throw new IllegalArgumentException("Tipo de usuário inválido: " + tipo);
+            }
+        }
+        if (this.dataCadastro == null) {
+            this.dataCadastro = LocalDateTime.now();
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        if (this.tipo != null) {
+            this.tipo = this.tipo.toLowerCase();
+            if (!this.tipo.equals("passageiro") && !this.tipo.equals("motorista")) {
+                throw new IllegalArgumentException("Tipo de usuário inválido: " + tipo);
+            }
+        }
+    }
+
+    // ----------------------------------------
+    // UserDetails implementation
+    // ----------------------------------------
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + tipo.toUpperCase()));
