@@ -1,8 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 export default function ResetarSenhaForm() {
+  const searchParams = useSearchParams();
+  const tokenDaURL = searchParams.get('token') || '';
   const [novaSenha, setNovaSenha] = useState('')
   const [confirmarNovaSenha, setConfirmarNovaSenha] = useState('')
   const [mensagem, setMensagem] = useState('')
@@ -33,10 +36,6 @@ export default function ResetarSenhaForm() {
 
     setCarregando(true)
     try {
-      // O token real deve ser obtido da URL (por exemplo, usando useRouter de next/navigation)
-      // Substitua 'SEU_TOKEN_AQUI' pela lógica para pegar o token da URL
-      const tokenDaURL = 'SEU_TOKEN_AQUI' 
-
       const res = await fetch('/api/resetar-senha', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
