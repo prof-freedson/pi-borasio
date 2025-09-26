@@ -29,7 +29,8 @@ public class UsuarioService implements UserDetailsService {
         return usuarioRepository.findAll();
     }
 
-    public Optional<Usuario> buscarPorId(Integer id) {
+    // Alterado para Long
+    public Optional<Usuario> buscarPorId(Long id) {
         return usuarioRepository.findById(id);
     }
 
@@ -41,7 +42,8 @@ public class UsuarioService implements UserDetailsService {
         return usuarioRepository.save(usuario);
     }
 
-    public void deletar(Integer id) {
+    // Alterado para Long
+    public void deletar(Long id) {
         usuarioRepository.deleteById(id);
     }
 }

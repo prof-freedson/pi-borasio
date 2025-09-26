@@ -20,7 +20,7 @@ public class PassageiroService {
         return passageiroRepository.findAll();
     }
 
-    public Optional<Passageiro> buscarPorId(Integer id) {
+    public Optional<Passageiro> buscarPorId(Long id) {
         return passageiroRepository.findById(id);
     }
 
@@ -28,7 +28,7 @@ public class PassageiroService {
         return passageiroRepository.save(passageiro);
     }
 
-    public void deletar(Integer id) {
+    public void deletar(Long id) {
         passageiroRepository.deleteById(id);
     }
 }

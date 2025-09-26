@@ -21,4 +21,15 @@ public class Passageiro {
 
     @Column(length = 255)
     private String preferencias;
+
+    // ----------------------------------------
+    // Métodos auxiliares
+    // ----------------------------------------
+    public String getNome() {
+        return usuario != null ? usuario.getNome() : null;
+    }
+
+    public String getEmail() {
+        return usuario != null ? usuario.getEmail() : null;
+    }
 }
