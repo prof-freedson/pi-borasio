@@ -20,7 +20,7 @@ public class MotoristaService {
         return motoristaRepository.findAll();
     }
 
-    public Optional<Motorista> buscarPorId(Integer id) {
+    public Optional<Motorista> buscarPorId(Long id) {
         return motoristaRepository.findById(id);
     }
 
@@ -28,7 +28,7 @@ public class MotoristaService {
         return motoristaRepository.save(motorista);
     }
 
-    public void deletar(Integer id) {
+    public void deletar(Long id) {
         motoristaRepository.deleteById(id);
     }
 }

@@ -2,17 +2,20 @@ package com.borasio_back.backend.controller;
 
 import com.borasio_back.backend.dto.PasswordRecoveryRequestDTO;
 import com.borasio_back.backend.service.PasswordRecoveryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/password-recovery")
 public class PasswordRecoveryController {
-
-	@Autowired
-	private PasswordRecoveryService passwordRecoveryService;
-
+	
+	private final PasswordRecoveryService passwordRecoveryService;
+	
+	// Injeção de dependência via construtor
+	public PasswordRecoveryController(PasswordRecoveryService passwordRecoveryService) {
+		this.passwordRecoveryService = passwordRecoveryService;
+	}
+	
 	@PostMapping("/request")
 	public ResponseEntity<String> requestRecovery(@RequestBody PasswordRecoveryRequestDTO request) {
 		String token = passwordRecoveryService.createRecoveryToken(request.getEmail());
