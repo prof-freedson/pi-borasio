@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as Sentry from "@sentry/nextjs";
+import Link from "next/link";
+import { Eye, EyeOff, Check, X } from "lucide-react";
 
 const Cadastro = () => {
   const router = useRouter();
@@ -19,9 +20,33 @@ const Cadastro = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
+  const [termosAceitos, setTermosAceitos] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let valorFormatado = value;
+
+    if (name === 'telefone') {
+      const numeros = value.replace(/\D/g, '').slice(0, 11);
+      if (numeros.length > 2) {
+        valorFormatado = `(${numeros.slice(0, 2)}) ${numeros.slice(2, 7)}`;
+        if (numeros.length > 7) {
+          valorFormatado += `-${numeros.slice(7)}`;
+        }
+      } else {
+        valorFormatado = numeros;
+      }
+    } else if (name === 'cpf') {
+      const numeros = value.replace(/\D/g, '').slice(0, 11);
+      valorFormatado = numeros
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+
+    setForm({ ...form, [name]: valorFormatado });
   };
 
   // Função de validação aprimorada
@@ -38,8 +63,8 @@ const Cadastro = () => {
     if (!form.cpf) {
       return "O CPF é obrigatório";
     }
-    if (!/^\d{11}$/.test(form.cpf)) {
-      return "CPF deve ter 11 dígitos numéricos";
+    if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(form.cpf)) {
+      return "CPF inválido. Preencha o formato completo.";
     }
 
     // Endereço: obrigatório
@@ -59,16 +84,16 @@ const Cadastro = () => {
     if (!form.telefone) {
       return "O telefone é obrigatório";
     }
-    if (!/^\d{8,}$/.test(form.telefone.replace(/\D/g, ""))) {
-      return "Telefone deve ter pelo menos 8 dígitos";
+    if (!/^\(\d{2}\) \d{5}-\d{4}$/.test(form.telefone)) {
+      return "Telefone inválido. Preencha o DDD e o número completo.";
     }
 
-    // Senha: obrigatório, mínimo 6 caracteres
+    // Senha: obrigatório e forte
     if (!form.senha) {
       return "A senha é obrigatória";
     }
-    if (form.senha.length < 6) {
-      return "A senha deve ter pelo menos 6 caracteres";
+    if (!validarForcaSenha(form.senha).todosValidos) {
+      return "A senha não atende a todos os requisitos de segurança.";
     }
 
     // Confirmar senha: obrigatório, igual à senha
@@ -81,6 +106,21 @@ const Cadastro = () => {
 
     return null;
   };
+
+  // Função para validar força da senha e retornar os critérios
+  const validarForcaSenha = (senha: string) => {
+    const requisitos = {
+      minimo: /.{8,}/.test(senha), // mínimo 8 caracteres
+      maiuscula: /[A-Z]/.test(senha), // letra maiúscula
+      minuscula: /[a-z]/.test(senha), // letra minúscula
+      numero: /[0-9]/.test(senha), // número
+      especial: /[^A-Za-z0-9]/.test(senha), // caractere especial
+    };
+    const todosValidos = Object.values(requisitos).every(Boolean);
+    return { ...requisitos, todosValidos };
+  };
+
+  const forcaSenha = validarForcaSenha(form.senha);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,17 +162,85 @@ const Cadastro = () => {
         )}
         <form onSubmit={handleSubmit}>
           <Input label="Nome Completo" name="nome" value={form.nome} onChange={handleChange} />
-          <Input label="CPF" name="cpf" value={form.cpf} onChange={handleChange} />
+          <Input label="CPF" name="cpf" value={form.cpf} onChange={handleChange} maxLength={14} />
           <Input label="Endereço" name="endereco" value={form.endereco} onChange={handleChange} />
           <Input type="email" label="E-mail" name="email" value={form.email} onChange={handleChange} />
-          <Input type="tel" label="Telefone" name="telefone" value={form.telefone} onChange={handleChange} />
-          <Input type="password" label="Senha" name="senha" value={form.senha} onChange={handleChange} />
-          <Input type="password" label="Confirmar Senha" name="confirmarSenha" value={form.confirmarSenha} onChange={handleChange} />
+          <Input type="tel" label="Telefone" name="telefone" value={form.telefone} onChange={handleChange} maxLength={15} />
+
+          {/* Campo de Senha com indicador e visibilidade */}
+          <div className="mb-4">
+            <label htmlFor="senha" className="block text-green-900 mb-1 font-medium">Senha</label>
+            <div className="relative">
+              <input
+                id="senha"
+                name="senha"
+                type={mostrarSenha ? "text" : "password"}
+                value={form.senha}
+                onChange={handleChange}
+                className="w-full p-3 border border-green-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+              <button type="button" onClick={() => setMostrarSenha(!mostrarSenha)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+                {mostrarSenha ? <Eye size={20} /> : <EyeOff size={20} />}
+              </button>
+            </div>
+            {form.senha && (
+              <div className="mt-2 text-xs space-y-1">
+                <RequisitoSenha valido={forcaSenha.minimo} texto="Pelo menos 8 caracteres" />
+                <RequisitoSenha valido={forcaSenha.maiuscula} texto="Uma letra maiúscula" />
+                <RequisitoSenha valido={forcaSenha.minuscula} texto="Uma letra minúscula" />
+                <RequisitoSenha valido={forcaSenha.numero} texto="Um número" />
+                <RequisitoSenha valido={forcaSenha.especial} texto="Um caractere especial (!@#$...)" />
+              </div>
+            )}
+          </div>
+
+          {/* Campo de Confirmar Senha com visibilidade */}
+          <div className="mb-4">
+            <label htmlFor="confirmarSenha" className="block text-green-900 mb-1 font-medium">Confirmar Senha</label>
+            <div className="relative">
+              <input
+                id="confirmarSenha"
+                name="confirmarSenha"
+                type={mostrarConfirmarSenha ? "text" : "password"}
+                value={form.confirmarSenha}
+                onChange={handleChange}
+                className="w-full p-3 border border-green-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+              <button type="button" onClick={() => setMostrarConfirmarSenha(!mostrarConfirmarSenha)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+                {mostrarConfirmarSenha ? <Eye size={20} /> : <EyeOff size={20} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Checkbox de Termos de Serviço */}
+          <div className="mb-6">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={termosAceitos}
+                onChange={(e) => setTermosAceitos(e.target.checked)}
+                className="h-4 w-4 text-green-600 border-gray-300 rounded focus:outline-none accent-green-700"
+              />
+              <span className="ml-2 text-sm text-gray-700">
+                Eu li e aceito os{" "}
+                <Link href="/termos-de-servico" className="text-green-700 hover:underline font-medium">
+                  Termos de Serviço
+                </Link>{" "}
+                e a{" "}
+                <Link href="/politica-de-privacidade" className="text-green-700 hover:underline font-medium">
+                  Política de Privacidade
+                </Link>.
+              </span>
+            </label>
+          </div>
+
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !forcaSenha.todosValidos || !termosAceitos}
             className={`w-full bg-yellow-300 text-green-900 font-bold py-3 rounded-md hover:bg-yellow-400 transition ${
-              isLoading ? "opacity-70 cursor-not-allowed" : ""
+              isLoading || !forcaSenha.todosValidos || !termosAceitos ? "opacity-70 cursor-not-allowed" : ""
             }`}
           >
             {isLoading ? "Cadastrando..." : "Cadastre-se"}
@@ -154,13 +262,15 @@ const Input = ({
   name,
   value,
   onChange,
-  type = "text"
+  type = "text",
+  maxLength
 }: {
   label: string;
   name: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
+  maxLength?: number;
 }) => (
   <div className="mb-4">
     <label htmlFor={name} className="block text-green-900 mb-1 font-medium">
@@ -172,11 +282,22 @@ const Input = ({
       type={type}
       value={value}
       onChange={onChange}
+      maxLength={maxLength}
       className="w-full p-3 border border-green-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
       required
     />
   </div>
 );
 
-export default Cadastro;
+const RequisitoSenha = ({ valido, texto }: { valido: boolean; texto: string }) => (
+  <div className={`flex items-center gap-2 transition-colors ${valido ? 'text-green-600' : 'text-gray-500'}`}>
+    {valido ? (
+      <Check size={16} className="flex-shrink-0" />
+    ) : (
+      <X size={16} className="flex-shrink-0" />
+    )}
+    <span>{texto}</span>
+  </div>
+);
 
+export default Cadastro;
