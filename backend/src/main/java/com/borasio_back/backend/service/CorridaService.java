@@ -20,7 +20,7 @@ public class CorridaService {
         return corridaRepository.findAll();
     }
 
-    public Optional<Corrida> buscarPorId(Integer id) {
+    public Optional<Corrida> buscarPorId(Long id) {
         return corridaRepository.findById(id);
     }
 
@@ -28,7 +28,7 @@ public class CorridaService {
         return corridaRepository.save(corrida);
     }
 
-    public void deletar(Integer id) {
+    public void deletar(Long id) {
         corridaRepository.deleteById(id);
     }
 }
