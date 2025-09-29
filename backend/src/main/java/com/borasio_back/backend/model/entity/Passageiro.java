@@ -1,7 +1,5 @@
-package com.borasio_back.backend.model.entity;
-
-import jakarta.persistence.*;
-import lombok.*;
+package com.borasio_back.backend.model.entity; 
+import jakarta.persistence.*; import lombok.*;
 
 @Entity
 @Table(name = "passageiros", schema = "carona")
@@ -12,11 +10,11 @@ import lombok.*;
 public class Passageiro {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // vai ser o mesmo id do Usuario
 
     @OneToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @MapsId
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @Column(length = 255)
@@ -31,9 +29,7 @@ public class Passageiro {
     @Column(length = 20)
     private String telefone;
 
-    // ----------------------------------------
-    // Métodos auxiliares para acessar dados do usuário
-    // ----------------------------------------
+    // Auxiliares
     public String getNome() {
         return usuario != null ? usuario.getNome() : null;
     }
@@ -45,5 +41,4 @@ public class Passageiro {
     public String getSenha() {
         return usuario != null ? usuario.getSenha() : null;
     }
-
 }
