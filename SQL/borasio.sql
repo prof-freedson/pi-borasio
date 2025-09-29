@@ -1,3 +1,6 @@
+
+
+
 -- Criação do schema
 CREATE SCHEMA IF NOT EXISTS carona;
 
@@ -232,3 +235,52 @@ INSERT INTO carona.eventos_sistema (tipo_evento, descricao, data_evento) VALUES
 -- Preferências de Acessibilidade
 INSERT INTO carona.acessibilidade (usuario_id, tipo_acessibilidade, preferencias) VALUES
 (3, 'deficiencia_visual', 'Precisa de ajuda para embarque');
+
+select * from carona.usuarios
+
+-- Passageiros: adicionando CPF, endereço e telefone
+ALTER TABLE carona.passageiros
+    ADD COLUMN cpf VARCHAR(14),
+    ADD COLUMN endereco VARCHAR(255),
+    ADD COLUMN telefone VARCHAR(20);
+
+-- Motoristas: adicionando endereço, telefone e placa
+ALTER TABLE carona.motoristas
+    ADD COLUMN endereco VARCHAR(255),
+    ADD COLUMN telefone VARCHAR(20),
+    ADD COLUMN placa VARCHAR(10);
+
+-- Passageiro Maria
+UPDATE carona.passageiros
+SET cpf = '123.456.789-00',
+    endereco = 'Av. dos Holandeses, 500 - São Luís',
+    telefone = '(98) 91234-5678'
+WHERE usuario_id = 3;
+
+-- Motorista João
+UPDATE carona.motoristas
+SET endereco = 'Rua das Palmeiras, 200 - São Luís',
+    telefone = '(98) 97654-3210',
+    placa = 'ABC1D23'
+WHERE usuario_id = 2;
+
+select * from carona.passageiros
+
+select * from carona.motoristas
+
+ALTER TABLE carona.motoristas
+    DROP COLUMN veiculo;
+
+ALTER TABLE carona.usuarios 
+ALTER COLUMN tipo TYPE carona.tipo_usuario 
+USING tipo::carona.tipo_usuario;
+
+ALTER TABLE carona.usuarios
+ALTER COLUMN tipo TYPE varchar(20);
+
+
+
+ALTER TABLE carona.usuarios
+ALTER COLUMN tipo TYPE varchar(20);
+
+select * from carona.usuarios;
