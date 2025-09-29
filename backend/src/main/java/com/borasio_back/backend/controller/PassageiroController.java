@@ -44,6 +44,9 @@ public class PassageiroController {
                 .map(usuario -> {
                     Passageiro passageiro = Passageiro.builder()
                             .usuario(usuario)
+                            .cpf(dto.getCpf())
+                            .endereco(dto.getEndereco())
+                            .telefone(dto.getTelefone())
                             .preferencias(dto.getPreferencias())
                             .build();
                     Passageiro salvo = passageiroService.salvar(passageiro);
@@ -56,6 +59,9 @@ public class PassageiroController {
     public ResponseEntity<PassageiroDTO> atualizar(@PathVariable Long id, @RequestBody PassageiroDTO dto) {
         return passageiroService.buscarPorId(id)
                 .map(passageiro -> {
+                    passageiro.setCpf(dto.getCpf());
+                    passageiro.setEndereco(dto.getEndereco());
+                    passageiro.setTelefone(dto.getTelefone());
                     passageiro.setPreferencias(dto.getPreferencias());
                     Passageiro atualizado = passageiroService.salvar(passageiro);
                     return ResponseEntity.ok(new PassageiroDTO(atualizado));

@@ -13,30 +13,31 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-	private final AuthenticationManager authenticationManager;
-	private final UsuarioRepository usuarioRepository;
-	private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final UsuarioRepository usuarioRepository;
+    private final JwtUtil jwtUtil;
 
-	public AuthService(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository, JwtUtil jwtUtil) {
-		this.authenticationManager = authenticationManager;
-		this.usuarioRepository = usuarioRepository;
-		this.jwtUtil = jwtUtil;
-	}
+    public AuthService(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository, JwtUtil jwtUtil) {
+        this.authenticationManager = authenticationManager;
+        this.usuarioRepository = usuarioRepository;
+        this.jwtUtil = jwtUtil;
+    }
 
-	public AuthResponse authenticate(AuthRequest request) {
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha())
-		);
+    public AuthResponse authenticate(AuthRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha())
+        );
 
-		Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
-		String token = jwtUtil.generateToken(usuario);
-		return new AuthResponse(
-			token,
-			usuario.getId(),
-			usuario.getEmail(),
-			usuario.getTipo()
-		);
-	}
+        String token = jwtUtil.generateToken(usuario);
+        
+        return new AuthResponse(
+            token,
+            usuario.getId(),
+            usuario.getEmail(),
+            usuario.getTipo().name() // Convertendo enum para String
+        );
+    }
 }

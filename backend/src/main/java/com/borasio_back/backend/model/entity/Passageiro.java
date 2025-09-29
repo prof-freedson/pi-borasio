@@ -22,8 +22,17 @@ public class Passageiro {
     @Column(length = 255)
     private String preferencias;
 
+    @Column(length = 14)
+    private String cpf;
+
+    @Column(length = 255)
+    private String endereco;
+
+    @Column(length = 20)
+    private String telefone;
+
     // ----------------------------------------
-    // Métodos auxiliares
+    // Métodos auxiliares para acessar dados do usuário
     // ----------------------------------------
     public String getNome() {
         return usuario != null ? usuario.getNome() : null;
@@ -32,4 +41,9 @@ public class Passageiro {
     public String getEmail() {
         return usuario != null ? usuario.getEmail() : null;
     }
+
+    public String getSenha() {
+        return usuario != null ? usuario.getSenha() : null;
+    }
+
 }
