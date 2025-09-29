@@ -1,5 +1,7 @@
 package com.borasio_back.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,14 +12,59 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
-@Table(name = "usuarios", schema = "carona")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
+@Table(name = "usuarios", schema = "carona")
 public class Usuario implements UserDetails {
 
+    // ==============================
+    // ENUM INTERNO
+    // ==============================
+    public enum TipoUsuario {
+        MOTORISTA,
+        PASSAGEIRO,
+        ADMIN;
+
+        // Aceita maiúsculas e minúsculas no JSON de entrada
+        @JsonCreator
+        public static TipoUsuario fromString(String value) {
+            if (value == null) return null;
+            return TipoUsuario.valueOf(value.toUpperCase());
+        }
+
+        // Sempre retorna minúsculo no JSON de saída
+        @JsonValue
+        @Override
+        public String toString() {
+            return name().toLowerCase();
+        }
+    }
+
+    // ==============================
+    // CONVERTER INTERNO (JPA ↔ DB)
+    // ==============================
+    @Converter(autoApply = true)
+    public static class TipoUsuarioConverter implements AttributeConverter<TipoUsuario, String> {
+
+        @Override
+        public String convertToDatabaseColumn(TipoUsuario tipo) {
+            if (tipo == null) return null;
+            return tipo.toString(); // salva como minúsculo no banco
+        }
+
+        @Override
+        public TipoUsuario convertToEntityAttribute(String dbData) {
+            if (dbData == null) return null;
+            return TipoUsuario.fromString(dbData); // aceita maiúsculas/minúsculas
+        }
+    }
+
+    // ==============================
+    // CAMPOS
+    // ==============================
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,73 +78,47 @@ public class Usuario implements UserDetails {
     @Column(nullable = false, length = 255)
     private String senha;
 
-    @Column(nullable = false, length = 20)
-    private String tipo; // "passageiro" ou "motorista"
+    @Convert(converter = TipoUsuarioConverter.class)
+    @Column(nullable = false, columnDefinition = "carona.tipo_usuario")
+    private TipoUsuario tipo;
 
     @Column(name = "data_cadastro", updatable = false)
     private LocalDateTime dataCadastro;
 
-    // ----------------------------------------
-    // Normaliza o tipo e define dataCadastro
-    // ----------------------------------------
     @PrePersist
     public void prePersist() {
-        if (this.tipo != null) {
-            this.tipo = this.tipo.toLowerCase();
-            if (!this.tipo.equals("passageiro") && !this.tipo.equals("motorista")) {
-                throw new IllegalArgumentException("Tipo de usuário inválido: " + tipo);
-            }
-        }
         if (this.dataCadastro == null) {
             this.dataCadastro = LocalDateTime.now();
         }
     }
 
-    @PreUpdate
-    public void preUpdate() {
-        if (this.tipo != null) {
-            this.tipo = this.tipo.toLowerCase();
-            if (!this.tipo.equals("passageiro") && !this.tipo.equals("motorista")) {
-                throw new IllegalArgumentException("Tipo de usuário inválido: " + tipo);
-            }
-        }
-    }
-
-    // ----------------------------------------
-    // UserDetails implementation
-    // ----------------------------------------
+    // ==============================
+    // UserDetails IMPLEMENTATION
+    // ==============================
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + tipo.toUpperCase()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + tipo.name()));
     }
 
     @Override
     public String getPassword() {
-        return this.senha;
+        return senha;
     }
 
     @Override
     public String getUsername() {
-        return this.email;
+        return email;
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() { return true; }
 }

@@ -10,6 +10,9 @@ public class PassageiroDTO {
     private String nome;
     private String email;
     private String preferencias;
+    private String cpf;
+    private String endereco;
+    private String telefone;
 
     // Construtor vazio
     public PassageiroDTO() {}
@@ -22,6 +25,9 @@ public class PassageiroDTO {
             this.nome = passageiro.getNome();
             this.email = passageiro.getEmail();
             this.preferencias = passageiro.getPreferencias();
+            this.cpf = passageiro.getCpf();
+            this.endereco = passageiro.getEndereco();
+            this.telefone = passageiro.getTelefone();
         }
     }
 }
