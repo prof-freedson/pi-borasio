@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/password-recovery")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PasswordRecoveryController {
 
 	@Autowired
@@ -16,8 +17,12 @@ public class PasswordRecoveryController {
 	@PostMapping("/request")
 	public ResponseEntity<String> requestRecovery(@RequestBody PasswordRecoveryRequestDTO request) {
 		String token = passwordRecoveryService.createRecoveryToken(request.getEmail());
-		// Aqui você enviaria o e-mail com o token
-		return ResponseEntity.ok("Token de recuperação enviado para o e-mail.");
+		boolean emailSent = passwordRecoveryService.sendRecoveryEmail(request.getEmail(), token);
+		if (emailSent) {
+			return ResponseEntity.ok("Token de recuperação enviado para o e-mail.");
+		} else {
+			return ResponseEntity.status(500).body("Falha ao enviar e-mail de recuperação.");
+		}
 	}
 
 	@PostMapping("/reset")
