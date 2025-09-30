@@ -14,8 +14,6 @@ export default function Motorista() {
   const [email, setEmail] = useState('joaoribamar@gmail.com')
   const [telefone, setTelefone] = useState('(98) 98745-3629')
   const [cnh, setCnh] = useState('12345678900')
-  const [cpf, setCpf] = useState('123.456.789-00')
-  const [ear, setEndereco] = useState('sim')
 
   const [marca, setMarca] = useState('Volkswagen')
   const [modelo, setModelo] = useState('Gol')
@@ -39,12 +37,6 @@ export default function Motorista() {
     // Validação dos campos pessoais
     if (!nome || !/^[A-Za-zÀ-ÿ\s]+$/.test(nome)) {
       const errMsg = 'Nome inválido. Use apenas letras e espaços.';
-      window.alert(errMsg);
-      Sentry.captureException(new Error(errMsg));
-      return;
-    }
-    if (!cpf || !/^\d{11}$/.test(cpf.replace(/\D/g, ''))) {
-      const errMsg = 'CPF inválido. Deve conter 11 dígitos numéricos.';
       window.alert(errMsg);
       Sentry.captureException(new Error(errMsg));
       return;
@@ -127,9 +119,7 @@ export default function Motorista() {
             { label: "Nome", value: nome, setValue: setNome, icon: faUser, type: "text" },
             { label: "Telefone", value: telefone, setValue: setTelefone, icon: faPhone, type: "text" },
             { label: "E-mail", value: email, setValue: setEmail, icon: faEnvelope, type: "email" },
-            { label: "EAR", value: ear, setValue: setEndereco, icon: faIdCard, type: "text" },
             { label: "CNH", value: cnh, setValue: setCnh, icon: faIdCard, type: "text" },
-            { label: "CPF", value: cpf, setValue: setCpf, icon: faIdBadge, type: "text" },
           ].map((item, index) => (
             <div key={index} className="flex items-center space-x-2">
               <FontAwesomeIcon icon={item.icon} className="text-green-800" />
@@ -140,10 +130,24 @@ export default function Motorista() {
                     type={item.type}
                     value={item.value}
                     onChange={(e) => {
-                      const value = e.target.value;
-                      // Permite qualquer valor temporariamente para CPF e Telefone durante edição
-                      if (["Nome", "Marca", "Cor"].includes(item.label) && value !== "" && /[^A-Za-zÀ-ÿ\s]/.test(value)) return;
-                      item.setValue(value);
+                      let value = e.target.value;
+                      if (item.label === "Telefone") {
+                        value = value.replace(/\D/g, "");
+                        value = value.replace(/^(\d{2})(\d)/, "($1) $2");
+                        value = value.replace(/(\d{5})(\d)/, "$1-$2");
+                        item.setValue(value.slice(0, 15));
+                      } else if (item.label === "CNH") {
+                        value = value.replace(/\D/g, "");
+                        item.setValue(value.slice(0, 11));
+                      } else if (
+                        ["Nome", "Marca", "Cor"].includes(item.label) &&
+                        value !== "" &&
+                        /[^A-Za-zÀ-ÿ\s]/.test(value)
+                      ) {
+                        return; // Não atualiza se contiver caracteres inválidos
+                      } else {
+                        item.setValue(value);
+                      }
                     }}
                     className="border w-full p-2 rounded bg-gray-100"
                   />
@@ -187,7 +191,13 @@ export default function Motorista() {
                   <input
                     type={item.label === "Assentos" ? "number" : "text"}
                     value={item.value}
-                    onChange={(e) => item.setValue(e.target.value)}
+                    onChange={(e) => {
+                      let value = e.target.value;
+                      if (item.label === "Placa") {
+                        value = value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 7);
+                      }
+                      item.setValue(value);
+                    }}
                     className="border w-full p-2 rounded bg-gray-100"
                   />
                 </div>

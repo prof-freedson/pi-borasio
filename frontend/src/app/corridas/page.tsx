@@ -59,8 +59,6 @@ export default function CorridasPage() {
           destinoEsperado,
         },
       });
-      alert("Erro: Destino diferente do esperado! O erro foi reportado.");
-      return;
     }
     localStorage.setItem('selectedCorrida', JSON.stringify(corrida));
     router.push('/usuario?corridaSelected=true');

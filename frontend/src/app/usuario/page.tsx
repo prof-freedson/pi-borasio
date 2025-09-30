@@ -253,7 +253,23 @@ function UsuarioContent() {
                     <input
                       type="text"
                       value={value}
-                      onChange={(e) => setValue(e.target.value)}
+                      onChange={(e) => {
+                        let inputValue = e.target.value;
+                        if (label === "Telefone") {
+                          inputValue = inputValue.replace(/\D/g, "");
+                          inputValue = inputValue.replace(/^(\d{2})(\d)/, "($1) $2");
+                          inputValue = inputValue.replace(/(\d{5})(\d)/, "$1-$2");
+                          setValue(inputValue.slice(0, 15));
+                        } else if (label === "CPF") {
+                          inputValue = inputValue.replace(/\D/g, "");
+                          inputValue = inputValue.replace(/(\d{3})(\d)/, "$1.$2");
+                          inputValue = inputValue.replace(/(\d{3})(\d)/, "$1.$2");
+                          inputValue = inputValue.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+                          setValue(inputValue.slice(0, 14));
+                        } else {
+                          setValue(inputValue);
+                        }
+                      }}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#004d2b] focus:border-transparent"
                     />
                   </div>
