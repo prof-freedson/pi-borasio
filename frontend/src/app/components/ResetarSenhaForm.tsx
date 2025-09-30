@@ -1,12 +1,21 @@
+
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 export default function ResetarSenhaForm() {
   const [novaSenha, setNovaSenha] = useState('')
   const [confirmarNovaSenha, setConfirmarNovaSenha] = useState('')
   const [mensagem, setMensagem] = useState('')
   const [carregando, setCarregando] = useState(false)
+  const searchParams = useSearchParams()
+  const [token, setToken] = useState('')
+
+  useEffect(() => {
+    const t = searchParams.get('token')
+    if (t) setToken(t)
+  }, [searchParams])
 
   // Função para validar força da senha
   function validarForcaSenha(senha: string) {
@@ -31,16 +40,15 @@ export default function ResetarSenhaForm() {
       return
     }
 
+    if (!token) {
+      setMensagem('Token de redefinição não encontrado. Verifique o link.')
+      return
+    }
+
     setCarregando(true)
     try {
-      // O token real deve ser obtido da URL (por exemplo, usando useRouter de next/navigation)
-      // Substitua 'SEU_TOKEN_AQUI' pela lógica para pegar o token da URL
-      const tokenDaURL = 'SEU_TOKEN_AQUI' 
-
-      const res = await fetch('/api/resetar-senha', {
+      const res = await fetch('http://localhost:8080/api/password-recovery/reset?token=' + token + '&newPassword=' + encodeURIComponent(novaSenha), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: tokenDaURL, novaSenha }),
       })
       if (res.ok) {
         setMensagem('Senha redefinida com sucesso!')

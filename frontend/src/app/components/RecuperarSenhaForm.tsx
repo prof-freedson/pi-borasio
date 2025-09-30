@@ -4,68 +4,29 @@ import { useState } from 'react'
 
 export default function RecuperarSenhaForm() {
   const [email, setEmail] = useState('')
-  const [codigo, setCodigo] = useState(['', '', '', '', '', ''])
   const [mensagem, setMensagem] = useState('')
   const [carregando, setCarregando] = useState(false)
-  const [storedCodigo, setStoredCodigo] = useState('')
 
   const handleSubmitEmail = async (e: React.FormEvent) => {
     e.preventDefault()
     setCarregando(true)
     setMensagem('')
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const novoCodigo = Math.floor(100000 + Math.random() * 900000).toString()
-      setStoredCodigo(novoCodigo)
-      alert(`Código de verificação enviado para seu e-mail: ${novoCodigo}`)
-      setMensagem('Código de verificação enviado! Por favor, verifique a mensagem.')
+      const res = await fetch('http://localhost:8080/api/password-recovery/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      if (res.ok) {
+        setMensagem('E-mail de recuperação enviado! Verifique sua caixa de entrada.')
+      } else {
+        const data = await res.text()
+        setMensagem('Erro: ' + data)
+      }
     } catch {
       setMensagem('Erro ao solicitar recuperação. Tente novamente.')
     }
     setCarregando(false)
-  }
-
-  const handleVerificarCodigo = async (e: React.FormEvent) => {
-      e.preventDefault()
-      setCarregando(true)
-      const codigoVerificacao = codigo.join('')
-
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      if (codigoVerificacao === storedCodigo) {
-        setMensagem('Código verificado com sucesso! Redirecionando para a página de reset de senha...')
-        setTimeout(() => {
-          window.location.href = 'resetar-senha'
-        }, 2000)
-      } else {
-        setMensagem('Código inválido. Tente novamente.')
-      }
-    } catch {
-      setMensagem('Ocorreu um erro durante a verificação. Tente novamente.')
-    }
-
-    setCarregando(false)
-  }
-
-  const handleCodigoChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) return
-
-    const newCodigo = [...codigo]
-    newCodigo[index] = value
-    setCodigo(newCodigo)
-
-    if (value !== '' && index < 5) {
-      const nextInput = document.getElementById(`codigo-${index + 1}`) as HTMLInputElement
-      if (nextInput) nextInput.focus()
-    }
-  }
-
-  const handleCodigoKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && codigo[index] === '' && index > 0) {
-      const prevInput = document.getElementById(`codigo-${index - 1}`) as HTMLInputElement
-      if (prevInput) prevInput.focus()
-    }
   }
 
   return (
@@ -86,7 +47,7 @@ export default function RecuperarSenhaForm() {
           </div>
         )}
 
-        <form onSubmit={e => e.preventDefault()}>
+        <form onSubmit={handleSubmitEmail}>
           <div className="space-y-4">
             <div>
               <label className="block text-green-800 mb-1" htmlFor="email">
@@ -102,47 +63,13 @@ export default function RecuperarSenhaForm() {
                   required
                 />
                 <button
-                  type="button"
-                  onClick={handleSubmitEmail}
+                  type="submit"
                   disabled={carregando}
                   className={`bg-green-800 text-white py-3 px-4 rounded hover:bg-green-900 transition ${
                     carregando ? 'opacity-70 cursor-not-allowed' : ''
                   }`}
                 >
                   {carregando ? 'Enviando...' : 'Enviar'}
-                </button>
-              </div>
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-green-800 mb-2">
-                Código de verificação
-              </label>
-              <div className="flex justify-start space-x-2 mb-4">
-                {codigo.map((digit, index) => (
-                  <input
-                    key={index}
-                    id={`codigo-${index}`}
-                    type="text"
-                    maxLength={1}
-                    value={digit}
-                    onChange={e => handleCodigoChange(index, e.target.value)}
-                    onKeyDown={e => handleCodigoKeyDown(index, e)}
-                    className="w-12 h-12 border border-green-300 rounded text-center text-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                    required
-                  />
-                ))}
-              </div>
-              <div className="mt-4">
-                <button
-                  type="button"
-                  onClick={handleVerificarCodigo}
-                  disabled={carregando || codigo.some(d => d === '')}
-                  className={`w-full bg-green-800 text-white py-3 rounded hover:bg-green-900 transition ${
-                    carregando ? 'opacity-70 cursor-not-allowed' : ''
-                  }`}
-                >
-                  {carregando ? 'Verificando...' : 'Recuperar Senha'}
                 </button>
               </div>
             </div>
