@@ -1,41 +1,45 @@
 package com.borasio_back.backend.controller;
 
+import com.borasio_back.backend.dto.ChatDTO;
 import com.borasio_back.backend.model.entity.Chat;
 import com.borasio_back.backend.service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/chat")
+@RequestMapping("/chats")
 public class ChatController {
 
-    private final ChatService service;
+    @Autowired
+    private ChatService chatService;
 
-    public ChatController(ChatService service) {
-        this.service = service;
+    @PostMapping
+    public ResponseEntity<ChatDTO> salvar(@RequestBody ChatDTO dto) {
+        Chat chat = chatService.salvar(dto);
+        return ResponseEntity.ok(new ChatDTO(chat));
     }
 
     @GetMapping
-    public List<Chat> listarTodos() {
-        return service.listarTodos();
+    public ResponseEntity<List<ChatDTO>> listar() {
+        List<ChatDTO> chats = chatService.listarTodos().stream()
+                .map(ChatDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(chats);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Chat> buscarPorId(@PathVariable Integer id) {
-        return service.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public Chat salvar(@RequestBody Chat chat) {
-        return service.salvar(chat);
+    public ResponseEntity<ChatDTO> buscarPorId(@PathVariable Long id) {
+        Chat chat = chatService.buscarPorId(id);
+        return ResponseEntity.ok(new ChatDTO(chat));
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Integer id) {
-        service.deletar(id);
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        chatService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }
