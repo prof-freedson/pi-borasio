@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@djpfs/react-vlibras": "^2.0.2",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
@@ -17,7 +16,6 @@
     "@heroicons/react": "^2.2.0",
     "@react-google-maps/api": "^2.20.7",
     "@sentry/nextjs": "^10.9.0",
-    "@vue-a11y/vlibras": "^1.0.6",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.3",
     "leaflet": "^1.9.4",

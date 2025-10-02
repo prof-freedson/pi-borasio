@@ -11,7 +11,7 @@
 body {
   font-family: var(--font-poppins);
 }
-/* Estilo do botão do VLibras */
+/* VLibras removido */
 [vw-access-button].active {
   background-color: #2a5caa !important;
   width: 50px !important;
