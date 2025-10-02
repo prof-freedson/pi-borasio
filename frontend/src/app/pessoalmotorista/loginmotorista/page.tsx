@@ -35,7 +35,14 @@ export default function LoginPage() {
     try {
       // Simulação de chamada API
       await new Promise(resolve => setTimeout(resolve, 1000));
-      // Redirecionamento após login bem-sucedido
+      // Marca como logado localmente (para teste) e redireciona
+      try {
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
+        try { window.dispatchEvent(new CustomEvent('authChanged', { detail: { loggedIn: true } })); } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
       router.push('/motorista');
     } catch (err: unknown) {
       setError('Ocorreu um erro ao fazer login');
