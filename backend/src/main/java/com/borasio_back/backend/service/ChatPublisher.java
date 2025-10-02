@@ -1,22 +1,25 @@
 package com.borasio_back.backend.service;
 
-import com.borasio_back.backend.config.RabbitMQConfig;
 import com.borasio_back.backend.dto.ChatDTO;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ChatPublisher {
+    private final RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    @Value("${rabbitmq.exchange}")
+    private String exchangeName;
+
+    @Value("${rabbitmq.queue.chat}")
+    private String chatQueueName;
+
+    public ChatPublisher(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     public void publicarMensagem(ChatDTO dto) {
-        rabbitTemplate.convertAndSend(
-            RabbitMQConfig.EXCHANGE_NAME,
-            RabbitMQConfig.CHAT_QUEUE,
-            dto
-        );
+        rabbitTemplate.convertAndSend(exchangeName, chatQueueName, dto);
     }
 }

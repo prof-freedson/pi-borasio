@@ -1,30 +1,32 @@
 package com.borasio_back.backend.service;
 
-import com.borasio_back.backend.config.RabbitMQConfig;
 import com.borasio_back.backend.dto.PagamentoDTO;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PagamentoPublisher {
+	private final RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+	@Value("${rabbitmq.exchange}")
+	private String exchangeName;
 
-    public void publicarConfirmacao(PagamentoDTO dto) {
-        rabbitTemplate.convertAndSend(
-            RabbitMQConfig.EXCHANGE_NAME,
-            RabbitMQConfig.PAYMENT_CONFIRM_QUEUE,
-            dto
-        );
-    }
+	@Value("${rabbitmq.queue.payment.confirm}")
+	private String paymentConfirmQueueName;
 
-    public void publicarRecusa(PagamentoDTO dto) {
-        rabbitTemplate.convertAndSend(
-            RabbitMQConfig.EXCHANGE_NAME,
-            RabbitMQConfig.PAYMENT_REJECT_QUEUE,
-            dto
-        );
-    }
+	@Value("${rabbitmq.queue.payment.reject}")
+	private String paymentRejectQueueName;
+
+	public PagamentoPublisher(RabbitTemplate rabbitTemplate) {
+		this.rabbitTemplate = rabbitTemplate;
+	}
+
+	public void publicarConfirmacao(PagamentoDTO dto) {
+		rabbitTemplate.convertAndSend(exchangeName, paymentConfirmQueueName, dto);
+	}
+
+	public void publicarRecusa(PagamentoDTO dto) {
+		rabbitTemplate.convertAndSend(exchangeName, paymentRejectQueueName, dto);
+	}
 }
