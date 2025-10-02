@@ -2,18 +2,45 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline';
 
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const toggleMenu = useCallback(() => setIsMenuOpen(prev => !prev), []);
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
 
   useEffect(() => {
+    // read simple auth flag once
+    try {
+      const stored = localStorage.getItem('isLoggedIn');
+      setIsLoggedIn(stored === 'true');
+    } catch (e) {
+      // ignore
+    }
+
+    // listen for auth changes in the same tab
+    const handleAuthChanged = (ev: Event) => {
+      try {
+        const custom = ev as CustomEvent;
+        if (custom && custom.detail && typeof custom.detail.loggedIn !== 'undefined') {
+          setIsLoggedIn(Boolean(custom.detail.loggedIn));
+        } else {
+          // fallback read
+          setIsLoggedIn(localStorage.getItem('isLoggedIn') === 'true');
+        }
+      } catch (e) {
+        setIsLoggedIn(localStorage.getItem('isLoggedIn') === 'true');
+      }
+    };
+    window.addEventListener('authChanged', handleAuthChanged as EventListener);
+
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         closeMenu();
@@ -38,8 +65,21 @@ const Header = () => {
       document.body.style.overflow = '';
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscapeKey);
+      window.removeEventListener('authChanged', handleAuthChanged as EventListener);
     };
   }, [isMenuOpen, closeMenu]);
+
+  const handleLogout = useCallback(() => {
+    try {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userEmail');
+    } catch (e) {
+      // ignore
+    }
+    // notify other listeners and redirect
+    try { window.dispatchEvent(new CustomEvent('authChanged', { detail: { loggedIn: false } })); } catch (e) {}
+    window.location.href = '/';
+  }, [router]);
 
   return (
     <header className="bg-[#004d2b] text-white sticky top-0 z-50 shadow-md">
@@ -65,18 +105,29 @@ const Header = () => {
 
         {/* Auth Buttons Desktop */}
         <div className="hidden md:flex space-x-4">
-          <Link
-            href="/escolha-usuario?acao=login"
-            className="bg-white text-[#004d2b] font-semibold py-2 px-6 rounded hover:bg-yellow-400 transition"
-          >
-            Login
-          </Link>
-          <Link
-            href="/escolha-usuario?acao=cadastro"
-            className="bg-white text-[#004d2b] font-semibold py-2 px-6 rounded hover:bg-yellow-400 transition"
-          >
-            Cadastre-se
-          </Link>
+          {!isLoggedIn ? (
+            <>
+              <Link
+                href="/escolha-usuario?acao=login"
+                className="bg-white text-[#004d2b] font-semibold py-2 px-6 rounded hover:bg-yellow-400 transition"
+              >
+                Login
+              </Link>
+              <Link
+                href="/escolha-usuario?acao=cadastro"
+                className="bg-white text-[#004d2b] font-semibold py-2 px-6 rounded hover:bg-yellow-400 transition"
+              >
+                Cadastre-se
+              </Link>
+            </>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="bg-white text-[#004d2b] font-semibold py-2 px-6 rounded hover:bg-yellow-400 transition"
+            >
+              Sair
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -129,20 +180,36 @@ const Header = () => {
               </Link>
 
               <div className="flex space-x-4 mt-8">
-                <Link
-                  href="/escolha-usuario?acao=login"
-                  onClick={closeMenu}
-                  className="flex-1 bg-[#004d2b] text-white py-2 rounded text-center font-semibold hover:bg-yellow-400 hover:text-[#004d2b] transition"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/escolha-usuario?acao=cadastro"
-                  onClick={closeMenu}
-                  className="flex-1 bg-[#004d2b] text-white py-2 rounded text-center font-semibold hover:bg-yellow-400 hover:text-[#004d2b] transition"
-                >
-                  Cadastre-se
-                </Link>
+                {!isLoggedIn ? (
+                  <>
+                    <Link
+                      href="/escolha-usuario?acao=login"
+                      onClick={closeMenu}
+                      className="flex-1 bg-[#004d2b] text-white py-2 rounded text-center font-semibold hover:bg-yellow-400 hover:text-[#004d2b] transition"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/escolha-usuario?acao=cadastro"
+                      onClick={closeMenu}
+                      className="flex-1 bg-[#004d2b] text-white py-2 rounded text-center font-semibold hover:bg-yellow-400 hover:text-[#004d2b] transition"
+                    >
+                      Cadastre-se
+                    </Link>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => {
+                      closeMenu();
+                      // very simple logout
+                      try { localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userEmail'); } catch (e) {}
+                      window.location.href = '/';
+                    }}
+                    className="flex-1 bg-[#004d2b] text-white py-2 rounded text-center font-semibold hover:bg-yellow-400 hover:text-[#004d2b] transition"
+                  >
+                    Sair
+                  </button>
+                )}
         
               </div>
             </nav>

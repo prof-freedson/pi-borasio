@@ -75,7 +75,7 @@ const Hero = () => {
   };
 
   const efficiencyContent = {
-    title: "Eficiência Borasio",
+    title: "Eficiência Borasiô",
     desc: "Nosso aplicativo de caronas foi projetado para oferecer a melhor experiência em mobilidade urbana com máxima eficiência.",
     details: [
       "Tempo médio de espera reduzido em 40%",
@@ -249,7 +249,7 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Seção Eficiência Borasio */}
+          {/* Seção Eficiência Borasiô */}
           <div className="flex flex-col md:flex-row-reverse items-center gap-8 mb-8">
             {/* Conteúdo à direita */}
             <div className="flex-1 bg-gradient-to-r from-green-800 to-green-600 text-white rounded-lg overflow-hidden shadow-xl p-6 sm:p-10 flex flex-col justify-between h-full">
