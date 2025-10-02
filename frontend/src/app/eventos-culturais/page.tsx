@@ -113,7 +113,7 @@ export default function EventosSaoLuisPage() {
         address: 'Rua do Giz, 221 - Centro, São Luís - MA',
         category: 'Cultural',
         price: 'Grátis',
-        image: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=400&h=300&fit=crop',
+        image: 'https://escolaepocaserrana.com.br/wp-content/uploads/2023/06/bumba_meu_boi_20.06.2022.jpg',
         url: '#',
         type: 'gratuito',
         participants: 187
@@ -127,8 +127,8 @@ export default function EventosSaoLuisPage() {
         location: 'Ponta d\'Areia',
         address: 'Av. dos Holandeses - Ponta d\'Areia, São Luís - MA',
         category: 'Music',
-        price: 'R$ 25,00',
-        image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
+        price: 'Pago',
+        image: 'https://agazetadoacre.com/wp-content/uploads/2025/09/WhatsApp-Image-2025-09-19-at-09.00.53.webp',
         url: '#',
         type: 'pago',
         participants: 234
@@ -143,7 +143,7 @@ export default function EventosSaoLuisPage() {
         address: 'Av. dos Holandeses, São Luís - MA',
         category: 'Festival',
         price: 'Grátis',
-        image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?w=400&h=300&fit=crop',
+        image: 'https://viagemeturismo.abril.com.br/wp-content/uploads/2025/06/arubinha-arraial-do-cabo.jpg?quality=70&strip=info&w=414&h=280&crop=1',
         url: '#',
         type: 'gratuito',
         participants: 156
@@ -158,7 +158,7 @@ export default function EventosSaoLuisPage() {
         address: 'Rua da Palma, 502 - Centro, São Luís - MA',
         category: 'Education',
         price: 'Grátis',
-        image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop',
+        image: 'https://s2-g1.glbimg.com/8U5QglJTq4KccwfofXKIcj8CnjQ=/0x0:881x641/600x0/smart/filters:gifv():strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2022/L/p/gg5s7GSva0cMFYt63Rzw/foto1-prefeitura-de-sao-luis-abre-15a-edicao-da-feira-do-livro-nesta-segunda-feira-5-no-centro-de-convencoes-da-ufma.jpeg',
         url: '#',
         type: 'gratuito',
         participants: 89
@@ -172,8 +172,8 @@ export default function EventosSaoLuisPage() {
         location: 'Senac Culinary',
         address: 'Rua de Santaninha, 266 - Centro, São Luís - MA',
         category: 'Food & Drink',
-        price: 'R$ 80,00',
-        image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop',
+        price: 'Pago',
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1ZcEeQJ_2_nzKxFsLxyFCltH_VVA-jeJa6Q&s',
         url: '#',
         type: 'pago',
         participants: 45
@@ -188,7 +188,7 @@ export default function EventosSaoLuisPage() {
         address: 'Praça Dom Pedro II - Centro, São Luís - MA',
         category: 'Travel & Outdoor',
         price: 'Grátis',
-        image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop',
+        image: 'https://www.voltologo.net/wp-content/uploads/2023/02/centro-historico-de-sao-luis-dicas.jpg.webp',
         url: '#',
         type: 'gratuito',
         participants: 67
@@ -227,10 +227,7 @@ export default function EventosSaoLuisPage() {
               <Calendar className="w-4 h-4" />
               <span>Atualizado automaticamente</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full">
-              <Users className="w-4 h-4" />
-              <span>Eventbrite API</span>
-            </div>
+          
           </div>
         </div>
       </header>
@@ -337,7 +334,7 @@ export default function EventosSaoLuisPage() {
                           className="flex-1 bg-[#004d2b] hover:bg-green-800 text-white font-semibold py-3 px-4 rounded-lg transition-colors text-center flex items-center justify-center gap-2 text-sm"
                         >
                           <ExternalLink className="w-4 h-4" />
-                          {event.type === 'gratuito' ? 'Confirmar Presença' : 'Comprar Ingresso'}
+                          {event.type === 'gratuito' ? 'Pedir Corrida' : 'Pedir Corrida '}
                         </a>
                         <button className="bg-green-100 hover:bg-green-200 text-[#004d2b] p-3 rounded-lg transition-colors">
                           <Users className="w-4 h-4" />
@@ -365,16 +362,7 @@ export default function EventosSaoLuisPage() {
       </section>
 
       {/* Footer Informativo */}
-      <footer className="bg-gray-800 text-white py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-400">
-            Eventos fornecidos através da <a href="https://www.eventbrite.com/platform/api" className="text-green-300 hover:text-green-200 underline">Eventbrite API</a>
-          </p>
-          <p className="text-gray-500 text-sm mt-2">
-            Atualizado automaticamente • Dados em tempo real
-          </p>
-        </div>
-      </footer>
+      
     </div>
   );
 }
