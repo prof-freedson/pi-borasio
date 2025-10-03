@@ -119,7 +119,7 @@ export default function TransitoInteligentePage() {
             </div>
             <div className="flex justify-center">
               <img
-                src="/img/mapa-inteligente.png"
+                src="img/mapa-inteligente.jpg"
                 alt="Mapa com rotas inteligentes"
                 className="rounded-lg shadow-lg w-full max-w-[200px] md:max-w-[250px] h-auto"
               />
