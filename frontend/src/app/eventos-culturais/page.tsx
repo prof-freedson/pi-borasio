@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, MapPin, Users, DollarSign, Music, Star, ExternalLink } from 'lucide-react';
+import { Calendar, MapPin, Users, DollarSign, Music, Star, ExternalLink, Shield, CheckCircle, Eye, Users as UsersIcon, Map } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 // Interface para tipagem dos eventos
 interface Event {
@@ -23,6 +24,12 @@ interface Event {
 export default function EventosSaoLuisPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const fetchEventbriteEvents = async () => {
@@ -88,6 +95,12 @@ export default function EventosSaoLuisPage() {
     fetchEventbriteEvents();
   }, []);
 
+  // Função para redirecionar para a rota de corridas
+  const handlePedirCorrida = (event: Event) => {
+    // Redireciona para a rota de corridas com os dados do evento
+    router.push(`/corridas?evento=${encodeURIComponent(event.title)}&local=${encodeURIComponent(event.location)}`);
+  };
+
   // Imagem padrão baseada na categoria
   const getDefaultImage = (category: string) => {
     const images: { [key: string]: string } = {
@@ -143,7 +156,7 @@ export default function EventosSaoLuisPage() {
         address: 'Av. dos Holandeses, São Luís - MA',
         category: 'Festival',
         price: 'Grátis',
-        image: 'https://viagemeturismo.abril.com.br/wp-content/uploads/2025/06/arubinha-arraial-do-cabo.jpg?quality=70&strip=info&w=414&h=280&crop=1',
+        image: 'img/arraial_lagoa.jpg',
         url: '#',
         type: 'gratuito',
         participants: 156
@@ -211,6 +224,24 @@ export default function EventosSaoLuisPage() {
     selectedCategory === 'pago' ? events.filter(e => e.type === 'pago') :
     events.filter(e => e.category.toLowerCase().includes(selectedCategory));
 
+  // Formatação de data que funciona tanto no servidor quanto no cliente
+  const formatEventDate = (dateString: string, time: string) => {
+    if (!isClient) {
+      return `${time}`; // Retorna apenas o tempo no servidor
+    }
+    
+    try {
+      const date = new Date(dateString);
+      return `${date.toLocaleDateString('pt-BR', { 
+        weekday: 'short',
+        day: '2-digit',
+        month: 'short'
+      })} • ${time}`;
+    } catch {
+      return time;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       {/* Header */}
@@ -219,15 +250,98 @@ export default function EventosSaoLuisPage() {
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">
             Eventos em São Luís
           </h1>
-          <p className="text-xl text-green-100 max-w-2xl mx-auto">
+          <p className="text-xl text-green-100 max-w-2xl mx-auto mb-6">
             Descubra os melhores eventos culturais, shows e festivais da capital maranhense
           </p>
+          
+          {/* Seção Informativa sobre Eventos e Caronas */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6 text-left max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold mb-4 text-green-50">✨ Viva a Cultura de São Luís!</h2>
+            <p className="text-green-100 mb-4">
+              São Luís, a <strong>Ilha do Amor</strong>, é palco de uma rica cena cultural com <strong>festas tradicionais, 
+              shows de reggae, festivais de Bumba Meu Boi</strong> e muito mais. De eventos gratuitos na praça 
+              a grandes shows na orla, há sempre algo especial acontecerendo na cidade.
+            </p>
+            <p className="text-green-100 mb-4">
+              <strong>🚗 A carona solidária te leva com segurança</strong> para curtir os melhores eventos da cidade, 
+              evitando preocupações com estacionamento e trânsito, além de ser uma opção econômica e sustentável.
+            </p>
+          </div>
+
+          {/* Seção de Segurança - Focada em Eventos e Caronas */}
+          <div className="bg-gradient-to-br from-white to-green-50 rounded-2xl p-8 max-w-4xl mx-auto shadow-xl border border-green-100">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="bg-green-100 p-2 rounded-full">
+                    <Shield className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-800">Dicas de Segurança</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm border border-green-50">
+                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold text-gray-800 mb-1">Verifique o Motorista</h4>
+                      <p className="text-gray-600 text-sm">
+                        Confirme a foto, nome e placa do veículo antes de entrar na carona
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm border border-green-50">
+                    <Eye className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold text-gray-800 mb-1">Compartilhe seu Trajeto</h4>
+                      <p className="text-gray-600 text-sm">
+                        Avise amigos ou familiares sobre seu destino e horário estimado
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm border border-green-50">
+                    <UsersIcon className="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold text-gray-800 mb-1">Prefira Locais Movimentados</h4>
+                      <p className="text-gray-600 text-sm">
+                        Combine encontros em pontos conhecidos e bem iluminados para embarque
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm border border-green-50">
+                    <Map className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold text-gray-800 mb-1">Conheça o Evento</h4>
+                      <p className="text-gray-600 text-sm">
+                        Pesquise sobre o local do evento e tenha um plano de como chegar e sair
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex-1">
+                {isClient && (
+                  <div className="relative">
+                    <img 
+                      src="img/seguranca-eventos.png"
+                      alt="Dicas de segurança para eventos e caronas em São Luís" 
+                      className="w-full h-auto rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="mt-6 flex items-center justify-center gap-4 text-sm">
             <div className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full">
               <Calendar className="w-4 h-4" />
               <span>Atualizado automaticamente</span>
             </div>
-          
           </div>
         </div>
       </header>
@@ -305,11 +419,7 @@ export default function EventosSaoLuisPage() {
                         <div className="flex items-center gap-2 text-gray-500">
                           <Calendar className="w-4 h-4 flex-shrink-0" />
                           <span className="text-sm">
-                            {new Date(event.date).toLocaleDateString('pt-BR', { 
-                              weekday: 'short',
-                              day: '2-digit',
-                              month: 'short'
-                            })} • {event.time}
+                            {formatEventDate(event.date, event.time)}
                           </span>
                         </div>
                         <div className="flex items-start gap-2 text-gray-500">
@@ -327,15 +437,13 @@ export default function EventosSaoLuisPage() {
                       </div>
                       
                       <div className="flex gap-3">
-                        <a 
-                          href={event.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
+                        <button 
+                          onClick={() => handlePedirCorrida(event)}
                           className="flex-1 bg-[#004d2b] hover:bg-green-800 text-white font-semibold py-3 px-4 rounded-lg transition-colors text-center flex items-center justify-center gap-2 text-sm"
                         >
-                          <ExternalLink className="w-4 h-4" />
-                          {event.type === 'gratuito' ? 'Pedir Corrida' : 'Pedir Corrida '}
-                        </a>
+                          <Map className="w-4 h-4" />
+                          Pedir Corrida
+                        </button>
                         <button className="bg-green-100 hover:bg-green-200 text-[#004d2b] p-3 rounded-lg transition-colors">
                           <Users className="w-4 h-4" />
                         </button>
@@ -360,9 +468,6 @@ export default function EventosSaoLuisPage() {
           )}
         </div>
       </section>
-
-      {/* Footer Informativo */}
-      
     </div>
   );
 }
