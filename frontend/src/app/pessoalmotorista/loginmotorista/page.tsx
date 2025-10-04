@@ -3,11 +3,13 @@
 import { useRouter } from 'next/navigation';
 import { useState, FormEvent, ChangeEvent } from 'react';
 import * as Sentry from '@sentry/nextjs';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
@@ -92,14 +94,19 @@ export default function LoginPage() {
             <label className="block text-green-800 mb-1" htmlFor="senha">
               Senha
             </label>
-            <input
-              id="senha"
-              type="password"
-              value={password}
-              onChange={handlePasswordChange}
-              className="w-full border border-green-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-              required
-            />
+            <div className="relative">
+              <input
+                id="senha"
+                type={mostrarSenha ? "text" : "password"}
+                value={password}
+                onChange={handlePasswordChange}
+                className="w-full border border-green-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+              <button type="button" onClick={() => setMostrarSenha(!mostrarSenha)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+                {mostrarSenha ? <Eye size={20} /> : <EyeOff size={20} />}
+              </button>
+            </div>
           </div>
           <button
             type="submit"
