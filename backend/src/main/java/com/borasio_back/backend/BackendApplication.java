@@ -11,7 +11,7 @@ public class BackendApplication {
         // Carrega as variáveis do arquivo env.local e as define como propriedades do sistema
         // Isso deve ser feito ANTES de iniciar a aplicação Spring para que o
         // application.properties possa usar os valores.
-        Dotenv dotenv = Dotenv.configure().filename("env.local").ignoreIfMissing().load();
+        Dotenv dotenv = Dotenv.configure().filename(".env.local").ignoreIfMissing().load();
         dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
 
         SpringApplication.run(BackendApplication.class, args);

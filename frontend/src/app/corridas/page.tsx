@@ -279,7 +279,7 @@ export default function CorridasPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-50 to-yellow-50 flex flex-col items-center gap-6 p-4">
+  <main className="min-h-screen bg-gradient-to-b from-green-50 to-yellow-50 flex flex-col items-center gap-6 p-4">
       {/* Cabeçalho */}
       <div className="w-full max-w-4xl text-center">
         <h1 className="text-3xl font-bold text-green-900 mb-2">Encontre Sua Corrida</h1>
@@ -324,33 +324,33 @@ export default function CorridasPage() {
             <div className="flex flex-wrap justify-center gap-3">
               {abaAtiva === 'ilha' && (
                 <>
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     🕐 Horários Fixos
                   </span>
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     💰 Preços Especiais
                   </span>
                 </>
               )}
               {abaAtiva === 'evento' && (
                 <>
-                  <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     📅 Datas Específicas
                   </span>
-                  <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     🎫 Ideal para Shows
                   </span>
                 </>
               )}
               {abaAtiva === 'rural' && (
                 <>
-                  <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     🚜 Veículos Robustos
                   </span>
-                  <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     📦 Espaço para Cargas
                   </span>
-                  <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     🌄 Rotas Rurais
                   </span>
                 </>
@@ -380,12 +380,12 @@ export default function CorridasPage() {
             {/* Cabeçalho com informações do motorista */}
             <div className={`p-4 flex justify-between items-center text-white ${
               corrida.tipo === 'rural' 
-                ? 'bg-gradient-to-r from-amber-700 to-amber-600' 
+                ? 'bg-gradient-to-r from-green-800 to-green-600' 
                 : 'bg-gradient-to-r from-green-800 to-green-600'
             }`}>
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  corrida.tipo === 'rural' ? 'bg-amber-600' : 'bg-green-700'
+                  corrida.tipo === 'rural' ? 'bg-green-700' : 'bg-green-700'
                 }`}>
                   <span className="font-bold text-sm">
                     {corrida.motorista.split(' ')[0].charAt(0)}{corrida.motorista.split(' ')[1].charAt(0)}
@@ -409,7 +409,7 @@ export default function CorridasPage() {
             {(corrida.tipo === 'ilha' || corrida.tipo === 'evento' || corrida.tipo === 'rural') && (
               <div className={`px-5 py-2 border-b ${
                 corrida.tipo === 'rural' 
-                  ? 'bg-amber-50 border-amber-100 text-amber-800' 
+                  ? 'bg-green-50 border-green-100 text-green-800' 
                   : 'bg-green-50 border-green-100 text-green-800'
               }`}>
                 <div className="flex items-center justify-center gap-4 text-sm">
@@ -453,28 +453,22 @@ export default function CorridasPage() {
             <div className="p-5">
               <div className="flex items-start gap-4">
                 <div className="flex flex-col items-center pt-1">
-                  <div className={`w-3 h-3 rounded-full ${
-                    corrida.tipo === 'rural' ? 'bg-amber-600' : 'bg-green-600'
-                  } mb-1`}></div>
+                  <div className={`w-3 h-3 rounded-full bg-green-600 mb-1`}></div>
                   <div className={`w-0.5 h-8 ${
-                    corrida.tipo === 'rural' ? 'bg-amber-300' : 'bg-green-300'
+                    corrida.tipo === 'rural' ? 'bg-green-300' : 'bg-green-300'
                   }`}></div>
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-600"></div>
                 </div>
                 
                 <div className="flex-1">
                   <div className="mb-4">
                     <p className="text-sm text-gray-500">Partindo de</p>
-                    <p className={`font-semibold ${
-                      corrida.tipo === 'rural' ? 'text-amber-900' : 'text-green-900'
-                    }`}>{corrida.origem}</p>
+                    <p className="font-semibold text-green-900">{corrida.origem}</p>
                   </div>
                   
                   <div>
                     <p className="text-sm text-gray-500">Destino</p>
-                    <p className={`font-semibold ${
-                      corrida.tipo === 'rural' ? 'text-amber-900' : 'text-green-900'
-                    }`}>{corrida.destino}</p>
+                    <p className="font-semibold text-green-900">{corrida.destino}</p>
                   </div>
                 </div>
               </div>
@@ -495,7 +489,7 @@ export default function CorridasPage() {
                   onClick={() => handleSelectCorrida(corrida)}
                   className={`px-6 py-2 rounded-full font-medium transition-colors flex items-center gap-2 ${
                     corrida.tipo === 'rural'
-                      ? 'bg-amber-600 hover:bg-amber-700 text-white'
+                      ? 'bg-green-700 hover:bg-green-800 text-white'
                       : 'bg-green-700 hover:bg-green-800 text-white'
                   }`}
                 >
@@ -508,7 +502,7 @@ export default function CorridasPage() {
             {/* Informações do veículo */}
             <div className={`px-5 py-3 border-t ${
               corrida.tipo === 'rural' 
-                ? 'bg-amber-50 border-amber-100 text-amber-800' 
+                ? 'bg-green-50 border-green-100 text-green-800' 
                 : 'bg-green-50 border-green-100 text-green-800'
             }`}>
               <p className="text-sm text-center">{corrida.veiculo}</p>
@@ -545,7 +539,7 @@ export default function CorridasPage() {
             <span>Ponto de partida</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+            <div className="w-3 h-3 rounded-full bg-yellow-600"></div>
             <span>Destino</span>
           </div>
           <div className="flex items-center gap-2">

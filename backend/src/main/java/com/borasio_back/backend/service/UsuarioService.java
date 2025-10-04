@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.borasio_back.backend.exception.ResourceNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +31,9 @@ public class UsuarioService implements UserDetailsService {
     }
 
     // Alterado para Long
-    public Optional<Usuario> buscarPorId(Long id) {
-        return usuarioRepository.findById(id);
+    public Usuario buscarPorId(Long id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o ID: " + id));
     }
 
     public Optional<Usuario> buscarPorEmail(String email) {
