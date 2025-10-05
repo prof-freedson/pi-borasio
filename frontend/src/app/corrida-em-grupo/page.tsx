@@ -2,9 +2,11 @@
 
 import { ChevronLeft, Users, Share2, DollarSign, Clock, Shield, Car, MapPin, Star, Heart } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function CorridaEmGrupoPage() {
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState('offer');
 
     const benefits = [
@@ -81,13 +83,15 @@ export default function CorridaEmGrupoPage() {
         }
     ];
 
-    // Função para ativar corrida em grupo
+    // Função atualizada para usar o router do Next.js
     const ativarCorridaGrupo = (type = '') => {
-        const params = new URLSearchParams();
-        if (type) params.append('type', type);
-        params.append('group', 'true');
-        
-        window.location.href = `/corridas?${params.toString()}`;
+        if (type === 'offer') {
+            // Vai para a página de oferecer carona
+            router.push('/oferecer-carona');
+        } else {
+            // Vai para a página de corridas com filtro de grupo
+            router.push('/corridas?group=true');
+        }
     };
 
     return (
