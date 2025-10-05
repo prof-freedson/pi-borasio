@@ -331,12 +331,12 @@ export default function CorridasPage() {
     switch (tipo) {
       case 'rural':
         return {
-          bg: 'from-amber-700 to-amber-600',
-          lightBg: 'bg-amber-50',
-          border: 'border-amber-100',
-          text: 'text-amber-800',
-          button: 'bg-amber-600 hover:bg-amber-700',
-          dot: 'bg-amber-600'
+          bg: 'from-green-800 to-green-600',
+          lightBg: 'bg-green-50',
+          border: 'border-green-100',
+          text: 'text-green-800',
+          button: 'bg-green-700 hover:bg-green-800',
+          dot: 'bg-green-600'
         };
       case 'grupo':
         return {
@@ -387,8 +387,6 @@ export default function CorridasPage() {
                 abaAtiva === tipo
                   ? tipo === 'grupo' 
                     ? 'bg-emerald-600 text-white shadow-lg'
-                    : tipo === 'rural'
-                    ? 'bg-amber-600 text-white shadow-lg'
                     : 'bg-green-600 text-white shadow-lg'
                   : 'text-green-700 hover:bg-green-50'
               }`}
@@ -419,31 +417,34 @@ export default function CorridasPage() {
             <div className="flex flex-wrap justify-center gap-3">
               {abaAtiva === 'ilha' && (
                 <>
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     🕐 Horários Fixos
                   </span>
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     💰 Preços Especiais
                   </span>
                 </>
               )}
               {abaAtiva === 'evento' && (
                 <>
-                  <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     📅 Datas Específicas
                   </span>
-                  <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     🎫 Ideal para Shows
                   </span>
                 </>
               )}
               {abaAtiva === 'rural' && (
                 <>
-                  <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     🚜 Veículos Robustos
                   </span>
-                  <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     📦 Espaço para Cargas
+                  </span>
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                    🌄 Rotas Rurais
                   </span>
                 </>
               )}
@@ -657,7 +658,7 @@ export default function CorridasPage() {
             <span>Ponto de partida</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+            <div className="w-3 h-3 rounded-full bg-yellow-600"></div>
             <span>Destino</span>
           </div>
           <div className="flex items-center gap-2">
@@ -666,7 +667,7 @@ export default function CorridasPage() {
           </div>
           {abaAtiva === 'rural' && (
             <div className="flex items-center gap-2">
-              <Trees className="w-4 h-4 text-amber-600" />
+              <Trees className="w-4 h-4 text-green-600" />
               <span>Zona Rural</span>
             </div>
           )}
