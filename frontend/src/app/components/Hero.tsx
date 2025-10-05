@@ -10,6 +10,8 @@ import {
   Wifi,
   Terminal,
   TrendingUp,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -30,6 +32,48 @@ const Hero = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  
+  // Estados para o carrossel
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // Imagens do carrossel (substitua pelos caminhos das suas imagens)
+  const carouselImages = [
+    "/carousel-1.png",
+    "/carousel-2.png",
+    "/carousel-3.png",
+    "/carousel-4.png"
+  ];
+
+  // Efeito para o carrossel automático
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, carouselImages.length]);
+
+  // Navegação do carrossel
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -136,8 +180,87 @@ const Hero = () => {
   return (
     <section
       id="hero"
-      className="bg-green-50 px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20 relative"
+      className="bg-green-50 relative"
     >
+      {/* Carrossel de Imagens de Fundo */}
+      <div className="relative h-96 sm:h-[500px] lg:h-[600px] overflow-hidden">
+        {/* Slides */}
+        <div className="relative w-full h-full">
+          {carouselImages.map((image, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                index === currentSlide ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <img
+                src={image}
+                alt={`Carrossel ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+              {/* Overlay escuro para melhor contraste do texto */}
+              <div className="absolute inset-0 bg-black/40"></div>
+            </div>
+          ))}
+        </div>
+
+        {/* Conteúdo sobreposto no carrossel */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+            Mobilidade com <br className="hidden sm:block" />
+            Jeito Maranhense
+          </h1>
+
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-200 mb-8 max-w-2xl">
+            Um app de carona mais humano, mais seguro e mais local.
+          </p>
+
+          <button
+            ref={buttonRef}
+            onClick={openModal}
+            className="bg-[#004d2b] hover:bg-[#003823] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 shadow-md focus:ring-2 focus:ring-offset-2 focus:ring-[#004d2b] focus:outline-none flex items-center gap-2"
+            aria-label="Abrir menu de navegação"
+          >
+            <Zap className="w-5 h-5" />
+            Saiba mais
+          </button>
+        </div>
+
+        {/* Controles do carrossel */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-colors duration-300"
+          aria-label="Slide anterior"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-colors duration-300"
+          aria-label="Próximo slide"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+
+        {/* Indicadores */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {carouselImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentSlide 
+                  ? 'bg-white scale-125' 
+                  : 'bg-white/50 hover:bg-white/70'
+              }`}
+              aria-label={`Ir para slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Modal (mantido igual) */}
       {isModalOpen && (
         <div
           role="dialog"
@@ -191,122 +314,106 @@ const Hero = () => {
         </div>
       )}
 
-      <div className="flex flex-col items-center text-center max-w-7xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#004d2b] mb-4 leading-tight">
-          Mobilidade com <br className="hidden sm:block" />
-          Jeito Maranhense
-        </h1>
-
-        <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl">
-          Um app de carona mais humano, mais seguro e mais local.
-        </p>
-
-        <button
-          ref={buttonRef}
-          onClick={openModal}
-          className="bg-[#004d2b] hover:bg-[#003823] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 shadow-md focus:ring-2 focus:ring-offset-2 focus:ring-[#004d2b] focus:outline-none flex items-center gap-2"
-          aria-label="Abrir menu de navegação"
-        >
-          <Zap className="w-5 h-5" />
-          Saiba mais
-        </button>
-
-        {/* Seção Foco Regional */}
-        <div className="mt-10 w-full flex flex-col gap-8">
-          <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
-            {/* Conteúdo à esquerda */}
-            <div className="flex-1 bg-gradient-to-r from-green-600 to-green-800 rounded-lg overflow-hidden shadow-xl p-6 sm:p-10 flex flex-col justify-between h-full">
-              <div>
-                <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                  {regionalContent.icon}
-                  <h3 className="text-2xl sm:text-3xl font-bold text-yellow-400">
-                    {regionalContent.title}
-                  </h3>
+      {/* Conteúdo principal (mantido igual) */}
+      <div className="px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20">
+        <div className="flex flex-col items-center text-center max-w-7xl mx-auto">
+          {/* Seção Foco Regional */}
+          <div className="mt-10 w-full flex flex-col gap-8">
+            <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
+              {/* Conteúdo à esquerda */}
+              <div className="flex-1 bg-gradient-to-r from-green-600 to-green-800 rounded-lg overflow-hidden shadow-xl p-6 sm:p-10 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center gap-4 mb-4 sm:mb-6">
+                    {regionalContent.icon}
+                    <h3 className="text-2xl sm:text-3xl font-bold text-yellow-400">
+                      {regionalContent.title}
+                    </h3>
+                  </div>
+                  <p className="text-white mb-4 sm:mb-6 text-base sm:text-lg">
+                    {regionalContent.desc}
+                  </p>
+                  <ul className="space-y-2 sm:space-y-3 text-amber-50 text-sm sm:text-base">
+                    {regionalContent.details.map((detail, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-yellow-300 text-xl">•</span>
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <p className="text-white mb-4 sm:mb-6 text-base sm:text-lg">
-                  {regionalContent.desc}
-                </p>
-                <ul className="space-y-2 sm:space-y-3 text-amber-50 text-sm sm:text-base">
-                  {regionalContent.details.map((detail, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-yellow-300 text-xl">•</span>
-                      <span>{detail}</span>
-                    </li>
-                  ))}
-                </ul>
+              </div>
+              {/* Imagem à direita */}
+              <div className="flex-1 flex justify-center items-center">
+                <div className="rounded-xl overflow-hidden aspect-[16/9] border border-white/10 w-full max-w-md">
+                  <img
+                    src="/img/carro.png"
+                    alt="Mobilidade urbana em São Luís"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
               </div>
             </div>
-            {/* Imagem à direita */}
-            <div className="flex-1 flex justify-center items-center">
-              <div className="rounded-xl overflow-hidden aspect-[16/9] border border-white/10 w-full max-w-md">
-                <img
-                  src="img/carro.png"
-                  alt="Mobilidade urbana em São Luís"
-                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                  loading="lazy"
-                />
+
+            {/* Seção Eficiência Borasiô */}
+            <div className="flex flex-col md:flex-row-reverse items-center gap-8 mb-8">
+              {/* Conteúdo à direita */}
+              <div className="flex-1 bg-gradient-to-r from-green-800 to-green-600 text-white rounded-lg overflow-hidden shadow-xl p-6 sm:p-10 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center gap-4 mb-4 sm:mb-6">
+                    {efficiencyContent.icon}
+                    <h3 className="text-2xl sm:text-3xl font-bold text-yellow-400">
+                      {efficiencyContent.title}
+                    </h3>
+                  </div>
+                  <p className="mb-4 sm:mb-6 text-base sm:text-lg">
+                    {efficiencyContent.desc}
+                  </p>
+                  <ul className="space-y-2 sm:space-y-3 text-amber-50 text-sm sm:text-base">
+                    {efficiencyContent.details.map((detail, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-yellow-300 text-xl">•</span>
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              {/* Imagem à esquerda */}
+              <div className="flex-1 flex justify-center items-center">
+                <div className="rounded-xl overflow-hidden aspect-[4/3] border border-white/10 w-full max-w-md">
+                  <img
+                    src="/img/mobilidade-app.png"
+                    alt="Aplicativo Borasio eficiente"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Seção Eficiência Borasiô */}
-          <div className="flex flex-col md:flex-row-reverse items-center gap-8 mb-8">
-            {/* Conteúdo à direita */}
-            <div className="flex-1 bg-gradient-to-r from-green-800 to-green-600 text-white rounded-lg overflow-hidden shadow-xl p-6 sm:p-10 flex flex-col justify-between h-full">
-              <div>
-                <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                  {efficiencyContent.icon}
-                  <h3 className="text-2xl sm:text-3xl font-bold text-yellow-400">
-                    {efficiencyContent.title}
-                  </h3>
+          {/* Funcionalidades */}
+          <h3 className="text-2xl sm:text-3xl font-bold text-[#004d2b] mb-6 text-center">
+            Funcionalidades Inovadoras
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {linkItems.map((item, index) => (
+              <a
+                key={index}
+                href={`/${item.title}`}
+                className="bg-white rounded-xl p-6 flex flex-col items-center text-center shadow hover:shadow-lg transition duration-300 group hover:scale-105"
+              >
+                <div className="mb-4 text-[#004d2b] group-hover:text-[#002d1a] transition-colors duration-300">
+                  {item.icon}
                 </div>
-                <p className="mb-4 sm:mb-6 text-base sm:text-lg">
-                  {efficiencyContent.desc}
-                </p>
-                <ul className="space-y-2 sm:space-y-3 text-amber-50 text-sm sm:text-base">
-                  {efficiencyContent.details.map((detail, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-yellow-300 text-xl">•</span>
-                      <span>{detail}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            {/* Imagem à esquerda */}
-            <div className="flex-1 flex justify-center items-center">
-              <div className="rounded-xl overflow-hidden aspect-[4/3] border border-white/10 w-full max-w-md">
-                <img
-                  src="img/mobilidade-app.png"
-                  alt="Aplicativo Borasio eficiente"
-                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-            </div>
+                <h3 className="text-base sm:text-lg font-bold text-[#004d2b] mb-2 group-hover:text-[#003823] transition-colors">
+                  {item.displayTitle || item.title}
+                </h3>
+                <p className="text-sm sm:text-base text-gray-600">{item.desc}</p>
+              </a>
+            ))}
           </div>
-        </div>
-
-        {/* Funcionalidades */}
-        <h3 className="text-2xl sm:text-3xl font-bold text-[#004d2b] mb-6 text-center">
-          Funcionalidades Inovadoras
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {linkItems.map((item, index) => (
-            <a
-              key={index}
-              href={`/${item.title}`}
-              className="bg-white rounded-xl p-6 flex flex-col items-center text-center shadow hover:shadow-lg transition duration-300 group hover:scale-105"
-            >
-              <div className="mb-4 text-[#004d2b] group-hover:text-[#002d1a] transition-colors duration-300">
-                {item.icon}
-              </div>
-              <h3 className="text-base sm:text-lg font-bold text-[#004d2b] mb-2 group-hover:text-[#003823] transition-colors">
-                {item.displayTitle || item.title}
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600">{item.desc}</p>
-            </a>
-          ))}
         </div>
       </div>
     </section>
