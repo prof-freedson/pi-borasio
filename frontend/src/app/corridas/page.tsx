@@ -22,10 +22,29 @@ type Corrida = {
   pessoas?: number;
 };
 
+// Função para carregar corridas do localStorage
+const getCorridasDoLocalStorage = (): Corrida[] => {
+  if (typeof window === 'undefined') return [];
+  
+  try {
+    const corridasSalvas = localStorage.getItem('corridasOferecidas');
+    return corridasSalvas ? JSON.parse(corridasSalvas) : [];
+  } catch (error) {
+    console.error('Erro ao carregar corridas do localStorage:', error);
+    return [];
+  }
+};
+
 export default function CorridasPage() {
   const router = useRouter();
   const [abaAtiva, setAbaAtiva] = useState<'geral' | 'ilha' | 'evento' | 'rural' | 'grupo'>('geral');
   const [destinoEsperado] = useState("UFMA");
+  const [corridasLocais, setCorridasLocais] = useState<Corrida[]>([]);
+
+  // Carregar corridas do localStorage quando o componente montar
+  useEffect(() => {
+    setCorridasLocais(getCorridasDoLocalStorage());
+  }, []);
 
   // Verificar se veio da página rural ou grupo
   useEffect(() => {
@@ -48,7 +67,7 @@ export default function CorridasPage() {
     }, 500);
   }, []);
 
-  const corridas: Corrida[] = [
+  const corridasPreDefinidas: Corrida[] = [
     {
       id: 1,
       origem: "Terminal Cohama",
@@ -257,7 +276,9 @@ export default function CorridasPage() {
     }
   ];
 
-  const corridasFiltradas = corridas.filter(corrida => corrida.tipo === abaAtiva);
+  // Combinar corridas pré-definidas com as do localStorage
+  const todasCorridas = [...corridasPreDefinidas, ...corridasLocais];
+  const corridasFiltradas = todasCorridas.filter(corrida => corrida.tipo === abaAtiva);
 
   const handleSelectCorrida = (corrida: Corrida) => {
     // Validação do Sentry mantida
@@ -328,44 +349,15 @@ export default function CorridasPage() {
   };
 
   const getCorridaColor = (tipo: string) => {
-    switch (tipo) {
-      case 'rural':
-        return {
-          bg: 'from-green-800 to-green-600',
-          lightBg: 'bg-green-50',
-          border: 'border-green-100',
-          text: 'text-green-800',
-          button: 'bg-green-700 hover:bg-green-800',
-          dot: 'bg-green-600'
-        };
-      case 'grupo':
-        return {
-          bg: 'from-emerald-700 to-emerald-600',
-          lightBg: 'bg-emerald-50',
-          border: 'border-emerald-100',
-          text: 'text-emerald-800',
-          button: 'bg-emerald-600 hover:bg-emerald-700',
-          dot: 'bg-emerald-600'
-        };
-      case 'ilha':
-        return {
-          bg: 'from-green-800 to-green-600',
-          lightBg: 'bg-green-50',
-          border: 'border-green-100',
-          text: 'text-green-800',
-          button: 'bg-green-700 hover:bg-green-800',
-          dot: 'bg-green-600'
-        };
-      default:
-        return {
-          bg: 'from-green-800 to-green-600',
-          lightBg: 'bg-green-50',
-          border: 'border-green-100',
-          text: 'text-green-800',
-          button: 'bg-green-700 hover:bg-green-800',
-          dot: 'bg-green-600'
-        };
-    }
+    // AGORA TODOS OS TIPOS USAM COR VERDE
+    return {
+      bg: 'from-green-800 to-green-600',
+      lightBg: 'bg-green-50',
+      border: 'border-green-100',
+      text: 'text-green-800',
+      button: 'bg-green-700 hover:bg-green-800',
+      dot: 'bg-green-600'
+    };
   };
 
   return (
@@ -385,9 +377,7 @@ export default function CorridasPage() {
               onClick={() => setAbaAtiva(tipo)}
               className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 whitespace-nowrap min-w-[120px] ${
                 abaAtiva === tipo
-                  ? tipo === 'grupo' 
-                    ? 'bg-emerald-600 text-white shadow-lg'
-                    : 'bg-green-600 text-white shadow-lg'
+                  ? 'bg-green-600 text-white shadow-lg' // TODOS VERDE AGORA
                   : 'text-green-700 hover:bg-green-50'
               }`}
             >
@@ -450,13 +440,13 @@ export default function CorridasPage() {
               )}
               {abaAtiva === 'grupo' && (
                 <>
-                  <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     💰 Economia Compartilhada
                   </span>
-                  <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     👥 Até 70% de Desconto
                   </span>
-                  <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                     🤝 Viagem Social
                   </span>
                 </>
@@ -572,7 +562,7 @@ export default function CorridasPage() {
                 <div className="flex items-start gap-4">
                   <div className="flex flex-col items-center pt-1">
                     <div className={`w-3 h-3 rounded-full ${colors.dot} mb-1`}></div>
-                    <div className={`w-0.5 h-8 ${colors.lightBg.replace('bg-', 'bg-').replace('-50', '-300')}`}></div>
+                    <div className={`w-0.5 h-8 bg-green-300`}></div>
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
                   </div>
                   
@@ -600,7 +590,7 @@ export default function CorridasPage() {
                       <span>{corrida.assentos} assento(s)</span>
                     </div>
                     {corrida.tipo === 'grupo' && corrida.economia && (
-                      <div className="flex items-center gap-1 text-emerald-600 font-semibold">
+                      <div className="flex items-center gap-1 text-green-600 font-semibold">
                         <span>💰 {corrida.economia} economia</span>
                       </div>
                     )}
@@ -673,7 +663,7 @@ export default function CorridasPage() {
           )}
           {abaAtiva === 'grupo' && (
             <div className="flex items-center gap-2">
-              <Share2 className="w-4 h-4 text-emerald-600" />
+              <Share2 className="w-4 h-4 text-green-600" />
               <span>Corrida Compartilhada</span>
             </div>
           )}
