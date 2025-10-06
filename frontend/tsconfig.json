@@ -17,18 +17,15 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".", // Certifique-se de que baseUrl está definido
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "src/*"
-      ], // Mapeando o alias '@' para a pasta src
-      "@types/*": [
-        "src/@types/*"
-      ] // Mapeando o alias '@types' para a pasta src/@types
+      ]
     },
     "typeRoots": [
       "./node_modules/@types",
-      "./src/@types" // Adicionando a pasta src/@types para os tipos
+      "./src/types" // ✅ Corrigido: aponta para src/types
     ],
     "plugins": [
       {
@@ -41,7 +38,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/@types/global.d.ts" // Certifique-se de incluir o arquivo global.d.ts aqui
+    "src/types/**/*.d.ts" // ✅ Corrigido: inclui todos os arquivos .d.ts da pasta types
   ],
   "exclude": [
     "node_modules"
