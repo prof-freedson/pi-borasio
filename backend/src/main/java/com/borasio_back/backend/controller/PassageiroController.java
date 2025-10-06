@@ -40,19 +40,22 @@ public class PassageiroController {
 
     @PostMapping
     public ResponseEntity<PassageiroDTO> salvar(@RequestBody PassageiroDTO dto) {
-        return usuarioService.buscarPorId(dto.getUsuarioId())
-                .map(usuario -> {
-                    Passageiro passageiro = Passageiro.builder()
-                            .usuario(usuario)
-                            .cpf(dto.getCpf())
-                            .endereco(dto.getEndereco())
-                            .telefone(dto.getTelefone())
-                            .preferencias(dto.getPreferencias())
-                            .build();
-                    Passageiro salvo = passageiroService.salvar(passageiro);
-                    return ResponseEntity.ok(new PassageiroDTO(salvo));
-                })
-                .orElse(ResponseEntity.badRequest().build());
+        // Ajuste: buscarPorId deve retornar Optional<Usuario>
+        // Se não retornar, adapte conforme o retorno real do método
+        var usuario = usuarioService.buscarPorId(dto.getUsuarioId());
+        if (usuario != null) {
+            Passageiro passageiro = Passageiro.builder()
+                    .usuario(usuario)
+                    .cpf(dto.getCpf())
+                    .endereco(dto.getEndereco())
+                    .telefone(dto.getTelefone())
+                    .preferencias(dto.getPreferencias())
+                    .build();
+            Passageiro salvo = passageiroService.salvar(passageiro);
+            return ResponseEntity.ok(new PassageiroDTO(salvo));
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")
