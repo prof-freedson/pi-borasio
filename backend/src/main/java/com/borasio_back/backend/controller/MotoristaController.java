@@ -43,9 +43,10 @@ public class MotoristaController {
     // Salvar novo motorista
     @PostMapping
     public ResponseEntity<MotoristaDTO> salvar(@RequestBody MotoristaDTO dto) {
-        Usuario usuario = usuarioService.buscarPorId(dto.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
+        Usuario usuario = usuarioService.buscarPorId(dto.getUsuarioId());
+        if (usuario == null) {
+            return ResponseEntity.badRequest().build();
+        }
         Motorista motorista = Motorista.builder()
                 .usuario(usuario)
                 .cnh(dto.getCnh())
@@ -59,7 +60,6 @@ public class MotoristaController {
                 .telefone(dto.getTelefone())
                 .endereco(dto.getEndereco())
                 .build();
-
         Motorista salvo = motoristaService.salvar(motorista);
         return ResponseEntity.ok(new MotoristaDTO(salvo));
     }
