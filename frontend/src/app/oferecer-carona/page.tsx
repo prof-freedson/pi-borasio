@@ -12,7 +12,8 @@ import {
   ArrowLeft,
   User,
   Phone,
-  CheckCircle
+  CheckCircle,
+  Snowflake
 } from "lucide-react"
 
 type FormData = {
@@ -27,6 +28,8 @@ type FormData = {
   data: string
   horario: string
   observacoes: string
+  arCondicionado: boolean
+  tipo: 'geral' | 'ilha' | 'evento' | 'rural' | 'grupo'
 }
 
 export default function OferecerCaronaPage() {
@@ -34,6 +37,7 @@ export default function OferecerCaronaPage() {
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [tipoCarona, setTipoCarona] = useState<'geral' | 'grupo'>('geral')
   
   const [formData, setFormData] = useState<FormData>({
     motorista: "",
@@ -46,10 +50,12 @@ export default function OferecerCaronaPage() {
     placa: "",
     data: "",
     horario: "",
-    observacoes: ""
+    observacoes: "",
+    arCondicionado: false,
+    tipo: 'geral'
   })
 
-  const handleInputChange = (field: keyof FormData, value: string | number) => {
+  const handleInputChange = (field: keyof FormData, value: string | number | boolean) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -68,7 +74,7 @@ export default function OferecerCaronaPage() {
         ? formData.preco 
         : `R$ ${formData.preco}`
       
-      // Criar nova corrida no formato correto
+      // Criar nova corrida no formato CORRETO para grupos
       const novaCorrida = {
         id: Date.now(),
         origem: formData.origem,
@@ -76,13 +82,19 @@ export default function OferecerCaronaPage() {
         assentos: formData.assentos,
         preco: precoFormatado,
         motorista: formData.motorista,
-        avaliacao: 5.0,
-        tempoEstimado: "15 min", // Poderia ser calculado baseado na distância
+        avaliacao: 5.0, // Nova corrida começa com avaliação máxima
+        tempoEstimado: "15 min",
         veiculo: `${formData.veiculo} - ${formData.placa}`,
-        tipo: 'geral' as const,
-        // Campos opcionais para manter compatibilidade
+        tipo: tipoCarona, // Usa o tipo selecionado
+        arCondicionado: formData.arCondicionado,
         horario: formData.horario,
-        data: formData.data
+        data: formData.data,
+        observacoes: formData.observacoes,
+        // Campos específicos para grupos
+        ...(tipoCarona === 'grupo' && {
+          pessoas: Math.floor(Math.random() * 3) + 2, // 2-4 pessoas no grupo
+          economia: `R$ ${(Math.random() * 15 + 5).toFixed(2).replace('.', ',')}` // Economia de R$ 5-20
+        })
       }
       
       // Salvar no localStorage
@@ -92,7 +104,12 @@ export default function OferecerCaronaPage() {
       setIsSuccess(true)
       
       setTimeout(() => {
-        router.push('/corridas')
+        // Redirecionar para a página de corridas na aba correta
+        if (tipoCarona === 'grupo') {
+          router.push('/corridas?group=true')
+        } else {
+          router.push('/corridas')
+        }
       }, 3000)
       
     } catch (error) {
@@ -117,7 +134,7 @@ export default function OferecerCaronaPage() {
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-green-900 mb-4">Carona Oferecida!</h1>
           <p className="text-green-700 mb-6">
-            Sua carona foi cadastrada com sucesso e já está disponível para outros passageiros.
+            Sua carona {tipoCarona === 'grupo' ? 'para o grupo' : ''} foi cadastrada com sucesso e já está disponível.
           </p>
           <div className="animate-pulse text-sm text-green-600">
             Redirecionando para a página de corridas...
@@ -144,6 +161,45 @@ export default function OferecerCaronaPage() {
           </div>
         </div>
 
+        {/* Seletor de Tipo de Carona */}
+        <div className="bg-white rounded-2xl shadow-md p-6 mb-6">
+          <h2 className="text-lg font-bold text-green-900 mb-4">Tipo de Carona</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setTipoCarona('geral')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                tipoCarona === 'geral'
+                  ? 'border-green-500 bg-green-50 text-green-700'
+                  : 'border-green-200 text-green-600 hover:border-green-300'
+              }`}
+            >
+              <div className="text-center">
+                <div className="text-2xl mb-2">🚗</div>
+                <div className="font-semibold">Carona Geral</div>
+                <div className="text-sm mt-1">Para qualquer pessoa</div>
+              </div>
+            </button>
+            
+            <button
+              type="button"
+              onClick={() => setTipoCarona('grupo')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                tipoCarona === 'grupo'
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-blue-200 text-blue-600 hover:border-blue-300'
+              }`}
+            >
+              <div className="text-center">
+                <div className="text-2xl mb-2">👥</div>
+                <div className="font-semibold">Carona em Grupo</div>
+                <div className="text-sm mt-1">Para grupos específicos</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Resto do código permanece igual... */}
         {/* Progress Steps */}
         <div className="bg-white rounded-2xl shadow-md p-6 mb-6">
           <div className="flex items-center justify-between mb-8">
@@ -213,6 +269,16 @@ export default function OferecerCaronaPage() {
                   placeholder="(98) 99999-9999"
                 />
               </div>
+
+              {tipoCarona === 'grupo' && (
+                <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                  <h3 className="font-semibold text-blue-900 mb-2">👥 Carona em Grupo</h3>
+                  <p className="text-sm text-blue-700">
+                    Esta carona será destinada para grupos específicos. Você poderá definir os grupos 
+                    após o cadastro inicial.
+                  </p>
+                </div>
+              )}
 
               <div className="bg-green-50 p-4 rounded-xl border border-green-200">
                 <h3 className="font-semibold text-green-900 mb-2">📞 Seus contatos</h3>
@@ -345,6 +411,45 @@ export default function OferecerCaronaPage() {
                 </div>
               </div>
 
+              {/* Opção de Ar-Condicionado */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-green-900 mb-4">
+                  <Snowflake className="w-4 h-4" />
+                  Ar-Condicionado
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    onClick={() => handleInputChange('arCondicionado', true)}
+                    className={`p-3 rounded-xl border-2 transition-all ${
+                      formData.arCondicionado
+                        ? 'border-green-500 bg-green-50 text-green-700'
+                        : 'border-green-200 text-green-600 hover:border-green-300'
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className="font-semibold">✅ Sim</div>
+                      <div className="text-sm mt-1">Com ar-condicionado</div>
+                    </div>
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={() => handleInputChange('arCondicionado', false)}
+                    className={`p-3 rounded-xl border-2 transition-all ${
+                      !formData.arCondicionado
+                        ? 'border-gray-400 bg-gray-50 text-gray-700'
+                        : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className="font-semibold">❌ Não</div>
+                      <div className="text-sm mt-1">Sem ar-condicionado</div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-green-900 mb-2">
                   <DollarSign className="w-4 h-4" />
@@ -379,13 +484,36 @@ export default function OferecerCaronaPage() {
                 />
               </div>
 
-              <div className="bg-green-50 p-4 rounded-xl border border-green-200">
-                <h3 className="font-semibold text-green-900 mb-2">✅ Sua carona será publicada em:</h3>
-                <p className="text-sm text-green-700 mb-2 font-medium">
-                  🟢 <span className="text-green-900">Corridas Gerais</span>
+              <div className={`p-4 rounded-xl border ${
+                tipoCarona === 'grupo' 
+                  ? 'bg-blue-50 border-blue-200' 
+                  : 'bg-green-50 border-green-200'
+              }`}>
+                <h3 className={`font-semibold mb-2 ${
+                  tipoCarona === 'grupo' ? 'text-blue-900' : 'text-green-900'
+                }`}>
+                  {tipoCarona === 'grupo' ? '👥 Sua carona em grupo será publicada em:' : '✅ Sua carona será publicada em:'}
+                </h3>
+                <p className={`text-sm mb-2 font-medium ${
+                  tipoCarona === 'grupo' ? 'text-blue-700' : 'text-green-700'
+                }`}>
+                  {tipoCarona === 'grupo' ? (
+                    <>
+                      🟢 <span className="text-blue-900">Corridas em Grupo</span>
+                    </>
+                  ) : (
+                    <>
+                      🟢 <span className="text-green-900">Corridas Gerais</span>
+                    </>
+                  )}
                 </p>
-                <p className="text-xs text-green-600">
-                  Sua oferta aparecerá para todos os usuários procurando caronas na mesma rota e horário.
+                <p className={`text-xs ${
+                  tipoCarona === 'grupo' ? 'text-blue-600' : 'text-green-600'
+                }`}>
+                  {tipoCarona === 'grupo' 
+                    ? 'Sua oferta aparecerá para membros de grupos específicos que você selecionar.'
+                    : 'Sua oferta aparecerá para todos os usuários procurando caronas na mesma rota e horário.'
+                  }
                 </p>
               </div>
             </div>
@@ -428,7 +556,7 @@ export default function OferecerCaronaPage() {
                 ) : (
                   <>
                     <CheckCircle className="w-4 h-4" />
-                    Oferecer Carona
+                    Oferecer Carona {tipoCarona === 'grupo' ? 'para Grupo' : ''}
                   </>
                 )}
               </button>

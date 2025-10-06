@@ -5,7 +5,6 @@ import Footer from '@/app/components/Footer';
 import ChatFlutuante from '@/app/components/ChatFlutuante';
 import Acessibilidade from '@/app/components/Acessibilidade';
 
-
 const poppins = Poppins({ 
   subsets: ['latin'], 
   weight: ['400', '600', '700'], 
@@ -26,9 +25,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="pt-BR" className={poppins.variable}>
       <body className="flex flex-col min-h-screen bg-green-100">
         <Header />
+
         <main className="flex-grow w-full">
           {children}
         </main>
+
+        {/* Componentes flutuantes / de acessibilidade */}
         <ChatFlutuante />
         <Acessibilidade />
         <Footer />
