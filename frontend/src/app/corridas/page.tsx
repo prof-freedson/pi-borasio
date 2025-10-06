@@ -41,6 +41,8 @@ export default function CorridasPage() {
   const [destinoEsperado] = useState("UFMA");
   const [corridasLocais, setCorridasLocais] = useState<Corrida[]>([]);
   const [filtroDestinoEvento, setFiltroDestinoEvento] = useState<string | null>(null);
+  const [filtroRideId, setFiltroRideId] = useState<string | null>(null);
+  const [selectedCorridaId, setSelectedCorridaId] = useState<number | null>(null);
 
   // Carregar corridas do localStorage quando o componente montar
   useEffect(() => {
@@ -53,9 +55,24 @@ export default function CorridasPage() {
     const tipo = urlParams.get('tipo');
     const group = urlParams.get('group');
     const eventoLocal = urlParams.get('local');
-    
-    if (tipo === 'rural') {
+    const rideId = urlParams.get('rideId');
+
+    if (rideId) {
+      setAbaAtiva('ilha');
+      setFiltroRideId(rideId);
+      const idNum = Number(rideId);
+      if (!Number.isNaN(idNum)) {
+        setSelectedCorridaId(idNum);
+        // depois de montar a lista, vamos rolar até a corrida selecionada
+        setTimeout(() => {
+          const el = document.getElementById(`corrida-${idNum}`);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 700);
+      }
+    } else if (tipo === 'rural') {
       setAbaAtiva('rural');
+    } else if (tipo === 'ilha') {
+      setAbaAtiva('ilha');
     } else if (eventoLocal) {
       setAbaAtiva('evento');
       if (eventoLocal) setFiltroDestinoEvento(eventoLocal);
@@ -109,44 +126,162 @@ export default function CorridasPage() {
       veiculo: "Gol Branco - DEF7G89",
       tipo: 'geral'
     },
+    // Corridas do Modo Ilha atualizadas
     {
       id: 4,
-      origem: "Centro",
-      destino: "Ponte do São Francisco",
-      assentos: 4,
-      preco: "R$ 6,00",
-      motorista: "Maria Santos",
+      origem: "Terminal Cohama",
+      destino: "Praia do Calhau",
+      assentos: 2,
+      preco: "R$ 12,50",
+      motorista: "Mariana Almeida",
       avaliacao: 4.9,
-      tempoEstimado: "10 min",
-      veiculo: "Fiesta Preto - GHI0J12",
+      tempoEstimado: "18 min",
+      veiculo: "Jeep Renegade - ILH1A23",
       tipo: 'ilha',
-      horario: "06:00 - 22:00"
+      horario: "08:00 - 18:00"
     },
     {
       id: 5,
-      origem: "Jardim São Cristóvão",
-      destino: "Terminal Praia Grande",
-      assentos: 2,
-      preco: "R$ 7,50",
-      motorista: "Pedro Costa",
-      avaliacao: 4.6,
-      tempoEstimado: "12 min",
-      veiculo: "Celta Prata - KLM3N45",
+      origem: "Renascença",
+      destino: "Praia de Olho d'Água",
+      assentos: 3,
+      preco: "R$ 14,00",
+      motorista: "Ricardo Borges",
+      avaliacao: 4.8,
+      tempoEstimado: "22 min",
+      veiculo: "Toyota Corolla - ILH2B34",
       tipo: 'ilha',
-      horario: "05:30 - 23:00"
+      horario: "09:00 - 17:00"
     },
     {
       id: 6,
-      origem: "Vila Palmeira",
-      destino: "Apeadouro",
-      assentos: 3,
-      preco: "R$ 5,50",
-      motorista: "Luiza Fernandes",
-      avaliacao: 4.8,
-      tempoEstimado: "8 min",
-      veiculo: "Uno Branco - OPQ6R78",
+      origem: "Centro",
+      destino: "Praia do Araçagy",
+      assentos: 4,
+      preco: "R$ 18,00",
+      motorista: "Sofia Ribeiro",
+      avaliacao: 4.7,
+      tempoEstimado: "30 min",
+      veiculo: "Fiat Toro - ILH3C45",
       tipo: 'ilha',
-      horario: "06:00 - 22:30"
+      horario: "07:30 - 19:00"
+    },
+    {
+      id: 21,
+      origem: "Terminal Cohab",
+      destino: "Feira do Tirirical",
+      assentos: 3,
+      preco: "R$ 9,00",
+      motorista: "Antônio Pereira",
+      avaliacao: 4.8,
+      tempoEstimado: "15 min",
+      veiculo: "VW Saveiro - ILH4D56",
+      tipo: 'ilha',
+      horario: "05:00 - 12:00"
+    },
+    {
+      id: 22,
+      origem: "Angelim",
+      destino: "Feira da Cohab",
+      assentos: 2,
+      preco: "R$ 7,50",
+      motorista: "Cláudia Lima",
+      avaliacao: 4.9,
+      tempoEstimado: "10 min",
+      veiculo: "Chevrolet Montana - ILH5E67",
+      tipo: 'ilha',
+      horario: "06:00 - 13:00"
+    },
+    {
+      id: 23,
+      origem: "São Francisco",
+      destino: "Cinema do São Luís Shopping",
+      assentos: 2,
+      preco: "R$ 11,00",
+      motorista: "Fernando Costa",
+      avaliacao: 4.7,
+      tempoEstimado: "16 min",
+      veiculo: "Hyundai Creta - ILH6F78",
+      tipo: 'ilha',
+      horario: "14:00 - 23:00"
+    },
+    {
+      id: 24,
+      origem: "Cohama",
+      destino: "Teatro Arthur Azevedo",
+      assentos: 3,
+      preco: "R$ 13,00",
+      motorista: "Larissa Mendes",
+      avaliacao: 4.8,
+      tempoEstimado: "20 min",
+      veiculo: "Nissan Kicks - ILH7G89",
+      tipo: 'ilha',
+      horario: "18:00 - 22:00"
+    },
+    {
+      id: 25,
+      origem: "Forquilha",
+      destino: "Feira da Cohama",
+      assentos: 2,
+      preco: "R$ 8,00",
+      motorista: "Rafael Silva",
+      avaliacao: 4.7,
+      tempoEstimado: "12 min",
+      veiculo: "Fiat Strada - ILH8H12",
+      tipo: 'ilha',
+      horario: "07:00 - 14:00"
+    },
+    {
+      id: 26,
+      origem: "Calhau",
+      destino: "Cinema do Tropical Shopping",
+      assentos: 2,
+      preco: "R$ 10,00",
+      motorista: "Beatriz Lima",
+      avaliacao: 4.9,
+      tempoEstimado: "15 min",
+      veiculo: "Honda Civic - ILH9I23",
+      tipo: 'ilha',
+      horario: "13:00 - 22:00"
+    },
+    {
+      id: 27,
+      origem: "Beira Mar",
+      destino: "Cine Praia Grande",
+      assentos: 3,
+      preco: "R$ 9,50",
+      motorista: "Gustavo Alves",
+      avaliacao: 4.6,
+      tempoEstimado: "10 min",
+      veiculo: "Renault Kwid - ILH0J34",
+      tipo: 'ilha',
+      horario: "15:00 - 21:00"
+    },
+    {
+      id: 28,
+      origem: "Anjo da Guarda",
+      destino: "Teatro Alcione Nazaré",
+      assentos: 4,
+      preco: "R$ 15,00",
+      motorista: "Vanessa Rocha",
+      avaliacao: 4.8,
+      tempoEstimado: "25 min",
+      veiculo: "Chevrolet Onix - ILH1K45",
+      tipo: 'ilha',
+      horario: "19:00 - 23:00"
+    },
+    {
+      id: 29,
+      origem: "Olho d'Água",
+      destino: "Teatro da Cidade de São Luís",
+      assentos: 2,
+      preco: "R$ 12,00",
+      motorista: "Felipe Martins",
+      avaliacao: 4.7,
+      tempoEstimado: "18 min",
+      veiculo: "VW Gol - ILH2L56",
+      tipo: 'ilha',
+      horario: "17:00 - 22:00"
     },
     {
       id: 8,
@@ -341,6 +476,12 @@ export default function CorridasPage() {
   // Combinar corridas pré-definidas com as do localStorage
   const todasCorridas = [...corridasPreDefinidas, ...corridasLocais];
   const corridasFiltradas = todasCorridas.filter(corrida => {
+    // Se houver um filtro rideId, mostrar apenas essa corrida (quando navegamos a partir do Modo Ilha)
+    if (filtroRideId) {
+      const idNum = Number(filtroRideId);
+      return corrida.id === idNum;
+    }
+
     // Filtro básico por aba
     if (corrida.tipo !== abaAtiva) return false;
 
@@ -548,8 +689,9 @@ export default function CorridasPage() {
           
           return (
             <div
+              id={`corrida-${corrida.id}`}
               key={corrida.id}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden border border-green-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              className={`bg-white rounded-2xl overflow-hidden border transition-all duration-300 transform ${corrida.id === selectedCorridaId ? 'border-yellow-400 shadow-2xl -translate-y-1' : 'border-green-100 hover:shadow-xl hover:-translate-y-1'}`}
             >
               {/* Cabeçalho com informações do motorista */}
               <div className={`p-4 flex justify-between items-center text-white bg-gradient-to-r ${colors.bg}`}>
