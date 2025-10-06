@@ -74,7 +74,7 @@ export default function ContatoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 px-4 sm:px-8 md:px-16 flex flex-col">
+    <div className="min-h-screen bg-green-100 px-4 sm:px-8 md:px-16 flex flex-col">
       {/* Elementos decorativos com padrões maranhenses */}
       <div className="absolute top-0 left-0 w-40 h-40 opacity-10">
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -111,7 +111,7 @@ export default function ContatoPage() {
               </div>
               <h2 className="text-3xl font-bold text-green-900 sm:text-4xl">BoraSiô</h2>
             </div>
-            <p className="text-amber-600 italic font-light mt-2">
+            <p className="text-gray-600 italic font-light mt-2">
               Vamos conversar? É só chamar!
             </p>
           </div>

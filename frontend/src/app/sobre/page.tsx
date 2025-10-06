@@ -3,6 +3,7 @@
 import { FaCarSide, FaRegLightbulb, FaRegHandshake, FaUsers, FaChartLine, FaMapMarkedAlt } from 'react-icons/fa';
 import { MdSafetyDivider, MdPayment, MdSupportAgent } from 'react-icons/md';
 import { IoIosRocket } from 'react-icons/io';
+import Image from 'next/image';
 
 export default function SobrePage() {
   const stats = [
@@ -12,7 +13,7 @@ export default function SobrePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+    <div className="min-h-screen bg-green-100">
       {/* Hero Section */}
       <div className="bg-[#004d2b] text-white py-20 px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl mb-6 animate-fade-in">
@@ -42,10 +43,12 @@ export default function SobrePage() {
                 </p>
               </div>
               <div className="md:w-1/2 flex justify-center">
-                <img 
+                <Image 
                   src="/img/borasio.png" 
                   alt="Equipe BoraSiô no início" 
-                  className="rounded-lg shadow-md w-full max-w-[300px] h-auto object-cover"
+                  width={300}
+                  height={300}
+                  className="rounded-lg shadow-md object-cover"
                 />
               </div>
             </div>
