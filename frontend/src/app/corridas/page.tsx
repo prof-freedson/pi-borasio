@@ -562,8 +562,8 @@ export default function CorridasPage() {
                 <div className="flex items-start gap-4">
                   <div className="flex flex-col items-center pt-1">
                     <div className={`w-3 h-3 rounded-full ${colors.dot} mb-1`}></div>
-                    <div className={`w-0.5 h-8 bg-green-300`}></div>
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-0.5 h-8 bg-gray-300"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                   </div>
                   
                   <div className="flex-1">
@@ -648,7 +648,7 @@ export default function CorridasPage() {
             <span>Ponto de partida</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-yellow-600"></div>
+            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
             <span>Destino</span>
           </div>
           <div className="flex items-center gap-2">
