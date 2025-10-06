@@ -40,20 +40,25 @@ export default function CorridasPage() {
   const [abaAtiva, setAbaAtiva] = useState<'geral' | 'ilha' | 'evento' | 'rural' | 'grupo'>('geral');
   const [destinoEsperado] = useState("UFMA");
   const [corridasLocais, setCorridasLocais] = useState<Corrida[]>([]);
+  const [filtroDestinoEvento, setFiltroDestinoEvento] = useState<string | null>(null);
 
   // Carregar corridas do localStorage quando o componente montar
   useEffect(() => {
     setCorridasLocais(getCorridasDoLocalStorage());
   }, []);
 
-  // Verificar se veio da página rural ou grupo
+  // Verificar parâmetros da URL para definir a aba e filtros
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tipo = urlParams.get('tipo');
     const group = urlParams.get('group');
+    const eventoLocal = urlParams.get('local');
     
     if (tipo === 'rural') {
       setAbaAtiva('rural');
+    } else if (eventoLocal) {
+      setAbaAtiva('evento');
+      if (eventoLocal) setFiltroDestinoEvento(eventoLocal);
     } else if (group === 'true') {
       setAbaAtiva('grupo');
     }
@@ -144,20 +149,6 @@ export default function CorridasPage() {
       horario: "06:00 - 22:30"
     },
     {
-      id: 7,
-      origem: "Jardim América",
-      destino: "Estádio Castelão",
-      assentos: 4,
-      preco: "R$ 20,00",
-      motorista: "Ricardo Almeida",
-      avaliacao: 4.9,
-      tempoEstimado: "30 min",
-      veiculo: "Tracker Azul - STU9V01",
-      tipo: 'evento',
-      data: "Sábado, 15 Dez",
-      horario: "18:00"
-    },
-    {
       id: 8,
       origem: "Parque do Rangedor",
       destino: "Convento das Mercês",
@@ -170,6 +161,77 @@ export default function CorridasPage() {
       tipo: 'evento',
       data: "Domingo, 16 Dez",
       horario: "16:00"
+    },
+    // CORRIDAS ADICIONADAS A PARTIR DA PÁGINA 'eventos-culturais'
+    {
+      id: 16,
+      origem: "Terminal Cohama",
+      destino: "Centro de Cultura Popular", // Festival de Bumba Meu Boi
+      assentos: 3,
+      preco: "R$ 18,00",
+      motorista: "Juliana Martins",
+      avaliacao: 4.9,
+      tempoEstimado: "22 min",
+      veiculo: "Creta Branco - EVT1A23",
+      tipo: 'evento',
+      data: "Sexta, 28 Jun",
+      horario: "17:30"
+    },
+    {
+      id: 17,
+      origem: "Renascença",
+      destino: "Ponta d'Areia", // Noite do Reggae
+      assentos: 2,
+      preco: "R$ 14,00",
+      motorista: "Roberto Dias",
+      avaliacao: 4.8,
+      tempoEstimado: "18 min",
+      veiculo: "Corolla Prata - EVT2B34",
+      tipo: 'evento',
+      data: "Sexta, 05 Jul",
+      horario: "21:00"
+    },
+    {
+      id: 18,
+      origem: "Centro",
+      destino: "Lagoa da Jansen", // Arraial da Lagoa
+      assentos: 4,
+      preco: "R$ 16,50",
+      motorista: "Beatriz Souza",
+      avaliacao: 4.9,
+      tempoEstimado: "20 min",
+      veiculo: "HR-V Cinza - EVT3C45",
+      tipo: 'evento',
+      data: "Sábado, 29 Jun",
+      horario: "18:30"
+    },
+    {
+      id: 19,
+      origem: "São Francisco",
+      destino: "Centro Histórico", // Tour Histórico
+      assentos: 3,
+      preco: "R$ 12,00",
+      motorista: "Lucas Ferreira",
+      avaliacao: 4.8,
+      tempoEstimado: "15 min",
+      veiculo: "Onix Plus - EVT4D56",
+      tipo: 'evento',
+      data: "Sábado, 06 Jul",
+      horario: "08:30"
+    },
+    {
+      id: 20,
+      origem: "Terminal Praia Grande",
+      destino: "Senac Culinary", // Workshop de Gastronomia
+      assentos: 2,
+      preco: "R$ 13,50",
+      motorista: "Carla Mendes",
+      avaliacao: 4.7,
+      tempoEstimado: "17 min",
+      veiculo: "Argo Cinza - EVT5E67",
+      tipo: 'evento',
+      data: "Segunda, 08 Jul",
+      horario: "14:30"
     },
     // CORRIDAS ZONA RURAL
     {
@@ -278,7 +340,16 @@ export default function CorridasPage() {
 
   // Combinar corridas pré-definidas com as do localStorage
   const todasCorridas = [...corridasPreDefinidas, ...corridasLocais];
-  const corridasFiltradas = todasCorridas.filter(corrida => corrida.tipo === abaAtiva);
+  const corridasFiltradas = todasCorridas.filter(corrida => {
+    // Filtro básico por aba
+    if (corrida.tipo !== abaAtiva) return false;
+
+    // Filtro adicional para a aba 'evento' se um local foi especificado na URL
+    if (abaAtiva === 'evento' && filtroDestinoEvento) {
+      return corrida.destino.includes(filtroDestinoEvento);
+    }
+    return true;
+  });
 
   const handleSelectCorrida = (corrida: Corrida) => {
     // Validação do Sentry mantida
@@ -374,7 +445,11 @@ export default function CorridasPage() {
           {(['geral', 'ilha', 'evento', 'rural', 'grupo'] as const).map((tipo) => (
             <button
               key={tipo}
-              onClick={() => setAbaAtiva(tipo)}
+              onClick={() => {
+                setAbaAtiva(tipo);
+                // Limpa o filtro de evento ao trocar de aba, permitindo ver todas as corridas de evento
+                setFiltroDestinoEvento(null);
+              }}
               className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 whitespace-nowrap min-w-[120px] ${
                 abaAtiva === tipo
                   ? 'bg-green-600 text-white shadow-lg' // TODOS VERDE AGORA
