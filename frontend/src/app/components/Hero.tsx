@@ -12,6 +12,7 @@ import {
   TrendingUp,
   ChevronLeft,
   ChevronRight,
+  CheckCircle,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -115,7 +116,7 @@ const Hero = () => {
       "Integração com pontos de ônibus e terminais",
       "Atendimento prioritário em áreas de difícil acesso",
     ],
-    icon: <MapPin className="w-8 h-8 sm:w-10 sm:h-10 text-[#004d2b]" />,
+    icon: <MapPin className="w-8 h-8 sm:w-10 sm:h-10 text-green-500" />,
   };
 
   const efficiencyContent = {
@@ -127,7 +128,7 @@ const Hero = () => {
       "Economia de até 35% nos custos de transporte",
       "Motoristas verificados e avaliação em tempo real",
     ],
-    icon: <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-[#004d2b]" />,
+    icon: <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-green-500" />,
   };
 
   const linkItems: BenefitItem[] = [
@@ -180,7 +181,7 @@ const Hero = () => {
   return (
     <section
       id="hero"
-      className="bg-green-50 relative"
+      className="relative bg-green-100"
     >
       {/* Carrossel de Imagens de Fundo */}
       <div className="relative h-96 sm:h-[500px] lg:h-[600px] overflow-hidden">
@@ -315,104 +316,94 @@ const Hero = () => {
       )}
 
       {/* Conteúdo principal (mantido igual) */}
-      <div className="px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20">
-        <div className="flex flex-col items-center text-center max-w-7xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-16 md:py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto">
+          {/* Título da Seção */}
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#004d2b] mb-4">
+              Uma Solução Pensada para São Luís
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Descubra como o Borasiô transforma a mobilidade urbana na Ilha do Amor com tecnologia, eficiência e um toque local.
+            </p>
+          </div>
+
           {/* Seção Foco Regional */}
-          <div className="mt-10 w-full flex flex-col gap-8">
+          <div className="w-full flex flex-col gap-8">
             <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
               {/* Conteúdo à esquerda */}
-              <div className="flex-1 bg-gradient-to-r from-green-600 to-green-800 rounded-lg overflow-hidden shadow-xl p-6 sm:p-10 flex flex-col justify-between h-full">
-                <div>
-                  <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                    {regionalContent.icon}
-                    <h3 className="text-2xl sm:text-3xl font-bold text-yellow-400">
-                      {regionalContent.title}
-                    </h3>
-                  </div>
-                  <p className="text-white mb-4 sm:mb-6 text-base sm:text-lg">
-                    {regionalContent.desc}
-                  </p>
-                  <ul className="space-y-2 sm:space-y-3 text-amber-50 text-sm sm:text-base">
-                    {regionalContent.details.map((detail, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-yellow-300 text-xl">•</span>
-                        <span>{detail}</span>
-                      </li>
-                    ))}
-                  </ul>
+              <div className="flex-1 bg-gradient-to-br from-green-600 to-green-800 rounded-xl shadow-xl p-8 sm:p-10 text-white">
+                <div className="flex items-center gap-4 mb-4 sm:mb-6">
+                  {regionalContent.icon}
+                  <h3 className="text-2xl sm:text-3xl font-bold text-yellow-300">
+                    {regionalContent.title}
+                  </h3>
                 </div>
+                <p className="text-gray-200 mb-6 sm:mb-8 text-base sm:text-lg">
+                  {regionalContent.desc}
+                </p>
+                <ul className="space-y-3 text-gray-100 text-sm sm:text-base">
+                  {regionalContent.details.map((detail, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0" />
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               {/* Imagem à direita */}
-              <div className="flex-1 flex justify-center items-center">
-                <div className="rounded-xl overflow-hidden aspect-[16/9] border border-white/10 w-full max-w-md">
-                  <img
-                    src="/img/carro.png"
-                    alt="Mobilidade urbana em São Luís"
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
+              <div className="flex-1 w-full max-w-lg"><img src="/img/carro.png" alt="Mobilidade urbana em São Luís" className="rounded-xl w-full h-full object-cover transition-transform duration-300 hover:scale-105" loading="lazy" /></div>
             </div>
 
             {/* Seção Eficiência Borasiô */}
             <div className="flex flex-col md:flex-row-reverse items-center gap-8 mb-8">
               {/* Conteúdo à direita */}
-              <div className="flex-1 bg-gradient-to-r from-green-800 to-green-600 text-white rounded-lg overflow-hidden shadow-xl p-6 sm:p-10 flex flex-col justify-between h-full">
-                <div>
-                  <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                    {efficiencyContent.icon}
-                    <h3 className="text-2xl sm:text-3xl font-bold text-yellow-400">
-                      {efficiencyContent.title}
-                    </h3>
-                  </div>
-                  <p className="mb-4 sm:mb-6 text-base sm:text-lg">
-                    {efficiencyContent.desc}
-                  </p>
-                  <ul className="space-y-2 sm:space-y-3 text-amber-50 text-sm sm:text-base">
-                    {efficiencyContent.details.map((detail, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-yellow-300 text-xl">•</span>
-                        <span>{detail}</span>
-                      </li>
-                    ))}
-                  </ul>
+              <div className="flex-1 bg-gradient-to-tl from-green-600 to-green-800 rounded-xl shadow-xl p-8 sm:p-10 text-white">
+                <div className="flex items-center gap-4 mb-4 sm:mb-6">
+                  {efficiencyContent.icon}
+                  <h3 className="text-2xl sm:text-3xl font-bold text-yellow-300">
+                    {efficiencyContent.title}
+                  </h3>
                 </div>
+                <p className="text-gray-200 mb-6 sm:mb-8 text-base sm:text-lg">
+                  {efficiencyContent.desc}
+                </p>
+                <ul className="space-y-3 text-gray-100 text-sm sm:text-base">
+                  {efficiencyContent.details.map((detail, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0" />
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               {/* Imagem à esquerda */}
-              <div className="flex-1 flex justify-center items-center">
-                <div className="rounded-xl overflow-hidden aspect-[4/3] border border-white/10 w-full max-w-md">
-                  <img
-                    src="/img/mobilidade-app.png"
-                    alt="Aplicativo Borasio eficiente"
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
+              <div className="flex-1 w-full max-w-lg"><img src="/img/mobilidade-app.png" alt="Aplicativo Borasio eficiente" className="rounded-xl w-full h-full object-cover transition-transform duration-300 hover:scale-105" loading="lazy" /></div>
             </div>
           </div>
 
-          {/* Funcionalidades */}
-          <h3 className="text-2xl sm:text-3xl font-bold text-[#004d2b] mb-6 text-center">
-            Funcionalidades Inovadoras
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {linkItems.map((item, index) => (
-              <a
-                key={index}
-                href={`/${item.title}`}
-                className="bg-white rounded-xl p-6 flex flex-col items-center text-center shadow hover:shadow-lg transition duration-300 group hover:scale-105"
-              >
-                <div className="mb-4 text-[#004d2b] group-hover:text-[#002d1a] transition-colors duration-300">
-                  {item.icon}
-                </div>
-                <h3 className="text-base sm:text-lg font-bold text-[#004d2b] mb-2 group-hover:text-[#003823] transition-colors">
-                  {item.displayTitle || item.title}
-                </h3>
-                <p className="text-sm sm:text-base text-gray-600">{item.desc}</p>
-              </a>
-            ))}
+          {/* Seção de Funcionalidades */}
+          <div className="mt-12 md:mt-16 text-center">
+            <h3 className="text-3xl sm:text-4xl font-bold text-[#004d2b] mb-12">
+              Funcionalidades Inovadoras
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {linkItems.map((item, index) => (
+                <Link
+                  key={index}
+                  href={`/${item.title}`}
+                  className="bg-white rounded-xl p-6 flex flex-col items-center text-center shadow-lg hover:shadow-xl transition-all duration-300 group hover:-translate-y-2"
+                >
+                  <div className="bg-green-100 p-4 rounded-full mb-5 transition-colors duration-300 group-hover:bg-green-200">
+                    {item.icon}
+                  </div>
+                  <h4 className="text-lg font-bold text-[#004d2b] mb-2">
+                    {item.displayTitle || item.title}
+                  </h4>
+                  <p className="text-sm text-gray-600 flex-grow">{item.desc}</p>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>
