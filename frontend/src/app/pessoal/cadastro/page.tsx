@@ -130,20 +130,41 @@ const Cadastro = () => {
     const validationError = validate();
     if (validationError) {
       setError(validationError);
-      // Reporta qualquer erro de validação ao Sentry
       Sentry.captureException(new Error(validationError));
       setIsLoading(false);
       return;
     }
 
     try {
-      // ...existing code...
+      // Simulação de cadastro
       console.log("Dados para cadastro:", form);
       await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Salvar dados no localStorage e marcar como logado
+      try {
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', form.email);
+        localStorage.setItem('userType', 'passageiro');
+        localStorage.setItem('userName', form.nome);
+        
+        // Notificar o header sobre a mudança
+        try { 
+          window.dispatchEvent(new CustomEvent('authChanged', { 
+            detail: { 
+              loggedIn: true, 
+              email: form.email,
+              userType: 'passageiro'
+            } 
+          })); 
+        } catch (e) {}
+      } catch (e) {
+        console.error('Erro ao salvar no localStorage:', e);
+      }
+      
       router.push("/usuario");
     } catch (err) {
       setError("Erro ao cadastrar. Tente novamente.");
-      Sentry.captureException(err); // Captura erro inesperado
+      Sentry.captureException(err);
     } finally {
       setIsLoading(false);
     }
@@ -153,7 +174,7 @@ const Cadastro = () => {
     <main className="min-h-screen bg-green-100 flex items-center justify-center px-4 pt-20 md:pt-32 pb-20 md:pb-32">
       <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-2xl">
         <h1 className="text-3xl font-bold text-center text-green-900 mb-6">
-          Criar conta
+          Criar conta de Passageiro
         </h1>
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm text-center">
