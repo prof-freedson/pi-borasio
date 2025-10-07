@@ -1,4 +1,4 @@
-#version: '3.8'
+version: '3.8'
 services:
   backend:
     build: ./backend
@@ -6,25 +6,38 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - SENTRY_DSN=<sua_dsn_backend>
+      - SENTRY_DSN=${SENTRY_DSN_BACKEND:-<sua_dsn_backend>}
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
+      - JAVA_OPTS=${JAVA_OPTS:-"-Xms256m -Xmx512m"}
     depends_on:
-      - rabbitmq
-      
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   redis:
     image: redis:latest
-    container_name: redis
     ports:
       - "6379:6379"
-    restart: always
+    restart: unless-stopped
 
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
     environment:
-      - SENTRY_DSN=<sua_dsn_frontend>
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN:-<sua_dsn_frontend>}
+    depends_on:
+      - backend
+    restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -34,3 +47,9 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=user
       - RABBITMQ_DEFAULT_PASS=password
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

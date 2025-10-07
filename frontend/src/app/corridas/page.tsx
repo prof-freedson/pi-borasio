@@ -40,20 +40,42 @@ export default function CorridasPage() {
   const [abaAtiva, setAbaAtiva] = useState<'geral' | 'ilha' | 'evento' | 'rural' | 'grupo'>('geral');
   const [destinoEsperado] = useState("UFMA");
   const [corridasLocais, setCorridasLocais] = useState<Corrida[]>([]);
+  const [filtroDestinoEvento, setFiltroDestinoEvento] = useState<string | null>(null);
+  const [filtroRideId, setFiltroRideId] = useState<string | null>(null);
+  const [selectedCorridaId, setSelectedCorridaId] = useState<number | null>(null);
 
   // Carregar corridas do localStorage quando o componente montar
   useEffect(() => {
     setCorridasLocais(getCorridasDoLocalStorage());
   }, []);
 
-  // Verificar se veio da página rural ou grupo
+  // Verificar parâmetros da URL para definir a aba e filtros
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tipo = urlParams.get('tipo');
     const group = urlParams.get('group');
-    
-    if (tipo === 'rural') {
+    const eventoLocal = urlParams.get('local');
+    const rideId = urlParams.get('rideId');
+
+    if (rideId) {
+      setAbaAtiva('ilha');
+      setFiltroRideId(rideId);
+      const idNum = Number(rideId);
+      if (!Number.isNaN(idNum)) {
+        setSelectedCorridaId(idNum);
+        // depois de montar a lista, vamos rolar até a corrida selecionada
+        setTimeout(() => {
+          const el = document.getElementById(`corrida-${idNum}`);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 700);
+      }
+    } else if (tipo === 'rural') {
       setAbaAtiva('rural');
+    } else if (tipo === 'ilha') {
+      setAbaAtiva('ilha');
+    } else if (eventoLocal) {
+      setAbaAtiva('evento');
+      if (eventoLocal) setFiltroDestinoEvento(eventoLocal);
     } else if (group === 'true') {
       setAbaAtiva('grupo');
     }
@@ -104,58 +126,162 @@ export default function CorridasPage() {
       veiculo: "Gol Branco - DEF7G89",
       tipo: 'geral'
     },
+    // Corridas do Modo Ilha atualizadas
     {
       id: 4,
-      origem: "Centro",
-      destino: "Ponte do São Francisco",
-      assentos: 4,
-      preco: "R$ 6,00",
-      motorista: "Maria Santos",
+      origem: "Terminal Cohama",
+      destino: "Praia do Calhau",
+      assentos: 2,
+      preco: "R$ 12,50",
+      motorista: "Mariana Almeida",
       avaliacao: 4.9,
-      tempoEstimado: "10 min",
-      veiculo: "Fiesta Preto - GHI0J12",
+      tempoEstimado: "18 min",
+      veiculo: "Jeep Renegade - ILH1A23",
       tipo: 'ilha',
-      horario: "06:00 - 22:00"
+      horario: "08:00 - 18:00"
     },
     {
       id: 5,
-      origem: "Jardim São Cristóvão",
-      destino: "Terminal Praia Grande",
-      assentos: 2,
-      preco: "R$ 7,50",
-      motorista: "Pedro Costa",
-      avaliacao: 4.6,
-      tempoEstimado: "12 min",
-      veiculo: "Celta Prata - KLM3N45",
+      origem: "Renascença",
+      destino: "Praia de Olho d'Água",
+      assentos: 3,
+      preco: "R$ 14,00",
+      motorista: "Ricardo Borges",
+      avaliacao: 4.8,
+      tempoEstimado: "22 min",
+      veiculo: "Toyota Corolla - ILH2B34",
       tipo: 'ilha',
-      horario: "05:30 - 23:00"
+      horario: "09:00 - 17:00"
     },
     {
       id: 6,
-      origem: "Vila Palmeira",
-      destino: "Apeadouro",
-      assentos: 3,
-      preco: "R$ 5,50",
-      motorista: "Luiza Fernandes",
-      avaliacao: 4.8,
-      tempoEstimado: "8 min",
-      veiculo: "Uno Branco - OPQ6R78",
+      origem: "Centro",
+      destino: "Praia do Araçagy",
+      assentos: 4,
+      preco: "R$ 18,00",
+      motorista: "Sofia Ribeiro",
+      avaliacao: 4.7,
+      tempoEstimado: "30 min",
+      veiculo: "Fiat Toro - ILH3C45",
       tipo: 'ilha',
-      horario: "06:00 - 22:30"
+      horario: "07:30 - 19:00"
     },
     {
-      id: 7,
-      origem: "Jardim América",
-      destino: "Estádio Castelão",
-      assentos: 4,
-      preco: "R$ 20,00",
-      motorista: "Ricardo Almeida",
+      id: 21,
+      origem: "Terminal Cohab",
+      destino: "Feira do Tirirical",
+      assentos: 3,
+      preco: "R$ 9,00",
+      motorista: "Antônio Pereira",
+      avaliacao: 4.8,
+      tempoEstimado: "15 min",
+      veiculo: "VW Saveiro - ILH4D56",
+      tipo: 'ilha',
+      horario: "05:00 - 12:00"
+    },
+    {
+      id: 22,
+      origem: "Angelim",
+      destino: "Feira da Cohab",
+      assentos: 2,
+      preco: "R$ 7,50",
+      motorista: "Cláudia Lima",
       avaliacao: 4.9,
-      tempoEstimado: "30 min",
-      veiculo: "Tracker Azul - STU9V01",
-      tipo: 'evento',
-      data: "Sábado, 15 Dez",
-      horario: "18:00"
+      tempoEstimado: "10 min",
+      veiculo: "Chevrolet Montana - ILH5E67",
+      tipo: 'ilha',
+      horario: "06:00 - 13:00"
+    },
+    {
+      id: 23,
+      origem: "São Francisco",
+      destino: "Cinema do São Luís Shopping",
+      assentos: 2,
+      preco: "R$ 11,00",
+      motorista: "Fernando Costa",
+      avaliacao: 4.7,
+      tempoEstimado: "16 min",
+      veiculo: "Hyundai Creta - ILH6F78",
+      tipo: 'ilha',
+      horario: "14:00 - 23:00"
+    },
+    {
+      id: 24,
+      origem: "Cohama",
+      destino: "Teatro Arthur Azevedo",
+      assentos: 3,
+      preco: "R$ 13,00",
+      motorista: "Larissa Mendes",
+      avaliacao: 4.8,
+      tempoEstimado: "20 min",
+      veiculo: "Nissan Kicks - ILH7G89",
+      tipo: 'ilha',
+      horario: "18:00 - 22:00"
+    },
+    {
+      id: 25,
+      origem: "Forquilha",
+      destino: "Feira da Cohama",
+      assentos: 2,
+      preco: "R$ 8,00",
+      motorista: "Rafael Silva",
+      avaliacao: 4.7,
+      tempoEstimado: "12 min",
+      veiculo: "Fiat Strada - ILH8H12",
+      tipo: 'ilha',
+      horario: "07:00 - 14:00"
+    },
+    {
+      id: 26,
+      origem: "Calhau",
+      destino: "Cinema do Tropical Shopping",
+      assentos: 2,
+      preco: "R$ 10,00",
+      motorista: "Beatriz Lima",
+      avaliacao: 4.9,
+      tempoEstimado: "15 min",
+      veiculo: "Honda Civic - ILH9I23",
+      tipo: 'ilha',
+      horario: "13:00 - 22:00"
+    },
+    {
+      id: 27,
+      origem: "Beira Mar",
+      destino: "Cine Praia Grande",
+      assentos: 3,
+      preco: "R$ 9,50",
+      motorista: "Gustavo Alves",
+      avaliacao: 4.6,
+      tempoEstimado: "10 min",
+      veiculo: "Renault Kwid - ILH0J34",
+      tipo: 'ilha',
+      horario: "15:00 - 21:00"
+    },
+    {
+      id: 28,
+      origem: "Anjo da Guarda",
+      destino: "Teatro Alcione Nazaré",
+      assentos: 4,
+      preco: "R$ 15,00",
+      motorista: "Vanessa Rocha",
+      avaliacao: 4.8,
+      tempoEstimado: "25 min",
+      veiculo: "Chevrolet Onix - ILH1K45",
+      tipo: 'ilha',
+      horario: "19:00 - 23:00"
+    },
+    {
+      id: 29,
+      origem: "Olho d'Água",
+      destino: "Teatro da Cidade de São Luís",
+      assentos: 2,
+      preco: "R$ 12,00",
+      motorista: "Felipe Martins",
+      avaliacao: 4.7,
+      tempoEstimado: "18 min",
+      veiculo: "VW Gol - ILH2L56",
+      tipo: 'ilha',
+      horario: "17:00 - 22:00"
     },
     {
       id: 8,
@@ -170,6 +296,77 @@ export default function CorridasPage() {
       tipo: 'evento',
       data: "Domingo, 16 Dez",
       horario: "16:00"
+    },
+    // CORRIDAS ADICIONADAS A PARTIR DA PÁGINA 'eventos-culturais'
+    {
+      id: 16,
+      origem: "Terminal Cohama",
+      destino: "Centro de Cultura Popular", // Festival de Bumba Meu Boi
+      assentos: 3,
+      preco: "R$ 18,00",
+      motorista: "Juliana Martins",
+      avaliacao: 4.9,
+      tempoEstimado: "22 min",
+      veiculo: "Creta Branco - EVT1A23",
+      tipo: 'evento',
+      data: "Sexta, 28 Jun",
+      horario: "17:30"
+    },
+    {
+      id: 17,
+      origem: "Renascença",
+      destino: "Ponta d'Areia", // Noite do Reggae
+      assentos: 2,
+      preco: "R$ 14,00",
+      motorista: "Roberto Dias",
+      avaliacao: 4.8,
+      tempoEstimado: "18 min",
+      veiculo: "Corolla Prata - EVT2B34",
+      tipo: 'evento',
+      data: "Sexta, 05 Jul",
+      horario: "21:00"
+    },
+    {
+      id: 18,
+      origem: "Centro",
+      destino: "Lagoa da Jansen", // Arraial da Lagoa
+      assentos: 4,
+      preco: "R$ 16,50",
+      motorista: "Beatriz Souza",
+      avaliacao: 4.9,
+      tempoEstimado: "20 min",
+      veiculo: "HR-V Cinza - EVT3C45",
+      tipo: 'evento',
+      data: "Sábado, 29 Jun",
+      horario: "18:30"
+    },
+    {
+      id: 19,
+      origem: "São Francisco",
+      destino: "Centro Histórico", // Tour Histórico
+      assentos: 3,
+      preco: "R$ 12,00",
+      motorista: "Lucas Ferreira",
+      avaliacao: 4.8,
+      tempoEstimado: "15 min",
+      veiculo: "Onix Plus - EVT4D56",
+      tipo: 'evento',
+      data: "Sábado, 06 Jul",
+      horario: "08:30"
+    },
+    {
+      id: 20,
+      origem: "Terminal Praia Grande",
+      destino: "Senac Culinary", // Workshop de Gastronomia
+      assentos: 2,
+      preco: "R$ 13,50",
+      motorista: "Carla Mendes",
+      avaliacao: 4.7,
+      tempoEstimado: "17 min",
+      veiculo: "Argo Cinza - EVT5E67",
+      tipo: 'evento',
+      data: "Segunda, 08 Jul",
+      horario: "14:30"
     },
     // CORRIDAS ZONA RURAL
     {
@@ -278,7 +475,22 @@ export default function CorridasPage() {
 
   // Combinar corridas pré-definidas com as do localStorage
   const todasCorridas = [...corridasPreDefinidas, ...corridasLocais];
-  const corridasFiltradas = todasCorridas.filter(corrida => corrida.tipo === abaAtiva);
+  const corridasFiltradas = todasCorridas.filter(corrida => {
+    // Se houver um filtro rideId, mostrar apenas essa corrida (quando navegamos a partir do Modo Ilha)
+    if (filtroRideId) {
+      const idNum = Number(filtroRideId);
+      return corrida.id === idNum;
+    }
+
+    // Filtro básico por aba
+    if (corrida.tipo !== abaAtiva) return false;
+
+    // Filtro adicional para a aba 'evento' se um local foi especificado na URL
+    if (abaAtiva === 'evento' && filtroDestinoEvento) {
+      return corrida.destino.includes(filtroDestinoEvento);
+    }
+    return true;
+  });
 
   const handleSelectCorrida = (corrida: Corrida) => {
     // Validação do Sentry mantida
@@ -374,7 +586,11 @@ export default function CorridasPage() {
           {(['geral', 'ilha', 'evento', 'rural', 'grupo'] as const).map((tipo) => (
             <button
               key={tipo}
-              onClick={() => setAbaAtiva(tipo)}
+              onClick={() => {
+                setAbaAtiva(tipo);
+                // Limpa o filtro de evento ao trocar de aba, permitindo ver todas as corridas de evento
+                setFiltroDestinoEvento(null);
+              }}
               className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 whitespace-nowrap min-w-[120px] ${
                 abaAtiva === tipo
                   ? 'bg-green-600 text-white shadow-lg' // TODOS VERDE AGORA
@@ -473,8 +689,9 @@ export default function CorridasPage() {
           
           return (
             <div
+              id={`corrida-${corrida.id}`}
               key={corrida.id}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden border border-green-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              className={`bg-white rounded-2xl overflow-hidden border transition-all duration-300 transform ${corrida.id === selectedCorridaId ? 'border-yellow-400 shadow-2xl -translate-y-1' : 'border-green-100 hover:shadow-xl hover:-translate-y-1'}`}
             >
               {/* Cabeçalho com informações do motorista */}
               <div className={`p-4 flex justify-between items-center text-white bg-gradient-to-r ${colors.bg}`}>

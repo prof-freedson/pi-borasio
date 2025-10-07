@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 
 type Beach = {
   id: number;
+  rideId: number;
   name: string;
   description: string;
   rating: number;
@@ -16,6 +17,7 @@ type Beach = {
 
 type Cinema = {
   id: number;
+  rideId: number;
   name: string;
   location: string;
   movies: string[];
@@ -25,6 +27,7 @@ type Cinema = {
 
 type Theater = {
   id: number;
+  rideId: number;
   name: string;
   location: string;
   currentShows: string[];
@@ -34,6 +37,7 @@ type Theater = {
 
 type Market = {
   id: number;
+  rideId: number;
   name: string;
   location: string;
   bestTime: string;
@@ -55,6 +59,7 @@ export default function ModoIlhaPage() {
       const mockBeaches = [
         {
           id: 1,
+          rideId: 4,
           name: "Praia do Calhau",
           description: "Uma das praias mais movimentadas de São Luís",
           rating: 4.5,
@@ -64,6 +69,7 @@ export default function ModoIlhaPage() {
         },
         {
           id: 2,
+          rideId: 5,
           name: "Praia de Olho d'Água",
           description: "Praia familiar com boa infraestrutura",
           rating: 4.3,
@@ -73,6 +79,7 @@ export default function ModoIlhaPage() {
         },
         {
           id: 3,
+          rideId: 6,
           name: "Praia do Araçagy",
           description: "Ideal para esportes aquáticos",
           rating: 4.2,
@@ -93,6 +100,7 @@ export default function ModoIlhaPage() {
       const mockCinemas = [
         {
           id: 1,
+          rideId: 23,
           name: "Cinema do São Luís Shopping",
           location: "São Luís Shopping",
           movies: ["Lançamentos", "Infantil", "Nacional"],
@@ -101,6 +109,7 @@ export default function ModoIlhaPage() {
         },
         {
           id: 2,
+          rideId: 26,
           name: "Cinema do Tropical Shopping",
           location: "Tropical Shopping",
           movies: ["Lançamentos", "3D", "Sessão meia"],
@@ -109,6 +118,7 @@ export default function ModoIlhaPage() {
         },
         {
           id: 3,
+          rideId: 27,
           name: "Cine Praia Grande",
           location: "Centro Histórico",
           movies: ["Arte", "Cult", "Independente"],
@@ -128,6 +138,7 @@ export default function ModoIlhaPage() {
       const mockTheaters = [
         {
           id: 1,
+          rideId: 24,
           name: "Teatro Arthur Azevedo",
           location: "Centro Histórico",
           currentShows: ["Peças clássicas", "Música regional"],
@@ -136,6 +147,7 @@ export default function ModoIlhaPage() {
         },
         {
           id: 2,
+          rideId: 28,
           name: "Teatro Alcione Nazaré",
           location: "Cohafuma",
           currentShows: ["Comédias", "Shows locais"],
@@ -144,6 +156,7 @@ export default function ModoIlhaPage() {
         },
         {
           id: 3,
+          rideId: 29,
           name: "Teatro da Cidade de São Luís",
           location: "Olho d'Água",
           currentShows: ["Dança", "Teatro experimental"],
@@ -163,6 +176,7 @@ export default function ModoIlhaPage() {
       const mockMarkets = [
         {
           id: 1,
+          rideId: 21,
           name: "Feira do Tirirical",
           location: "Tirirical",
           bestTime: "Antes das 8h",
@@ -172,6 +186,7 @@ export default function ModoIlhaPage() {
         },
         {
           id: 2,
+          rideId: 22,
           name: "Feira da Cohab",
           location: "Cohab Anil",
           bestTime: "Manhã",
@@ -181,6 +196,7 @@ export default function ModoIlhaPage() {
         },
         {
           id: 3,
+          rideId: 25,
           name: "Feira da Cohama",
           location: "Cohama",
           bestTime: "Tarde",
@@ -211,11 +227,11 @@ export default function ModoIlhaPage() {
   }, []);
 
   // Função para pedir corrida
-  const pedirCorrida = (destination = '') => {
-    if (destination) {
-      window.location.href = `/corridas?destination=${encodeURIComponent(destination)}`;
+  const pedirCorrida = (rideId?: number) => {
+    if (rideId) {
+      window.location.href = `/corridas?tipo=ilha&rideId=${rideId}`;
     } else {
-      window.location.href = '/corridas';
+      window.location.href = '/corridas?tipo=ilha';
     }
   };
 
@@ -336,43 +352,47 @@ export default function ModoIlhaPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {beaches.map((beach) => (
-                <div key={beach.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="p-6">
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="text-xl font-bold text-[#004d2b]">{beach.name}</h3>
-                      <div className="flex items-center gap-1 bg-yellow-100 px-2 py-1 rounded">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm font-semibold">{beach.rating}</span>
+                <div key={beach.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full">
+                  <div className="p-6 flex flex-col justify-between h-full">
+                    <div>
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="text-xl font-bold text-[#004d2b]">{beach.name}</h3>
+                        <div className="flex items-center gap-1 bg-yellow-100 px-2 py-1 rounded">
+                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                          <span className="text-sm font-semibold">{beach.rating}</span>
+                        </div>
                       </div>
-                    </div>
-                    <p className="text-gray-600 mb-4">{beach.description}</p>
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-500">Melhor horário:</span>
-                        <span className="font-semibold">{beach.bestTime}</span>
+                      <p className="text-gray-600 mb-4">{beach.description}</p>
+                      
+                      <div className="space-y-2 mb-4">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-500">Melhor horário:</span>
+                          <span className="font-semibold">{beach.bestTime}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-500">Estacionamento:</span>
+                          <span className="font-semibold">{beach.parking}</span>
+                        </div>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-500">Estacionamento:</span>
-                        <span className="font-semibold">{beach.parking}</span>
+
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {beach.facilities.map((facility, index) => (
+                          <span key={index} className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                            {facility}
+                          </span>
+                        ))}
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {beach.facilities.map((facility, index) => (
-                        <span key={index} className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
-                          {facility}
-                        </span>
-                      ))}
+                    <div className="mt-4">
+                      <button 
+                        onClick={() => pedirCorrida(beach.rideId)}
+                        className="w-full bg-[#004d2b] text-white py-2 rounded-lg hover:bg-green-800 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Navigation className="w-4 h-4" />
+                        Pedir Corrida
+                      </button>
                     </div>
-
-                    <button 
-                      onClick={() => pedirCorrida(beach.name)}
-                      className="w-full bg-[#004d2b] text-white py-2 rounded-lg hover:bg-green-800 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Navigation className="w-4 h-4" />
-                      Pedir Corrida
-                    </button>
                   </div>
                 </div>
               ))}
@@ -427,7 +447,7 @@ export default function ModoIlhaPage() {
                   </div>
 
                   <button 
-                    onClick={() => pedirCorrida(market.name)}
+                    onClick={() => pedirCorrida(market.rideId)}
                     className="w-full bg-[#004d2b] text-white py-2 rounded-lg hover:bg-green-800 transition-colors flex items-center justify-center gap-2"
                   >
                     <Navigation className="w-4 h-4" />
@@ -487,7 +507,7 @@ export default function ModoIlhaPage() {
                     </div>
 
                     <button 
-                      onClick={() => pedirCorrida(cinema.name)}
+                      onClick={() => pedirCorrida(cinema.rideId)}
                       className="w-full bg-[#004d2b] text-white py-2 rounded-lg hover:bg-green-800 transition-colors flex items-center justify-center gap-2"
                     >
                       <Navigation className="w-4 h-4" />
@@ -536,7 +556,7 @@ export default function ModoIlhaPage() {
                     </div>
 
                     <button 
-                      onClick={() => pedirCorrida(theater.name)}
+                      onClick={() => pedirCorrida(theater.rideId)}
                       className="w-full bg-[#004d2b] text-white py-2 rounded-lg hover:bg-green-800 transition-colors flex items-center justify-center gap-2"
                     >
                       <Navigation className="w-4 h-4" />

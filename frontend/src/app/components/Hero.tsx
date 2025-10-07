@@ -43,7 +43,8 @@ const Hero = () => {
     "/carousel-1.png",
     "/carousel-2.png",
     "/carousel-3.png",
-    "/carousel-4.png"
+    "/carousel-4.png",
+    "/carousel-5.png"
   ];
 
   // Efeito para o carrossel automático
@@ -321,7 +322,7 @@ const Hero = () => {
           {/* Título da Seção */}
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#004d2b] mb-4">
-              Uma Solução Pensada para São Luís
+              Uma Solução Pensada Para a Região Metropolitana de São Luís
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Descubra como o Borasiô transforma a mobilidade urbana na Ilha do Amor com tecnologia, eficiência e um toque local.
