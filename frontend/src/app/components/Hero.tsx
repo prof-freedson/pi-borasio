@@ -38,13 +38,14 @@ const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Imagens do carrossel (substitua pelos caminhos das suas imagens)
+  // 6 imagens do carrossel
   const carouselImages = [
     "/carousel-1.png",
     "/carousel-2.png",
     "/carousel-3.png",
     "/carousel-4.png",
-    "/carousel-5.png"
+    "/carousel-5.png",
+    "/carousel-6.png" // Nova imagem adicionada
   ];
 
   // Efeito para o carrossel automático
@@ -245,7 +246,7 @@ const Hero = () => {
           <ChevronRight className="w-6 h-6" />
         </button>
 
-        {/* Indicadores */}
+        {/* Indicadores - agora com 6 pontos */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
           {carouselImages.map((_, index) => (
             <button

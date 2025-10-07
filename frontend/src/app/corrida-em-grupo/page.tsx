@@ -83,11 +83,11 @@ export default function CorridaEmGrupoPage() {
         }
     ];
 
-    // Função atualizada para usar o router do Next.js
+    // Função atualizada para enviar para a página de oferecer carona com parâmetro de grupo
     const ativarCorridaGrupo = (type = '') => {
         if (type === 'offer') {
-            // Vai para a página de oferecer carona
-            router.push('/oferecer-carona');
+            // Vai para a página de oferecer carona com tipo grupo
+            router.push('/oferecer-carona?tipo=grupo');
         } else {
             // Vai para a página de corridas com filtro de grupo
             router.push('/corridas?group=true');
@@ -159,7 +159,7 @@ export default function CorridaEmGrupoPage() {
                                 className="bg-yellow-400 hover:bg-yellow-300 text-[#004d2b] font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-3 whitespace-nowrap"
                             >
                                 <Car className="w-5 h-5" />
-                                {activeTab === 'offer' ? 'Oferecer Carona' : 'Buscar Carona'}
+                                {activeTab === 'offer' ? 'Oferecer Carona em Grupo' : 'Buscar Carona em Grupo'}
                             </button>
                             <Link 
                                 href="/modo-ilha" 
@@ -185,6 +185,7 @@ export default function CorridaEmGrupoPage() {
                 </div>
             </section>
 
+            {/* Resto do código permanece igual... */}
             {/* Benefits Section */}
             <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white/50 backdrop-blur-sm">
                 <div className="max-w-7xl mx-auto">
@@ -362,7 +363,7 @@ export default function CorridaEmGrupoPage() {
                     <div className="flex flex-wrap justify-center gap-4">
                         <Link 
                             href="/download"
-                            className="bg-yellow-400 hover:bg-yellow-300 text-[#004d2b] font-bold py-4 px-12 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-lg flex items-center gap-3"
+                            className="bg-white/10 hover:bg-white/20 font-semibold py-4 px-8 rounded-xl transition-all duration-300 border border-white/30 hover:border-white/50 text-lg flex items-center gap-3 backdrop-blur-sm"
                         >
                             📱 Baixar App Gratuito
                         </Link>

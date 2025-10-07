@@ -243,7 +243,7 @@ export default function OferecerCaronaPage() {
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-green-900 mb-2">
                   <User className="w-4 h-4" />
-                  Nome Completo
+                  Nome Completo ou Grupo
                 </label>
                 <input
                   type="text"
