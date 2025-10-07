@@ -1,32 +1,122 @@
+// app/pagamento/PagamentoContent.tsx
 "use client"
 
 import { faCreditCard, faBarcode, faQrcode, faTicketAlt, faCheckCircle, faCopy, faDownload, faShieldAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import jsPDF from 'jspdf'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function Pagamento() {
+type Corrida = {
+  id: number;
+  origem: string;
+  destino: string;
+  assentos: number;
+  preco: string;
+  motorista: string;
+  avaliacao: number;
+  tempoEstimado: string;
+  veiculo: string;
+  tipo: 'geral' | 'ilha' | 'evento' | 'rural' | 'grupo';
+  horario?: string;
+  data?: string;
+  economia?: string;
+  pessoas?: number;
+};
+
+export default function PagamentoContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [metodoPagamento, setMetodoPagamento] = useState('credito')
   const [descontoAplicado, setDescontoAplicado] = useState(false)
   const [pagamentoFinalizado, setPagamentoFinalizado] = useState(false)
-  const [valorOriginal] = useState(55.00)
-  const [valorComDesconto] = useState(37.00)
-  const [valorFinal, setValorFinal] = useState(valorOriginal)
+  const [valorOriginal, setValorOriginal] = useState(0)
+  const [valorComDesconto, setValorComDesconto] = useState(0)
+  const [valorFinal, setValorFinal] = useState(0)
   const [codigoBarrasNumerico, setCodigoBarrasNumerico] = useState('')
+  const [corridaSelecionada, setCorridaSelecionada] = useState<Corrida | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Gerar código de barras aleatório quando o componente montar
+  // Carregar corrida selecionada do localStorage e URL parameters
   useEffect(() => {
-    gerarCodigoBarrasAleatorio()
-  }, [descontoAplicado])
+    setIsLoading(true)
+    
+    // Tentar obter da URL primeiro (valor direto)
+    const valorUrl = searchParams.get('valor')
+    
+    // Tentar obter do localStorage (objeto completo)
+    const corridaSalva = localStorage.getItem('selectedCorrida')
+    
+    if (corridaSalva) {
+      try {
+        const corrida: Corrida = JSON.parse(corridaSalva)
+        setCorridaSelecionada(corrida)
+        
+        // Extrair valor numérico do preço (ex: "R$ 8,50" → 8.50)
+        const precoNumerico = extrairValorNumerico(corrida.preco)
+        setValorOriginal(precoNumerico)
+        setValorComDesconto(calcularDesconto(precoNumerico))
+        setValorFinal(precoNumerico)
+      } catch (error) {
+        console.error('Erro ao parsear corrida:', error)
+        // Fallback para valor da URL ou valor padrão
+        const valorFallback = valorUrl ? parseFloat(valorUrl) : 15.00
+        setValorOriginal(valorFallback)
+        setValorComDesconto(calcularDesconto(valorFallback))
+        setValorFinal(valorFallback)
+      }
+    } else if (valorUrl) {
+      // Usar valor direto da URL
+      const valor = parseFloat(valorUrl)
+      setValorOriginal(valor)
+      setValorComDesconto(calcularDesconto(valor))
+      setValorFinal(valor)
+    } else {
+      // Valor padrão fallback
+      const valorPadrao = 15.00
+      setValorOriginal(valorPadrao)
+      setValorComDesconto(calcularDesconto(valorPadrao))
+      setValorFinal(valorPadrao)
+    }
+    
+    setIsLoading(false)
+  }, [searchParams])
+
+  // Função para extrair valor numérico de string como "R$ 8,50"
+  const extrairValorNumerico = (precoString: string): number => {
+    if (!precoString) return 0
+    
+    // Remove "R$", espaços e converte vírgula para ponto
+    const valorLimpo = precoString
+      .replace('R$', '')
+      .replace(' ', '')
+      .replace('.', '')
+      .replace(',', '.')
+      .trim()
+    
+    return parseFloat(valorLimpo) || 0
+  }
+
+  // Calcular desconto (30% off como exemplo)
+  const calcularDesconto = (valor: number): number => {
+    return parseFloat((valor * 0.7).toFixed(2)) // 30% de desconto
+  }
+
+  // Gerar código de barras quando valores mudarem
+  useEffect(() => {
+    if (valorOriginal > 0) {
+      gerarCodigoBarrasAleatorio()
+    }
+  }, [descontoAplicado, valorOriginal])
 
   const gerarCodigoBarrasAleatorio = () => {
+    const valorAtual = descontoAplicado ? valorComDesconto : valorOriginal
+    
     // Estrutura básica de um código de barras de boleto: 44 dígitos
     const banco = '237' // Código do banco (Bradesco)
     const moeda = '9' // Real
     const fatorVencimento = '9999' // Fator vencimento fixo
-    const valor = Math.floor((descontoAplicado ? valorComDesconto : valorOriginal) * 100).toString().padStart(10, '0')
+    const valor = Math.floor(valorAtual * 100).toString().padStart(10, '0')
     
     // Parte aleatória (20 dígitos)
     const aleatorio1 = Math.floor(Math.random() * 100000).toString().padStart(5, '0')
@@ -76,6 +166,9 @@ export default function Pagamento() {
     setValorFinal(valorPago);
     setPagamentoFinalizado(true)
     
+    // Limpar a corrida selecionada do localStorage após pagamento
+    localStorage.removeItem('selectedCorrida')
+    
     setTimeout(() => {
       router.push('/usuario')
     }, 3000)
@@ -86,8 +179,14 @@ export default function Pagamento() {
     return valorAtual.toFixed(2).replace('.', ',');
   }
 
-  const valorAtualNumerico = descontoAplicado ? valorComDesconto : valorOriginal;
-  const pixCode = `00020126360014br.gov.bcb.pix0114+5598999999999520400005303986540${valorAtualNumerico.toFixed(2).length.toString().padStart(2, '0')}${valorAtualNumerico.toFixed(2)}5802BR5913NOME DO RECEBEDOR6009SAO LUIS62070503***6304ABCD`;
+  const getValorAtualNumerico = () => {
+    return descontoAplicado ? valorComDesconto : valorOriginal;
+  }
+
+  const getPixCode = () => {
+    const valorAtual = getValorAtualNumerico();
+    return `00020126360014br.gov.bcb.pix0114+5598999999999520400005303986540${valorAtual.toFixed(2).length.toString().padStart(2, '0')}${valorAtual.toFixed(2)}5802BR5913NOME DO RECEBEDOR6009SAO LUIS62070503***6304ABCD`;
+  }
 
   const getVencimentoBoleto = () => {
     const data = new Date();
@@ -95,28 +194,23 @@ export default function Pagamento() {
     return data.toLocaleDateString('pt-BR');
   }
   
-  // Função para desenhar código de barras no padrão Intercalado 2 de 5 (como na imagem)
   const drawBarcodeInPdf = (pdf: jsPDF, codigo: string, x: number, y: number, height: number) => {
     pdf.setDrawColor(0, 0, 0);
     pdf.setFillColor(0, 0, 0);
 
-    const startCode = '0000'; // Código inicial
-    const endCode = '100';   // Código final
+    const startCode = '0000';
+    const endCode = '100';
     const fullCode = startCode + codigo + endCode;
     
     let currentX = x;
-    const narrowBarWidth = 0.3; // Barra fina
-    const wideBarWidth = 0.9;   // Barra larga
-    const barSpacing = 0.2;     // Espaço entre barras
+    const narrowBarWidth = 0.3;
+    const wideBarWidth = 0.9;
+    const barSpacing = 0.2;
 
-    // Padrão Intercalado 2 de 5: pares são barras, ímpares são espaços
     for (let i = 0; i < fullCode.length; i++) {
       const digit = parseInt(fullCode[i]);
-      
-      // Barras largas para dígitos altos, finas para baixos
       const barWidth = digit >= 5 ? wideBarWidth : narrowBarWidth;
       
-      // Desenha a barra (apenas posições pares)
       if (i % 2 === 0) {
         pdf.rect(currentX, y, barWidth, height, 'F');
       }
@@ -125,7 +219,6 @@ export default function Pagamento() {
     }
   }
 
-  // Função para gerar representação visual do código de barras (para exibição na tela)
   const gerarCodigoBarrasVisual = () => {
     if (!codigoBarrasNumerico) return '';
     
@@ -138,23 +231,21 @@ export default function Pagamento() {
     for (let i = 0; i < fullCode.length; i++) {
       const digit = parseInt(fullCode[i]);
       
-      // Padrão similar ao da imagem: barras de diferentes espessuras
-      if (i % 2 === 0) { // Apenas desenha barras nas posições pares
+      if (i % 2 === 0) {
         if (digit >= 7) {
-          barcodeVisual += '███'; // Barra muito larga
+          barcodeVisual += '███';
         } else if (digit >= 4) {
-          barcodeVisual += '██';  // Barra larga
+          barcodeVisual += '██';
         } else {
-          barcodeVisual += '█';   // Barra fina
+          barcodeVisual += '█';
         }
       } else {
-        // Espaços entre barras
         if (digit >= 7) {
-          barcodeVisual += '   '; // Espaço grande
+          barcodeVisual += '   ';
         } else if (digit >= 4) {
-          barcodeVisual += '  ';  // Espaço médio
+          barcodeVisual += '  ';
         } else {
-          barcodeVisual += ' ';   // Espaço pequeno
+          barcodeVisual += ' ';
         }
       }
     }
@@ -165,35 +256,28 @@ export default function Pagamento() {
   const handleDownloadPdf = async () => {
     try {
         const pdf = new jsPDF('p', 'mm', 'a4');
-        
-        // Adicionar logo da BoraSiô
         const logoUrl = '/img/borasio.png';
         const logoImg = new Image();
         logoImg.src = logoUrl;
         
         const drawRestOfPdf = (pdf: jsPDF) => {
-            // Texto ao lado da logo
             pdf.setFontSize(10);
             pdf.setTextColor(100, 100, 100);
             pdf.text('Sistema de Transporte Seguro', 60, 37);
             
-            // Linha divisória
             pdf.setDrawColor(0, 77, 43);
             pdf.setLineWidth(0.5);
             pdf.line(20, 40, 190, 40);
             
-            // Título do boleto
             pdf.setFontSize(14);
             pdf.setTextColor(0, 0, 0);
             pdf.text('BOLETO BANCÁRIO', 20, 55);
             
-            // Linha digitável
             const linhaDigitavel = formatarLinhaDigitavel(codigoBarrasNumerico);
             pdf.setFont('courier', 'bold');
             pdf.setFontSize(10);
             pdf.text(linhaDigitavel, 20, 70);
             
-            // Dados principais
             pdf.setFont('helvetica', 'normal');
             pdf.setFontSize(10);
             
@@ -213,28 +297,23 @@ export default function Pagamento() {
             pdf.text(`Pagador: [Nome do Cliente]`, 20, yPos);
             pdf.text(`CPF: [CPF do Cliente]`, 120, yPos);
             
-            // CÓDIGO DE BARRAS NO PADRÃO INTERCALADO 2 DE 5
             yPos += 25;
             pdf.setFontSize(8);
             pdf.setTextColor(100, 100, 100);
             pdf.text('CÓDIGO DE BARRAS:', 20, yPos);
             
-            // Desenha as barras no padrão correto
             const barcodeHeight = 12;
             const initialX = 20;
             drawBarcodeInPdf(pdf, codigoBarrasNumerico, initialX, yPos + 3, barcodeHeight);
             
-            // Adicionar números do código de barras abaixo
             pdf.setFontSize(5);
             pdf.setTextColor(150, 150, 150);
             pdf.text(codigoBarrasNumerico, 20, yPos + 3 + barcodeHeight + 3);
             
-            // Retângulo ao redor do código de barras
             pdf.setDrawColor(0, 0, 0);
             pdf.setLineWidth(0.1);
             pdf.rect(18, yPos - 2, 164, 20);
             
-            // Instruções
             yPos += 32;
             pdf.setFont('helvetica', 'bold');
             pdf.setFontSize(9);
@@ -254,14 +333,12 @@ export default function Pagamento() {
                 pdf.text(instrucao, 25, yPos + 6 + (index * 5));
             });
             
-            // Informações de autenticação
             yPos += 35;
             pdf.setFontSize(7);
             pdf.setTextColor(100, 100, 100);
             pdf.text('Autenticação Mecânica', 20, yPos);
             pdf.text(`Código: ${Math.random().toString(36).substring(2, 10).toUpperCase()}`, 20, yPos + 4);
             
-            // Rodapé
             pdf.setFontSize(6);
             pdf.text('Boleto gerado automaticamente pelo sistema BoraSiô', 20, 285);
             pdf.text(`Data de emissão: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}`, 20, 288);
@@ -288,6 +365,36 @@ export default function Pagamento() {
     }
   }
 
+  // Informações da corrida selecionada
+  const getInfoCorrida = () => {
+    if (!corridaSelecionada) return null;
+    
+    return (
+      <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+        <h3 className="font-semibold text-green-800 mb-2">Informações da Corrida</h3>
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <div><span className="text-gray-600">Origem:</span> {corridaSelecionada.origem}</div>
+          <div><span className="text-gray-600">Destino:</span> {corridaSelecionada.destino}</div>
+          <div><span className="text-gray-600">Motorista:</span> {corridaSelecionada.motorista}</div>
+          <div><span className="text-gray-600">Veículo:</span> {corridaSelecionada.veiculo}</div>
+        </div>
+      </div>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#DAF3D7] to-[#B8E1B3] py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+          <div className="p-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Carregando informações de pagamento...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#DAF3D7] to-[#B8E1B3] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
@@ -303,6 +410,9 @@ export default function Pagamento() {
               </div>
             </div>
           )}
+          
+          {/* Exibir informações da corrida selecionada */}
+          {getInfoCorrida()}
           
           <div className="mb-8">
             <h2 className="text-lg font-semibold text-[#004d2b] mb-4">Método de pagamento</h2>
@@ -367,11 +477,11 @@ export default function Pagamento() {
               <h3 className="text-lg font-semibold text-[#004d2b] mb-4">Pagar com Pix</h3>
               <p className="text-gray-600 mb-2">Escaneie o QR Code abaixo com seu app de pagamentos.</p>
               <div className="flex justify-center my-4">
-                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(pixCode)}`} alt="QR Code Pix" className="border-4 border-white rounded-lg shadow-md" />
+                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(getPixCode())}`} alt="QR Code Pix" className="border-4 border-white rounded-lg shadow-md" />
               </div>
               <p className="font-bold text-xl text-[#004d2b]">Valor: R$ {getValorAtual()}</p>
               <button 
-                onClick={() => navigator.clipboard.writeText(pixCode)}
+                onClick={() => navigator.clipboard.writeText(getPixCode())}
                 className="mt-4 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm py-2 px-4 rounded-lg flex items-center justify-center mx-auto"
               >
                 <FontAwesomeIcon icon={faCopy} className="mr-2" />
@@ -481,7 +591,7 @@ export default function Pagamento() {
             
             {descontoAplicado && (
               <div className="flex justify-between mb-2 text-green-600">
-                <span>Desconto:</span>
+                <span>Desconto (30%):</span>
                 <span>- R$ {(valorOriginal - valorComDesconto).toFixed(2).replace('.', ',')}</span>
               </div>
             )}
@@ -504,5 +614,5 @@ export default function Pagamento() {
         </div>
       </div>
     </div>
-  )
+  );
 }
