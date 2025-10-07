@@ -1,6 +1,3 @@
-
-
-
 -- Criação do schema
 CREATE SCHEMA IF NOT EXISTS carona;
 
@@ -284,3 +281,31 @@ ALTER TABLE carona.usuarios
 ALTER COLUMN tipo TYPE varchar(20);
 
 select * from carona.usuarios;
+
+CREATE TABLE carona.oferta_carona (
+    id_oferta SERIAL PRIMARY KEY,
+    id_motorista INT NOT NULL,
+    tipo VARCHAR(20) NOT NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_motorista) REFERENCES carona.usuarios(id)
+);
+
+INSERT INTO carona.oferta_carona (id_motorista, tipo) VALUES 
+(1, 'geral'),
+(2, 'grupo')
+
+select * from carona.oferta_carona
+
+CREATE TABLE carona.contatos (
+    id_contato SERIAL PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    descricao VARCHAR(500) NOT NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES carona.usuarios(id)
+);
+
+INSERT INTO carona.contatos (id_usuario, descricao) VALUES 
+(1, 'Preciso de ajuda com minha conta.'),
+(2, 'Gostaria de relatar um problema com uma corrida.');
+
+
