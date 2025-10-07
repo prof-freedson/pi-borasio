@@ -37,15 +37,27 @@ export default function LoginPage() {
     try {
       // Simulação de chamada API
       await new Promise(resolve => setTimeout(resolve, 1000));
-      // Marca como logado localmente (para teste) e redireciona
+      
+      // Marcar como logado e salvar tipo de usuário
       try {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userEmail', email);
-        // notify header in same tab
-        try { window.dispatchEvent(new CustomEvent('authChanged', { detail: { loggedIn: true } })); } catch (e) {}
+        localStorage.setItem('userType', 'passageiro'); // Tipo de usuário
+        
+        // Notificar o header sobre a mudança
+        try { 
+          window.dispatchEvent(new CustomEvent('authChanged', { 
+            detail: { 
+              loggedIn: true, 
+              email: email,
+              userType: 'passageiro'
+            } 
+          })); 
+        } catch (e) {}
       } catch (e) {
         // ignore
       }
+      
       router.push('/usuario');
     } catch (err: unknown) {
       setError('Ocorreu um erro ao fazer login');
@@ -64,14 +76,13 @@ export default function LoginPage() {
   };
 
   const handleForgotPassword = () => {
-    // Redirecionamento para a rota de recuperação de senha
     router.push('/recuperar-senha');
   };
 
   return (
     <main className="min-h-screen bg-green-100 flex flex-col items-center justify-center p-4">
       <div className="bg-green-50 p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-green-800 text-center">Entrar</h2>
+        <h2 className="text-3xl font-bold mb-6 text-green-800 text-center">Entrar como Passageiro</h2>
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
             {error}

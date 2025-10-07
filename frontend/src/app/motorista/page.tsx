@@ -23,6 +23,7 @@ import {
   faChair,
   faEdit,
   faTimes,
+  faUsers, // Ícone novo para "Oferecer Carona"
 } from "@fortawesome/free-solid-svg-icons";
 
 function MotoristaContent() {
@@ -169,13 +170,21 @@ function MotoristaContent() {
               <h1 className="text-2xl font-bold text-[#004d2b]">{nome}</h1>
               <p className="text-gray-600 mt-1">Membro desde Abril 2024</p>
 
-              <div className="mt-4 flex justify-center md:justify-start">
+              {/* BOTÕES ADICIONADOS AQUI */}
+              <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
                 <Link
                   href="/corridas"
-                  className="bg-[#FFD700] hover:bg-[#FFC000] text-[#004d2b] px-6 py-3 rounded-xl font-bold flex items-center transition-colors shadow-md"
+                  className="bg-[#FFD700] hover:bg-[#FFC000] text-[#004d2b] px-6 py-3 rounded-xl font-bold flex items-center justify-center transition-colors shadow-md"
                 >
                   <FontAwesomeIcon icon={faCar} className="mr-2" />
                   Ver Corridas
+                </Link>
+                <Link
+                  href="/oferecer-carona"
+                  className="bg-[#004d2b] hover:bg-[#003320] text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center transition-colors shadow-md"
+                >
+                  <FontAwesomeIcon icon={faUsers} className="mr-2" />
+                  Oferecer Carona
                 </Link>
               </div>
             </div>

@@ -107,8 +107,31 @@ const Cadastromotorista = () => {
     }
 
     try {
+      // Simulação de cadastro
       console.log("Dados para cadastro:", form);
       await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Salvar dados no localStorage e marcar como logado
+      try {
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', form.email);
+        localStorage.setItem('userType', 'motorista');
+        localStorage.setItem('userName', form.nome);
+        
+        // Notificar o header sobre a mudança
+        try { 
+          window.dispatchEvent(new CustomEvent('authChanged', { 
+            detail: { 
+              loggedIn: true, 
+              email: form.email,
+              userType: 'motorista'
+            } 
+          })); 
+        } catch (e) {}
+      } catch (e) {
+        console.error('Erro ao salvar no localStorage:', e);
+      }
+      
       router.push("/motorista");
     } catch (err) {
       setError("Erro ao cadastrar. Tente novamente.");
@@ -243,9 +266,9 @@ const Cadastromotorista = () => {
               />
               <label htmlFor="terms" className="ml-2 text-sm">
                 <span className="text-gray-500">Eu li e aceito os </span>
-                <a href="#" className="font-medium text-green-900 hover:underline">Termos de Serviço</a>
+                <Link href="/termos-de-servico" className="font-medium text-green-900 hover:underline">Termos de Serviço</Link>
                 <span className="text-gray-500"> e a </span>
-                <a href="#" className="font-medium text-green-900 hover:underline">Política de Privacidade</a>
+                <Link href="/politica-de-privacidade" className="font-medium text-green-900 hover:underline">Política de Privacidade</Link>
                 <span className="text-gray-500">.</span>
               </label>
             </div>
