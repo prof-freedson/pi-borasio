@@ -8,11 +8,13 @@ public class AuthResponse {
     private String tipo = "Bearer";
     private Long usuarioId;
     private String email;
+    private String nome;
     private String role;
-    
-    public AuthResponse(String token, Long usuarioId, String email, String role) {
+
+    public AuthResponse(String token, Long usuarioId, String nome, String email, String role) {
         this.token = token;
         this.usuarioId = usuarioId;
+        this.nome = nome;
         this.email = email;
         this.role = role;
     }
