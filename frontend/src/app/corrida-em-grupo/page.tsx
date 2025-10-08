@@ -361,12 +361,6 @@ export default function CorridaEmGrupoPage() {
                         da corrida em grupo. Economize, conecte-se e ajude nossa cidade.
                     </p>
                     <div className="flex flex-wrap justify-center gap-4">
-                        <button 
-                            onClick={() => ativarCorridaGrupo('offer')}
-                            className="bg-yellow-400 hover:bg-yellow-300 text-[#004d2b] font-bold py-4 px-12 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-lg flex items-center gap-3"
-                        >
-                            🚗 Oferecer Carona em Grupo
-                        </button>
                         <Link 
                             href="/download"
                             className="bg-white/10 hover:bg-white/20 font-semibold py-4 px-8 rounded-xl transition-all duration-300 border border-white/30 hover:border-white/50 text-lg flex items-center gap-3 backdrop-blur-sm"
