@@ -38,14 +38,42 @@ const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // 6 imagens do carrossel
-  const carouselImages = [
-    "/carousel-1.png",
-    "/carousel-2.png",
-    "/carousel-3.png",
-    "/carousel-4.png",
-    "/carousel-5.png",
-    "/carousel-6.png" // Nova imagem adicionada
+  const carouselContent = [
+    {
+      image: "/carousel-1.png",
+      title: (
+        <>
+          Mobilidade com <br className="hidden sm:block" />
+          Jeito Maranhense
+        </>
+      ),
+      subtitle: "Um app de carona mais humano, mais seguro e mais local.",
+    },
+    {
+      image: "/carousel-2.png",
+      title: "Economize tempo e dinheiro",
+      subtitle: "Compartilhe caronas e reduza seus custos de transporte diário.",
+    },
+    {
+      image: "/carousel-3.png",
+      title: "Segurança em primeiro lugar",
+      subtitle: "Motoristas verificados e recursos de segurança para sua tranquilidade.",
+    },
+    {
+      image: "/carousel-4.png",
+      title: "Conectando a cidade",
+      subtitle: "Rotas inteligentes que abrangem toda a região metropolitana de São Luís.",
+    },
+    {
+      image: "/carousel-5.png",
+      title: "Menos trânsito, mais qualidade de vida",
+      subtitle: "Contribua para um trânsito mais fluido e uma cidade mais sustentável.",
+    },
+    {
+      image: "/carousel-6.png",
+      title: "Sua carona a um toque de distância",
+      subtitle: "Baixe o app e descubra um novo jeito de se mover pela cidade.",
+    },
   ];
 
   // Efeito para o carrossel automático
@@ -53,21 +81,21 @@ const Hero = () => {
     if (!isAutoPlaying) return;
 
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+      setCurrentSlide((prev) => (prev + 1) % carouselContent.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying, carouselImages.length]);
+  }, [isAutoPlaying, carouselContent.length]);
 
   // Navegação do carrossel
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+    setCurrentSlide((prev) => (prev + 1) % carouselContent.length);
     setIsAutoPlaying(false);
     setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+    setCurrentSlide((prev) => (prev - 1 + carouselContent.length) % carouselContent.length);
     setIsAutoPlaying(false);
     setTimeout(() => setIsAutoPlaying(true), 10000);
   };
@@ -189,20 +217,20 @@ const Hero = () => {
       <div className="relative h-96 sm:h-[500px] lg:h-[600px] overflow-hidden">
         {/* Slides */}
         <div className="relative w-full h-full">
-          {carouselImages.map((image, index) => (
+          {carouselContent.map((item, index) => (
             <div
               key={index}
               className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                index === currentSlide ? 'opacity-100' : 'opacity-0'
+                index === currentSlide ? "opacity-100" : "opacity-0"
               }`}
             >
               <img
-                src={image}
+                src={item.image}
                 alt={`Carrossel ${index + 1}`}
                 className="w-full h-full object-cover"
               />
               {/* Overlay escuro para melhor contraste do texto */}
-              <div className="absolute inset-0 bg-black/40"></div>
+              <div className="absolute inset-0 bg-black/30"></div>
             </div>
           ))}
         </div>
@@ -210,12 +238,11 @@ const Hero = () => {
         {/* Conteúdo sobreposto no carrossel */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-            Mobilidade com <br className="hidden sm:block" />
-            Jeito Maranhense
+            {carouselContent[currentSlide].title}
           </h1>
 
-          <p className="text-lg sm:text-xl lg:text-2xl text-gray-200 mb-8 max-w-2xl">
-            Um app de carona mais humano, mais seguro e mais local.
+          <p className="text-lg sm:text-xl lg:text-2xl text-white mb-8 max-w-2xl">
+            {carouselContent[currentSlide].subtitle}
           </p>
 
           <button
@@ -246,16 +273,16 @@ const Hero = () => {
           <ChevronRight className="w-6 h-6" />
         </button>
 
-        {/* Indicadores - agora com 6 pontos */}
+        {/* Indicadores */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {carouselImages.map((_, index) => (
+          {carouselContent.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide 
-                  ? 'bg-white scale-125' 
-                  : 'bg-white/50 hover:bg-white/70'
+                index === currentSlide
+                  ? "bg-white scale-125"
+                  : "bg-white/50 hover:bg-white/70"
               }`}
               aria-label={`Ir para slide ${index + 1}`}
             />
