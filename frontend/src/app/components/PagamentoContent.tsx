@@ -1,6 +1,6 @@
 "use client"
 
-import { faCreditCard, faBarcode, faQrcode, faTicketAlt, faCheckCircle, faCopy, faDownload, faShieldAlt } from '@fortawesome/free-solid-svg-icons'
+import { faCreditCard, faBarcode, faQrcode, faTicketAlt, faCheckCircle, faCopy, faDownload, faShieldAlt, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState, useEffect } from 'react'
 import jsPDF from 'jspdf'
@@ -35,6 +35,9 @@ export default function PagamentoContent() {
   const [codigoBarrasNumerico, setCodigoBarrasNumerico] = useState('')
   const [corridaSelecionada, setCorridaSelecionada] = useState<Corrida | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [codigoVoucher, setCodigoVoucher] = useState('')
+  const [mensagemVoucher, setMensagemVoucher] = useState('')
+  const [tipoMensagemVoucher, setTipoMensagemVoucher] = useState<'success' | 'error' | ''>('')
 
   // Carregar corrida selecionada do localStorage e URL parameters
   useEffect(() => {
@@ -54,27 +57,27 @@ export default function PagamentoContent() {
         // Extrair valor numérico do preço (ex: "R$ 8,50" → 8.50)
         const precoNumerico = extrairValorNumerico(corrida.preco)
         setValorOriginal(precoNumerico)
-        setValorComDesconto(calcularDesconto(precoNumerico))
+        setValorComDesconto(precoNumerico)
         setValorFinal(precoNumerico)
       } catch (error) {
         console.error('Erro ao parsear corrida:', error)
         // Fallback para valor da URL ou valor padrão
         const valorFallback = valorUrl ? parseFloat(valorUrl) : 15.00
         setValorOriginal(valorFallback)
-        setValorComDesconto(calcularDesconto(valorFallback))
+        setValorComDesconto(valorFallback)
         setValorFinal(valorFallback)
       }
     } else if (valorUrl) {
       // Usar valor direto da URL
       const valor = parseFloat(valorUrl)
       setValorOriginal(valor)
-      setValorComDesconto(calcularDesconto(valor))
+      setValorComDesconto(valor)
       setValorFinal(valor)
     } else {
       // Valor padrão fallback
       const valorPadrao = 15.00
       setValorOriginal(valorPadrao)
-      setValorComDesconto(calcularDesconto(valorPadrao))
+      setValorComDesconto(valorPadrao)
       setValorFinal(valorPadrao)
     }
     
@@ -96,9 +99,25 @@ export default function PagamentoContent() {
     return parseFloat(valorLimpo) || 0
   }
 
-  // Calcular desconto (30% off como exemplo)
-  const calcularDesconto = (valor: number): number => {
-    return parseFloat((valor * 0.7).toFixed(2)) // 30% de desconto
+  // Aplicar desconto baseado no valor e código do voucher
+  const aplicarDesconto = (valor: number, codigo: string) => {
+    if (codigo.toUpperCase() !== 'OUT31/10') {
+      return { valorComDesconto: valor, percentual: 0 }
+    }
+
+    if (valor > 10.00) {
+      return { 
+        valorComDesconto: parseFloat((valor * 0.7).toFixed(2)), // 30% de desconto
+        percentual: 30
+      }
+    } else if (valor >= 5.00) {
+      return { 
+        valorComDesconto: parseFloat((valor * 0.8).toFixed(2)), // 20% de desconto
+        percentual: 20
+      }
+    } else {
+      return { valorComDesconto: valor, percentual: 0 }
+    }
   }
 
   // Gerar código de barras quando valores mudarem
@@ -160,18 +179,65 @@ export default function PagamentoContent() {
     return `${campo1.substring(0, 5)}.${campo1.substring(5, 10)} ${campo2.substring(0, 5)}.${campo2.substring(5, 10)} ${campo3.substring(0, 5)}.${campo3.substring(5, 10)} ${campo4} ${campo5}`
   }
 
-  const handleFinalizarPagamento = () => {
-    const valorPago = descontoAplicado ? valorComDesconto : valorOriginal;
-    setValorFinal(valorPago);
-    setPagamentoFinalizado(true)
+  const handleAplicarVoucher = () => {
+    if (!codigoVoucher.trim()) {
+      setMensagemVoucher('Por favor, insira um código de voucher')
+      setTipoMensagemVoucher('error')
+      return
+    }
+
+    if (codigoVoucher.toUpperCase() !== 'OUT31/10') {
+      setMensagemVoucher('Código de voucher inválido')
+      setTipoMensagemVoucher('error')
+      setDescontoAplicado(false)
+      setValorComDesconto(valorOriginal)
+      return
+    }
+
+    const resultado = aplicarDesconto(valorOriginal, codigoVoucher)
     
-    // Limpar a corrida selecionada do localStorage após pagamento
-    localStorage.removeItem('selectedCorrida')
-    
-    setTimeout(() => {
-      router.push('/usuario')
-    }, 3000)
+    if (resultado.percentual === 0) {
+      setMensagemVoucher('Este voucher não é válido para valores abaixo de R$ 5,00')
+      setTipoMensagemVoucher('error')
+      setDescontoAplicado(false)
+      setValorComDesconto(valorOriginal)
+    } else {
+      setMensagemVoucher(`Voucher aplicado com sucesso! ${resultado.percentual}% de desconto`)
+      setTipoMensagemVoucher('success')
+      setDescontoAplicado(true)
+      setValorComDesconto(resultado.valorComDesconto)
+    }
   }
+
+  const handleFinalizarPagamento = () => {
+  const valorPago = descontoAplicado ? valorComDesconto : valorOriginal;
+  setValorFinal(valorPago);
+  setPagamentoFinalizado(true)
+  
+  // Salvar no histórico de pagamentos
+  const pagamentoData = {
+    id: Date.now(),
+    data: new Date().toLocaleDateString('pt-BR'),
+    hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+    metodo: metodoPagamento,
+    valor: valorPago,
+    origem: corridaSelecionada?.origem || 'Local de origem',
+    destino: corridaSelecionada?.destino || 'Local de destino',
+    status: 'Concluído'
+  };
+
+  // Salvar no localStorage para a página do usuário
+  const historicoPagamentos = JSON.parse(localStorage.getItem('historicoPagamentos') || '[]');
+  historicoPagamentos.unshift(pagamentoData);
+  localStorage.setItem('historicoPagamentos', JSON.stringify(historicoPagamentos));
+  
+  // Limpar a corrida selecionada do localStorage após pagamento
+  localStorage.removeItem('selectedCorrida')
+  
+  setTimeout(() => {
+    router.push('/usuario')
+  }, 3000)
+}
 
   const getValorAtual = () => {
     const valorAtual = descontoAplicado ? valorComDesconto : valorOriginal;
@@ -571,15 +637,43 @@ export default function PagamentoContent() {
               Voucher de desconto
             </h2>
             
+            <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+              <div className="flex items-start">
+                <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-500 mr-2 mt-0.5" />
+                <div className="text-sm text-yellow-700">
+                  <p className="font-semibold">Cupom OUT31/10:</p>
+                  <p>• 30% de desconto para compras acima de R$ 10,00</p>
+                  <p>• 20% de desconto para compras a partir de R$ 5,00</p>
+                  <p>• Não válido para valores abaixo de R$ 5,00</p>
+                </div>
+              </div>
+            </div>
+            
             <div className="flex">
-              <input type="text" placeholder="Código do voucher" className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+              <input 
+                type="text" 
+                placeholder="Digite OUT31/10" 
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                value={codigoVoucher}
+                onChange={(e) => setCodigoVoucher(e.target.value)}
+              />
               <button 
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-r-md"
-                onClick={() => setDescontoAplicado(true)}
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-r-md transition duration-200"
+                onClick={handleAplicarVoucher}
               >
                 Aplicar
               </button>
             </div>
+            
+            {mensagemVoucher && (
+              <div className={`mt-2 p-2 rounded-md text-sm ${
+                tipoMensagemVoucher === 'success' 
+                  ? 'bg-green-100 text-green-700 border border-green-200' 
+                  : 'bg-red-100 text-red-700 border border-red-200'
+              }`}>
+                {mensagemVoucher}
+              </div>
+            )}
           </div>
           
           <div className="border-t pt-4">
@@ -590,7 +684,7 @@ export default function PagamentoContent() {
             
             {descontoAplicado && (
               <div className="flex justify-between mb-2 text-green-600">
-                <span>Desconto (30%):</span>
+                <span>Desconto:</span>
                 <span>- R$ {(valorOriginal - valorComDesconto).toFixed(2).replace('.', ',')}</span>
               </div>
             )}

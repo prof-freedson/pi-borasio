@@ -14,7 +14,11 @@ import {
   faTimes,
   faUser,
   faCarAlt,
-  faStar, // Ícone adicionado para feedback
+  faStar,
+  faReceipt,
+  faCheckCircle,
+  faBarcode,
+  faQrcode,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, Suspense } from "react";
@@ -25,6 +29,7 @@ function UsuarioContent() {
   const searchParams = useSearchParams();
   const [modoEdicao, setModoEdicao] = useState(false);
   const [selectedCorrida, setSelectedCorrida] = useState<any>(null);
+  const [historicoPagamentos, setHistoricoPagamentos] = useState<any[]>([]);
 
   const [nome, setNome] = useState("Sarah Lima Pereira");
   const [email, setEmail] = useState("Sarah@exemplo.com");
@@ -32,7 +37,6 @@ function UsuarioContent() {
   const [cpf, setCpf] = useState("123.456.789-00");
   const [endereco, setEndereco] = useState("Rua das Flores, 123 - Centro");
 
-  const [pagamentos, setPagamentos] = useState(["Cartão de Crédito", "Pix"]);
   const [corridasAnteriores, setCorridasAnteriores] = useState([
     {
       origem: "Rua das Flores - Centro",
@@ -65,6 +69,10 @@ function UsuarioContent() {
         localStorage.removeItem("selectedCorrida");
       }
     }
+
+    // Carregar histórico de pagamentos
+    const historico = JSON.parse(localStorage.getItem('historicoPagamentos') || '[]');
+    setHistoricoPagamentos(historico);
   }, [searchParams]);
 
   const salvarEdicao = () => {
@@ -122,6 +130,32 @@ function UsuarioContent() {
     }
   };
 
+  const getMetodoPagamentoIcon = (metodo: string) => {
+    switch (metodo) {
+      case 'credito':
+        return faCreditCard;
+      case 'pix':
+        return faQrcode;
+      case 'boleto':
+        return faBarcode;
+      default:
+        return faMoneyBill;
+    }
+  };
+
+  const getMetodoPagamentoTexto = (metodo: string) => {
+    switch (metodo) {
+      case 'credito':
+        return 'Cartão de Crédito';
+      case 'pix':
+        return 'Pix';
+      case 'boleto':
+        return 'Boleto';
+      default:
+        return metodo;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#DAF3D7] to-[#B8E1B3] p-4 md:p-8">
       {/* Modal de Confirmação */}
@@ -135,14 +169,14 @@ function UsuarioContent() {
               <p className="flex items-center">
                 <FontAwesomeIcon 
                   icon={faMapMarkerAlt} 
-                  className="text-green-600 mr-2 w-5" 
+                  className="text-[#FFD700] mr-2 w-5" 
                 />
                 <span className="font-medium">Origem:</span> {selectedCorrida.origem}
               </p>
               <p className="flex items-center">
                 <FontAwesomeIcon 
                   icon={faMapMarkerAlt} 
-                  className="text-red-500 mr-2 w-5" 
+                  className="text-[#FFD700] mr-2 w-5" 
                 />
                 <span className="font-medium">Destino:</span> {selectedCorrida.destino}
               </p>
@@ -312,7 +346,7 @@ function UsuarioContent() {
           </div>
         </div>
 
-        {/* Grid de Corridas */}
+        {/* Grid de Corridas e Pagamentos */}
         <div className="grid md:grid-cols-2 gap-6">
           {/* Corridas Anteriores */}
           <div className="bg-white rounded-2xl shadow-md overflow-hidden">
@@ -337,7 +371,7 @@ function UsuarioContent() {
                       <div className="flex items-start mb-2">
                         <FontAwesomeIcon 
                           icon={faMapMarkerAlt} 
-                          className="text-green-600 mr-3 mt-1 w-4" 
+                          className="text-[#FFD700] mr-3 mt-1 w-4" 
                         />
                         <div>
                           <p className="font-medium">{c.origem}</p>
@@ -350,7 +384,7 @@ function UsuarioContent() {
                       <div className="flex items-start">
                         <FontAwesomeIcon 
                           icon={faMapMarkerAlt} 
-                          className="text-red-500 mr-3 mt-1 w-4" 
+                          className="text-[#FFD700] mr-3 mt-1 w-4" 
                         />
                         <p className="font-medium">{c.destino}</p>
                       </div>
@@ -377,68 +411,139 @@ function UsuarioContent() {
             </div>
           </div>
 
-          {/* Corridas Agendadas */}
+          {/* Histórico de Pagamentos */}
           <div className="bg-white rounded-2xl shadow-md overflow-hidden">
             <div className="p-6">
               <div className="flex items-center mb-6">
                 <FontAwesomeIcon 
-                  icon={faClock} 
+                  icon={faReceipt} 
                   className="text-[#004d2b] mr-2" 
                 />
                 <h1 className="text-xl font-bold text-[#004d2b]">
-                  Corridas Agendadas
+                  Histórico de Pagamentos
                 </h1>
               </div>
               
-              {corridasAgendadas.length > 0 ? (
+              {historicoPagamentos.length > 0 ? (
                 <div className="space-y-4">
-                  {corridasAgendadas.map((c) => (
+                  {historicoPagamentos.map((pagamento) => (
                     <div 
-                      key={c.id} 
+                      key={pagamento.id} 
                       className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
                     >
-                      <div className="flex items-start mb-2">
-                        <FontAwesomeIcon 
-                          icon={faMapMarkerAlt} 
-                          className="text-green-600 mr-3 mt-1 w-4" 
-                        />
-                        <div>
-                          <p className="font-medium">{c.origem}</p>
-                          <div className="flex items-center text-gray-500 text-sm mt-1">
-                            <FontAwesomeIcon icon={faClock} className="mr-1" />
-                            {c.data}
-                          </div>
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon 
+                            icon={getMetodoPagamentoIcon(pagamento.metodo)} 
+                            className="text-[#FFD700] mr-2" 
+                          />
+                          <span className="font-medium text-[#004d2b]">
+                            {getMetodoPagamentoTexto(pagamento.metodo)}
+                          </span>
+                        </div>
+                        <span className="bg-[#004d2b] text-white px-2 py-1 rounded-full text-xs font-bold">
+                          R$ {pagamento.valor.toFixed(2).replace('.', ',')}
+                        </span>
+                      </div>
+                      
+                      <div className="space-y-2 text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-[#FFD700] w-3" />
+                          <span><strong>Origem:</strong> {pagamento.origem}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-[#FFD700] w-3" />
+                          <span><strong>Destino:</strong> {pagamento.destino}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <FontAwesomeIcon icon={faClock} className="mr-2 text-[#FFD700] w-3" />
+                          <span>{pagamento.data} às {pagamento.hora}</span>
                         </div>
                       </div>
-                      <div className="flex items-start mb-3">
-                        <FontAwesomeIcon 
-                          icon={faMapMarkerAlt} 
-                          className="text-red-500 mr-3 mt-1 w-4" 
-                        />
-                        <p className="font-medium">{c.destino}</p>
-                      </div>
-                      <div className="flex justify-end gap-3">
-                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
-                          <FontAwesomeIcon icon={faEdit} className="mr-1" />
-                          Alterar
-                        </button>
-                        <button
-                          onClick={() => cancelarCorrida(c.id)}
-                          className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center"
-                        >
-                          <FontAwesomeIcon icon={faTimes} className="mr-1" />
-                          Cancelar
-                        </button>
+                      
+                      <div className="mt-3 flex justify-between items-center">
+                        <div className="flex items-center text-green-600 text-sm">
+                          <FontAwesomeIcon icon={faCheckCircle} className="mr-1" />
+                          {pagamento.status}
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          ID: {pagamento.id}
+                        </span>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="text-center py-8 text-gray-500">
-                  Nenhuma corrida agendada
+                  Nenhum pagamento registrado
+                  <p className="text-sm mt-2">Seus pagamentos aparecerão aqui após a confirmação</p>
                 </div>
               )}
             </div>
+          </div>
+        </div>
+
+        {/* Corridas Agendadas */}
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+          <div className="p-6">
+            <div className="flex items-center mb-6">
+              <FontAwesomeIcon 
+                icon={faClock} 
+                className="text-[#004d2b] mr-2" 
+              />
+              <h1 className="text-xl font-bold text-[#004d2b]">
+                Corridas Agendadas
+              </h1>
+            </div>
+            
+            {corridasAgendadas.length > 0 ? (
+              <div className="space-y-4">
+                {corridasAgendadas.map((c) => (
+                  <div 
+                    key={c.id} 
+                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-start mb-2">
+                      <FontAwesomeIcon 
+                        icon={faMapMarkerAlt} 
+                        className="text-[#FFD700] mr-3 mt-1 w-4" 
+                      />
+                      <div>
+                        <p className="font-medium">{c.origem}</p>
+                        <div className="flex items-center text-gray-500 text-sm mt-1">
+                          <FontAwesomeIcon icon={faClock} className="mr-1" />
+                          {c.data}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-start mb-3">
+                      <FontAwesomeIcon 
+                        icon={faMapMarkerAlt} 
+                        className="text-[#FFD700] mr-3 mt-1 w-4" 
+                      />
+                      <p className="font-medium">{c.destino}</p>
+                    </div>
+                    <div className="flex justify-end gap-3">
+                      <button className="text-[#004d2b] hover:text-[#003320] text-sm font-medium flex items-center">
+                        <FontAwesomeIcon icon={faEdit} className="mr-1" />
+                        Alterar
+                      </button>
+                      <button
+                        onClick={() => cancelarCorrida(c.id)}
+                        className="text-[#004d2b] hover:text-[#003320] text-sm font-medium flex items-center"
+                      >
+                        <FontAwesomeIcon icon={faTimes} className="mr-1" />
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                Nenhuma corrida agendada
+              </div>
+            )}
           </div>
         </div>
 
