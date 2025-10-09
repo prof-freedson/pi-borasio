@@ -171,9 +171,9 @@ CREATE TABLE carona.administradores (
 );
 
 -- Usuários (admin, motorista, passageiro)
-INSERT INTO carona.usuarios (nome, email, senha, tipo) VALUES
+SERT INTO carona.usuarios (nome, email, senha, tipo) VALUES
 ('Admin Principal', 'admin@email.com', 'admin123', 'admin'),
-('João Motorista', 'joao@carona.com', 'senha123', 'motorista'),
+('João Motorista', 'joao@carona.com', 'senha123', 'motorista'),IN
 ('Maria Passageira', 'maria@carona.com', 'senha123', 'passageiro');
 
 -- Administrador
@@ -307,5 +307,15 @@ CREATE TABLE carona.contatos (
 INSERT INTO carona.contatos (id_usuario, descricao) VALUES 
 (1, 'Preciso de ajuda com minha conta.'),
 (2, 'Gostaria de relatar um problema com uma corrida.');
+
+-- Formulário página Contato
+CREATE TABLE carona.formulario_contato(
+id SERIAL PRIMARY KEY,
+nome VARCHAR(100) NOT NULL,
+email VARCHAR(100) NOT NULL,
+mensagem TEXT NOT NULL,
+data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 
