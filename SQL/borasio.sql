@@ -171,9 +171,9 @@ CREATE TABLE carona.administradores (
 );
 
 -- Usuários (admin, motorista, passageiro)
-SERT INTO carona.usuarios (nome, email, senha, tipo) VALUES
+INSERT INTO carona.usuarios (nome, email, senha, tipo) VALUES
 ('Admin Principal', 'admin@email.com', 'admin123', 'admin'),
-('João Motorista', 'joao@carona.com', 'senha123', 'motorista'),IN
+('João Motorista', 'joao@carona.com', 'senha123', 'motorista'),
 ('Maria Passageira', 'maria@carona.com', 'senha123', 'passageiro');
 
 -- Administrador
