@@ -308,4 +308,14 @@ INSERT INTO carona.contatos (id_usuario, descricao) VALUES
 (1, 'Preciso de ajuda com minha conta.'),
 (2, 'Gostaria de relatar um problema com uma corrida.');
 
+-- Formulário página Contato
+CREATE TABLE carona.formulario_contato(
+id SERIAL PRIMARY KEY,
+nome VARCHAR(100) NOT NULL,
+email VARCHAR(100) NOT NULL,
+mensagem TEXT NOT NULL,
+data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
