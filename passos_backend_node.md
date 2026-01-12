@@ -98,6 +98,78 @@ Aproveitaremos o arquivo `borasio.sql` existente. O Prisma possui uma funcionali
 
 5. **Implementação alternativa do banco de dados serverless com PostgreSQL no Neon:** Caso não seja possível utilizar o banco de dados local, é possível implementar o banco de dados serverless com PostgreSQL no Neon. Para isso, deve-se criar uma conta no Neon e configurar o banco de dados no arquivo `.env`.
 
+### Passo 2.1: Instalação de Todas as Dependências
+
+Após configurar o Prisma, instale todas as dependências necessárias para o projeto:
+
+#### Dependências de Produção
+
+```bash
+# Framework Web e Middlewares
+npm install express cors helmet
+
+# Autenticação e Segurança
+npm install jsonwebtoken bcryptjs
+
+# Validação
+npm install zod
+
+# WebSockets
+npm install socket.io
+
+# Email
+npm install nodemailer
+
+# Pagamentos (escolha um)
+npm install stripe
+# OU para OpenPix (verificar documentação oficial)
+
+# Geolocalização
+npm install geolib
+
+# Variáveis de Ambiente
+npm install dotenv
+
+# Cache Redis (opcional, se usar)
+npm install ioredis
+
+# Filas (opcional, escolha um se necessário)
+npm install bullmq
+# OU
+npm install amqplib
+```
+
+#### Dependências de Desenvolvimento (Types)
+
+```bash
+# Types para TypeScript
+npm install --save-dev @types/express @types/cors @types/jsonwebtoken @types/bcryptjs @types/nodemailer
+
+# Se usar amqplib
+npm install --save-dev @types/amqplib
+```
+
+#### Monitoramento (Opcional)
+
+```bash
+# Sentry para monitoramento de erros
+npm install @sentry/node
+```
+
+#### Comando Único (Copiar e Colar)
+
+Para facilitar, você pode instalar tudo de uma vez:
+
+```bash
+# Produção
+npm install express cors helmet jsonwebtoken bcryptjs zod socket.io nodemailer stripe geolib dotenv
+
+# Desenvolvimento
+npm install --save-dev @types/express @types/cors @types/jsonwebtoken @types/bcryptjs @types/nodemailer
+
+# Opcional (Redis + Sentry)
+npm install ioredis @sentry/node
+```
 
 ### Passo 3: Estrutura de Pastas e Arquivos Detalhada
 
