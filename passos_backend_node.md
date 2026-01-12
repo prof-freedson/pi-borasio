@@ -52,23 +52,49 @@ Crie a pasta do projeto e inicie o Node.js com TypeScript.
 mkdir backend-node
 cd backend-node
 npm init -y
-npm install typescript ts-node @types/node nodemon --save-dev
+npm install typescript tsx @types/node nodemon --save-dev
 npx tsc --init
 ```
+
+**Por que usar `tsx` ao invés de `ts-node`?**
+- O **ts-node** é uma ferramenta antiga que não funciona bem com o modo ESM moderno (`"type": "module"`).
+- O **tsx** é uma ferramenta moderna e rápida que permite executar arquivos `.ts` diretamente no Node.js, com suporte total a ESM.
+- Com o tsx, você pode rodar TypeScript sem precisar compilar primeiro durante o desenvolvimento.
 
 **Configuração do `tsconfig.json` recomendada:**
 ```json
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true
   }
 }
 ```
+
+**Importante**: Após criar o `tsconfig.json`, adicione a seguinte linha ao `package.json` para habilitar o modo ESM (módulos modernos):
+
+```json
+{
+  "name": "backend-node",
+  "version": "1.0.0",
+  "type": "module",
+  // ... resto do arquivo
+}
+```
+
+**Por que isso é necessário?**
+- **`"type": "module"`**: Informa ao Node.js que o projeto usa a sintaxe moderna de `import/export` (ESM) ao invés do antigo `require/module.exports` (CommonJS).
+- **`"module": "NodeNext"`**: Configura o TypeScript para usar o sistema de módulos mais moderno compatível com Node.js.
+- **`"verbatimModuleSyntax": true`**: Garante que o TypeScript não altere a sintaxe de importação durante a compilação, mantendo a compatibilidade com ESM.
 
 ### Passo 2: Configuração do Banco de Dados e Prisma
 
@@ -141,9 +167,12 @@ npm install amqplib
 
 #### Dependências de Desenvolvimento (Types)
 
+**Por que instalar @types?**
+Bibliotecas como Express, Cors e Helmet são escritas em JavaScript puro. O TypeScript precisa de arquivos de definição (`.d.ts`) para entender a estrutura dessas bibliotecas. Os pacotes `@types/*` fornecem essas definições, permitindo autocompletar e verificação de tipos no editor.
+
 ```bash
-# Types para TypeScript
-npm install --save-dev @types/express @types/cors @types/jsonwebtoken @types/bcryptjs @types/nodemailer
+# Types essenciais para TypeScript
+npm install --save-dev @types/express @types/cors @types/helmet @types/jsonwebtoken @types/bcryptjs @types/nodemailer
 
 # Se usar amqplib
 npm install --save-dev @types/amqplib
@@ -164,12 +193,14 @@ Para facilitar, você pode instalar tudo de uma vez:
 # Produção
 npm install express cors helmet jsonwebtoken bcryptjs zod socket.io nodemailer stripe geolib dotenv
 
-# Desenvolvimento
-npm install --save-dev @types/express @types/cors @types/jsonwebtoken @types/bcryptjs @types/nodemailer
+# Desenvolvimento (inclui TODOS os @types necessários)
+npm install --save-dev @types/express @types/cors @types/helmet @types/jsonwebtoken @types/bcryptjs @types/nodemailer
 
 # Opcional (Redis + Sentry)
 npm install ioredis @sentry/node
 ```
+
+**Lembre-se**: Após instalar as dependências, adicione `"type": "module"` ao seu `package.json` para habilitar o uso de `import/export` (veja a configuração no Passo 1).
 
 ### Passo 3: Estrutura de Pastas e Arquivos Detalhada
 
@@ -271,9 +302,42 @@ No `package.json`, adicione scripts para facilitar o desenvolvimento:
 "scripts": {
   "build": "tsc",
   "start": "node dist/server.js",
-  "dev": "nodemon src/server.ts"
+  "dev": "nodemon --exec node --import tsx src/server.ts"
 }
 ```
+
+#### Explicação do Script de Desenvolvimento
+
+O comando `"dev": "nodemon --exec node --import tsx src/server.ts"` pode parecer complexo, mas cada parte tem um propósito:
+
+1. **`nodemon`**: Monitora mudanças nos arquivos e reinicia o servidor automaticamente.
+2. **`--exec node`**: Diz ao nodemon para executar o Node.js (ao invés de tentar usar ts-node).
+3. **`--import tsx`**: Antes de rodar o código, carrega o pacote `tsx`, que ensina o Node.js a entender arquivos `.ts` em tempo real.
+4. **`src/server.ts`**: O arquivo de entrada do seu servidor.
+
+**Por que não usar simplesmente `nodemon src/server.ts`?**
+- O nodemon tentaria usar o `ts-node` por padrão, que não funciona bem com `"type": "module"`.
+- O Node.js moderno não aceita arquivos `.ts` diretamente sem uma ferramenta de transformação.
+- O `tsx` resolve esse problema de forma moderna e eficiente.
+
+**Alternativa (usando arquivo de configuração)**:
+
+Se preferir um comando mais limpo, você pode criar um arquivo `nodemon.json` na raiz do projeto:
+
+```json
+{
+  "watch": ["src"],
+  "ext": "ts,json",
+  "exec": "node --import tsx src/server.ts"
+}
+```
+
+E simplificar o script para:
+```json
+"dev": "nodemon"
+```
+
+Ambas as abordagens funcionam. A primeira (comando longo) é mais explícita; a segunda (arquivo de configuração) é mais organizada.
 
 ---
 
