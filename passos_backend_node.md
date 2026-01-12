@@ -99,21 +99,56 @@ Aproveitaremos o arquivo `borasio.sql` existente. O Prisma possui uma funcionali
 5. **Implementação alternativa do banco de dados serverless com PostgreSQL no Neon:** Caso não seja possível utilizar o banco de dados local, é possível implementar o banco de dados serverless com PostgreSQL no Neon. Para isso, deve-se criar uma conta no Neon e configurar o banco de dados no arquivo `.env`.
 
 
-### Passo 3: Estrutura de Pastas (Arquitetura)
+### Passo 3: Estrutura de Pastas e Arquivos Detalhada
 
-Mantenha uma estrutura organizada, similar ao que você tinha em Java (Controller, Service), mas adaptada ao Node:
+Abaixo, detalhamos o propósito de cada diretório e os arquivos essenciais que você deve criar para organizar o projeto Node.js de forma profissional e escalável.
 
 ```
 src/
-├── config/         # Configurações (DB, Env, Stripe)
-├── controllers/    # Lógica de entrada/saída (Req/Res)
-├── middlewares/    # Auth, Validação, Tratamento de erros
-├── routes/         # Definição das rotas da API
-├── services/       # Regra de negócio pesada
-├── utils/          # Funções auxiliares (Geo, Formatadores)
-├── app.ts          # Configuração do Express
-└── server.ts       # Ponto de entrada (Start server)
+├── config/              # Configurações gerais e de terceiros
+│   ├── database.ts      # Instância única do PrismaClient (conexão com o banco)
+│   ├── env.ts           # Validação e exportação das variáveis de ambiente (dotenv)
+│   └── stripe.ts        # Configuração do cliente de pagamentos (Stripe/OpenPix)
+│
+├── controllers/         # Controladores: Recebem a requisição e devolvem a resposta (sem regra de negócio)
+│   ├── auth.controller.ts       # Login, Registro (chama AuthService)
+│   ├── corrida.controller.ts    # Solicitar, Aceitar, Cancelar corridas (chama CorridaService)
+│   ├── usuario.controller.ts    # CRUD de usuários, motoristas e passageiros
+│   └── chat.controller.ts       # Histórico de mensagens
+│
+├── middlewares/         # Interceptadores de requisição
+│   ├── auth.middleware.ts       # Verifica se o Token JWT é válido e adiciona usuário à req
+│   ├── validate.middleware.ts   # Valida o corpo/params da requisição usando Zod
+│   └── error.middleware.ts      # Manipulador global de erros (evita try/catch em tudo)
+│
+├── models/              # (Opcional) DTOs e Interfaces extras
+│   └── ...              # O Prisma já gera os tipos principais automaticamente!
+│
+├── routes/              # Definição das rotas (URL endpoints)
+│   ├── auth.routes.ts   # Define POST /auth/login, POST /auth/register
+│   ├── corrida.routes.ts # Define POST /corridas, PATCH /corridas/:id/aceitar
+│   └── index.ts         # Agrupa todas as rotas (router.use('/auth', authRoutes))
+│
+├── services/            # Camada de Serviço: Onde a Regra de Negócio reside (O coração do app)
+│   ├── auth.service.ts          # Lógica de hash de senha, geração de token
+│   ├── corrida.service.ts       # Cálculos de preço, validação de status, busca motorista
+│   ├── socket.service.ts        # Gerenciamento de eventos WebSocket (real-time)
+│   └── pagamento.service.ts     # Integração com gateway de pagamento
+│
+├── utils/               # Funções utilitárias e auxiliares
+│   ├── AppError.ts      # Classe padronizada para erros (statusCode, message)
+│   └── geo.ts           # Funções para calcular distância entre coordenadas
+│
+├── app.ts               # Configuração do App Express (Middlewares globais, CORS, Rotas)
+└── server.ts            # Ponto de entrada (Start do servidor HTTP + WebSocket + Banco)
 ```
+
+#### Detalhamento das Responsabilidades:
+
+1.  **`src/server.ts`**: É o arquivo que o Node executa. Ele inicia o servidor HTTP, conecta o Socket.io e garante que o banco de dados está conectado antes de aceitar requisições.
+2.  **`src/app.ts`**: Separe a configuração do express do start do servidor. Aqui você configura o `cors` (quem pode acessar), `helmet` (segurança) e converte JSON (`express.json()`).
+3.  **`src/services/*`**: **Nunca** coloque regras de negócio (ex: "Se status for cancelado, não pode aceitar") no Controller. Coloque no Service. O Controller serve apenas para ler dados HTTP e devolver dados HTTP.
+4.  **`src/config/database.ts`**: Em desenvolvimento, o Hot Reload pode criar múltiplas conexões com o banco. Crie um arquivo para garantir uma única instância do `PrismaClient`.
 
 ### Passo 4: Implementação das Funcionalidades Principais
 
