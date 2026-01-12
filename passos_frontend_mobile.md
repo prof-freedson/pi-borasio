@@ -88,28 +88,66 @@ Para usar as mesmas classes do web:
     };
     ```
 
-### Passo 4: Estrutura de Pastas Sugerida
+### Passo 4: Estrutura de Pastas e Arquivos Detalhada
 
-Siga o padrão do Expo Router, muito parecido com o Next.js:
+Abaixo, detalhamos o propósito de cada diretório e os arquivos essenciais para organizar o projeto React Native com Expo Router de forma escalável.
 
 ```
 mobile/
-├── app/
-│   ├── (auth)/        # Grupo de rotas protegidas (Login, Registro)
-│   │   ├── login.tsx
-│   │   └── register.tsx
-│   ├── (tabs)/        # Navegação por abas (Principal)
-│   │   ├── index.tsx  # Mapa / Home
-│   │   ├── rides.tsx  # Histórico
-│   │   └── profile.tsx
-│   ├── _layout.tsx    # Layout raiz (Provider de Auth, Slots)
-│   └── +not-found.tsx
-├── components/        # Botões, Inputs, Cards de Corrida
-├── constants/         # Cores, Tokens
-├── services/          # api.ts (Axios), socket.ts
-├── hooks/             # useLocation, useAuth
-└── assets/            # Imagens e Fontes
+├── app/                 # SISTEMA DE ROTAS (File-based routing)
+│   ├── (auth)/          # Grupo de rotas sem layout de abas (Login, Registro)
+│   │   ├── _layout.tsx  # Define header oculto ou transições específicas
+│   │   ├── login.tsx    # Tela de Login
+│   │   └── register.tsx # Tela de Cadastro
+│   │
+│   ├── (tabs)/          # Grupo de rotas com menu inferior (Bottom Tabs)
+│   │   ├── _layout.tsx  # Configuração da TabBar (ícones, cores)
+│   │   ├── index.tsx    # Tela Principal (Mapa / Solicitar Carona)
+│   │   ├── rides.tsx    # Histórico de Corridas
+│   │   └── profile.tsx  # Perfil do Usuário
+│   │
+│   ├── _layout.tsx      # Layout RAÍZ: Configura o Contexto de Auth e Fontes
+│   └── +not-found.tsx   # Tela de 404 padrão
+│
+├── components/          # Componentes Reutilizáveis (UI Kit)
+│   ├── ui/              # Componentes genéricos (Botões, Inputs, Cards)
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   └── MapMarker.tsx
+│   ├── RideRequest.tsx  # Modal/Formulário específico para pedir carona
+│   └── DriverInfo.tsx   # Card com info do motorista
+│
+├── constants/           # Constantes globais
+│   ├── Colors.ts        # Paleta de cores do Design System
+│   └── Styles.ts        # Estilos globais (se não usar apenas Tailwind)
+│
+├── contexts/            # Estados Globais (Context API)
+│   ├── AuthContext.tsx  # Gerencia usuário logado, token e funções de login/logout
+│   └── LocationContext.tsx # Gerencia permissões e localização GPS atual
+│
+├── hooks/               # Custom Hooks (Lógica encapsulada)
+│   ├── useSocket.ts     # Gerencia conexão e eventos do Socket.io
+│   └── useRide.ts       # Lógica específica da corrida (status, preço)
+│
+├── services/            # Comunicação com o Mundo Externo
+│   ├── api.ts           # Configuração do Axios (baseURL, interceptors de token)
+│   └── socket.ts        # Instância única do Socket.io-client
+│
+├── assets/              # Recursos Estáticos
+│   ├── images/          # Logotipos, avatares default
+│   └── fonts/           # Fontes personalizadas
+│
+└── utils/               # Funções Utilitárias
+    ├── formatCurrency.ts # Formata valores monetários (R$)
+    └── validators.ts    # Validações de formulário (Email, Senha)
 ```
+
+#### Detalhamento das Responsabilidades:
+
+1.  **`app/_layout.tsx`**: É o arquivo mais importante. Ele envolve toda a aplicação. Aqui você carrega fontes, inicializa o sistema de navegação (`Stack`) e provê contextos globais (como AuthProvider).
+2.  **`app/(tabs)/_layout.tsx`**: Define a navegação por abas. Aqui você escolhe quais telas aparecem no menu inferior e define seus ícones (`TabBarIcon`).
+3.  **`services/api.ts`**: Centraliza as chamadas ao backend. Configure aqui o IP da sua máquina (ex: `192.168...`) pois o emulador/celular não entende `localhost` da mesma forma que a web.
+4.  **`contexts/AuthContext.tsx`**: Guarda o Token JWT no `SecureStore` (memória segura do celular) e decide se o usuário vai para a tela de Login ou para o Mapa automaticamente ao abrir o app.
 
 ### Passo 5: Implementação das Funcionalidades
 
