@@ -119,21 +119,18 @@ export default function App() {
   ];
 
   const menuItems: MenuItem[] = [
-    { id: "/", label: "Início" },
+    { id: "", label: "Início" },
     { id: "sobre", label: "Sobre" },
     { id: "contato", label: "Contato" },
     { id: "login", label: "Login" },
-    { id: "cadastro", label: "Cadastrar" },
+    { id: "escolha-usuario", label: "Cadastrar" },
+    { id: "resetar-senha", label: "Resetar Senha" },
   ];
 
   const handleMenuPress = (id: string) => {
     setIsModalOpen(false);
-    if (id !== '/') {
-      // Navigate correctly based on route existence
-      // For now, just logging or simple push if route existed. 
-      // Assuming routes might not exist yet, we stick to safe navigation or just closing modal.
-      // router.push(`/${id}`); 
-      console.log(`Navigate to ${id}`);
+    if (id !== "") {
+      router.push(`/${id}` as any);
     }
   };
 
