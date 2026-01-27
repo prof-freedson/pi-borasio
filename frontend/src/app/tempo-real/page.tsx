@@ -20,7 +20,8 @@ export default function TempoRealPage() {
         distance: '8,2 km',
         congestion: 'moderado',
         incidents: ['Obra na pista', 'Trânsito moderado'],
-        alternative: true
+        alternative: true,
+        coords: 'Centro+Historico,Sao+Luis,MA'
       },
       {
         id: 2,
@@ -31,7 +32,8 @@ export default function TempoRealPage() {
         distance: '9,5 km',
         congestion: 'leve',
         incidents: ['Trânsito leve'],
-        alternative: false
+        alternative: false,
+        coords: 'Av.+dos+Holandeses,Sao+Luis,MA'
       },
       {
         id: 3,
@@ -42,7 +44,8 @@ export default function TempoRealPage() {
         distance: '7,8 km',
         congestion: 'intenso',
         incidents: ['Manifestação na via', 'Trânsito parado'],
-        alternative: false
+        alternative: false,
+        coords: 'Ponte+do+Sao+Francisco,Sao+Luis,MA'
       }
     ],
     incidents: [
@@ -133,35 +136,28 @@ export default function TempoRealPage() {
   const MapComponent = () => {
     if (!isClient) {
       return (
-        <div className="bg-white p-4 rounded-lg shadow-md mb-6 h-64 overflow-hidden flex items-center justify-center">
+        <div className="bg-white p-4 rounded-lg shadow-md mb-6 h-80 overflow-hidden flex items-center justify-center">
           <div className="text-gray-500">Carregando mapa...</div>
         </div>
       );
     }
 
+    const currentCoords = trafficData.routes[selectedRoute]?.coords || 'Sao+Luis,MA';
+    const mapUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31888.621779999998!2d-44.30!3d-2.53!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z${currentCoords}!5e0!3m2!1spt-BR!2sbr!4v1706622542456!5m2!1spt-BR!2sbr&q=${currentCoords}`;
+
     return (
-      <div className="bg-white p-4 rounded-lg shadow-md mb-6 h-64 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-md mb-6 h-96 overflow-hidden relative border border-gray-100 transition-all duration-500">
         <iframe
+          key={selectedRoute}
           width="100%"
           height="100%"
-          frameBorder="0"
-          scrolling="no"
-          marginHeight={0}
-          marginWidth={0}
-          src={`https://www.openstreetmap.org/export/embed.html?bbox=-44.3500,-2.5800,-44.2500,-2.4800&layer=mapnik&marker=-2.529,-44.302`}
-          style={{ border: '1px solid #ccc' }}
+          className="absolute inset-0"
+          style={{ border: 0 }}
+          loading="lazy"
+          allowFullScreen
+          referrerPolicy="no-referrer-when-downgrade"
+          src={mapUrl}
         />
-        <br />
-        <div className="text-xs text-gray-500 mt-2">
-          <a 
-            href="https://www.openstreetmap.org/?mlat=-2.529&mlon=-44.302#map=13/-2.529/-44.302" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
-          >
-            Ver mapa ampliado
-          </a>
-        </div>
       </div>
     );
   };
@@ -194,7 +190,7 @@ export default function TempoRealPage() {
                 Rotas em Tempo Real
               </h2>
 
-              {/* Mapa com OpenStreetMap */}
+              {/* Mapa com Google Maps */}
               <MapComponent />
 
               {/* Legenda */}
@@ -223,11 +219,10 @@ export default function TempoRealPage() {
                 {trafficData.routes.map((route, index) => (
                   <div
                     key={route.id}
-                    className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                      selectedRoute === index
-                        ? 'border-[#004d2b] bg-green-50 shadow-md'
-                        : 'border-gray-200 hover:border-green-300'
-                    }`}
+                    className={`border rounded-lg p-4 cursor-pointer transition-all ${selectedRoute === index
+                      ? 'border-[#004d2b] bg-green-50 shadow-md'
+                      : 'border-gray-200 hover:border-green-300'
+                      }`}
                     onClick={() => setSelectedRoute(index)}
                   >
                     <div className="flex justify-between items-start mb-2">
