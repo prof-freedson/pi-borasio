@@ -122,7 +122,7 @@ export default function App() {
     { id: "", label: "Início" },
     { id: "sobre", label: "Sobre" },
     { id: "contato", label: "Contato" },
-    { id: "login", label: "Login" },
+    { id: "pessoal/login", label: "Login" },
     { id: "escolha-usuario", label: "Cadastrar" },
     { id: "resetar-senha", label: "Resetar Senha" },
   ];
