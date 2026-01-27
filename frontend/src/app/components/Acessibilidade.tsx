@@ -7,26 +7,7 @@ import {
   FaAssistiveListeningSystems,
   FaKeyboard,
 } from "react-icons/fa";
-import { X, ChevronDown, ChevronUp, Eye, EyeOff, Play } from "lucide-react";
-
-interface Sign {
-  emoji: string;
-  title: string;
-  description: string;
-  demo: string;
-  gif?: string;
-}
-
-interface SignData {
-  [key: string]: Sign;
-}
-
-interface Category {
-  id: string;
-  title: string;
-  icon: string;
-  signs: string[];
-}
+import { X, Eye } from "lucide-react";
 
 const AccessibilityIcon = ({ highContrast }: { highContrast?: boolean }) => (
   <svg
@@ -80,148 +61,11 @@ const AccessibilityIcon = ({ highContrast }: { highContrast?: boolean }) => (
 const AccessibilityWidget = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isHighContrast, setIsHighContrast] = useState<boolean>(false);
-  const [isLibrasMenuOpen, setIsLibrasMenuOpen] = useState<boolean>(false);
   const [isVirtualKeyboardOpen, setIsVirtualKeyboardOpen] = useState<boolean>(false);
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set()
-  );
-  const [selectedSign, setSelectedSign] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
-
-  const signData: SignData = {
-    oi: {
-      emoji: "👋",
-      title: "OI / OLÁ",
-      description: "Levante a mão e faça um movimento de acenar, como se estivesse cumprimentando alguém. Este é o sinal mais básico e universal para cumprimentar.",
-      demo: "🤚 → 👋",
-      gif: "👋"
-    },
-    "bom-dia": {
-      emoji: "🌅",
-      title: "BOM DIA",
-      description: 'Faça o sinal de "BOM" (polegar para cima) seguido de "DIA" (movimento circular com a mão representando o sol nascendo).',
-      demo: "👍 + ☀️",
-      gif: "🌅"
-    },
-    obrigado: {
-      emoji: "🙏",
-      title: "OBRIGADO/A",
-      description: "Leve a mão direita ao peito, próximo ao coração, e faça um movimento para frente. Expressa gratidão e agradecimento.",
-      demo: "❤️ → 🫴",
-      gif: "🙏"
-    },
-    tchau: {
-      emoji: "👋",
-      title: "TCHAU",
-      description: "Levante a mão e balance os dedos para frente e para trás, como uma despedida tradicional.",
-      demo: "✋ 🔄 👋",
-      gif: "👋"
-    },
-    pai: {
-      emoji: "👨",
-      title: "PAI",
-      description: "Coloque o polegar da mão direita na testa, próximo à têmpora.",
-      demo: "👍 → 🧠",
-    },
-    mae: {
-      emoji: "👩",
-      title: "MÃE",
-      description: "Coloque o polegar da mão direita no queixo.",
-      demo: "👍 → 😊",
-    },
-    irmao: {
-      emoji: "👦",
-      title: "IRMÃO/Ã",
-      description: "Una os dedos indicadores das duas mãos, mostrando união.",
-      demo: "👆 + 👆 = 🤝",
-    },
-    bebe: {
-      emoji: "👶",
-      title: "BEBÊ",
-      description: "Faça o movimento de embalar um bebê nos braços.",
-      demo: "🤱 🔄",
-    },
-    feliz: {
-      emoji: "😊",
-      title: "FELIZ",
-      description: "Sorria amplamente e faça movimentos ascendentes com as mãos.",
-      demo: "😊 + 🙌 ↗️",
-    },
-    triste: {
-      emoji: "😢",
-      title: "TRISTE",
-      description: "Passe os dedos pelo rosto de cima para baixo, como lágrimas.",
-      demo: "😭 👆 ↘️",
-    },
-    amor: {
-      emoji: "❤️",
-      title: "AMOR",
-      description: "Cruze as mãos sobre o peito, próximo ao coração.",
-      demo: "🤗 ❤️",
-    },
-    odio: {
-      emoji: "💢",
-      title: "ÓDIO",
-      description: "Cerre os punhos e faça expressão de raiva ou frustração.",
-      demo: "😠 ✊💢",
-    },
-    um: {
-      emoji: "1️⃣",
-      title: "UM",
-      description: "Levante apenas o dedo indicador.",
-      demo: "☝️",
-    },
-    dois: {
-      emoji: "2️⃣",
-      title: "DOIS",
-      description: 'Levante o indicador e médio, formando o "V".',
-      demo: "✌️",
-    },
-    tres: {
-      emoji: "3️⃣",
-      title: "TRÊS",
-      description: "Levante três dedos: indicador, médio e anelar.",
-      demo: "🤟 → 👆👆👆",
-    },
-    cinco: {
-      emoji: "5️⃣",
-      title: "CINCO",
-      description: "Abra completamente a mão, mostrando todos os dedos.",
-      demo: "🖐️",
-    },
-  };
-
-  const categories: Category[] = [
-    {
-      id: "cumprimentos",
-      title: "Cumprimentos",
-      icon: "👋",
-      signs: ["oi", "bom-dia", "obrigado", "tchau"],
-    },
-    {
-      id: "familia",
-      title: "Família",
-      icon: "👨‍👩‍👧‍👦",
-      signs: ["pai", "mae", "irmao", "bebe"],
-    },
-    {
-      id: "sentimentos",
-      title: "Sentimentos",
-      icon: "😊",
-      signs: ["feliz", "triste", "amor", "odio"],
-    },
-    {
-      id: "numeros",
-      title: "Números",
-      icon: "🔢",
-      signs: ["um", "dois", "tres", "cinco"],
-    },
-  ];
 
   useEffect(() => {
     setIsMounted(true);
-
     if (typeof window !== "undefined") {
       const savedHighContrast = localStorage.getItem("highContrast") === "true";
       setIsHighContrast(savedHighContrast);
@@ -231,194 +75,67 @@ const AccessibilityWidget = () => {
 
   const applyHighContrast = (enabled: boolean) => {
     if (typeof document === "undefined") return;
-
     if (enabled) {
       document.documentElement.classList.add("high-contrast");
-      document.querySelectorAll("img, svg").forEach((el) => {
-        el.classList.add("brightness-125", "contrast-125");
-      });
     } else {
       document.documentElement.classList.remove("high-contrast");
-      document.querySelectorAll("img, svg").forEach((el) => {
-        el.classList.remove("brightness-125", "contrast-125");
-      });
     }
   };
 
-  const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen);
-  const closeMenu = (): void => {
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
     setIsMenuOpen(false);
-    setIsLibrasMenuOpen(false);
     setIsVirtualKeyboardOpen(false);
   };
 
-  const adjustFontSize = (change: number): void => {
+  const adjustFontSize = (change: number) => {
     if (typeof document === "undefined") return;
-
     const html = document.querySelector("html");
     if (!html) return;
-
-    const currentSize = parseFloat(
-      window.getComputedStyle(html).getPropertyValue("font-size")
-    );
+    const currentSize = parseFloat(window.getComputedStyle(html).getPropertyValue("font-size"));
     const newSize = currentSize + change;
-
-    if (newSize >= 12 && newSize <= 24) {
-      html.style.fontSize = `${newSize}px`;
-    }
+    if (newSize >= 12 && newSize <= 24) html.style.fontSize = `${newSize}px`;
   };
 
-  const toggleContrast = (): void => {
-    const newContrastState = !isHighContrast;
-    setIsHighContrast(newContrastState);
-    localStorage.setItem("highContrast", String(newContrastState));
-    applyHighContrast(newContrastState);
+  const toggleContrast = () => {
+    const newState = !isHighContrast;
+    setIsHighContrast(newState);
+    localStorage.setItem("highContrast", String(newState));
+    applyHighContrast(newState);
   };
 
-  const activateScreenReader = (): void => {
-    alert(
-      "Leitor de tela ativado. Navegue usando o teclado (Tab, Shift+Tab, Enter)"
-    );
-  };
+  const activateScreenReader = () => alert("Leitor de tela ativado. Navegue usando o teclado.");
+  const activateVirtualKeyboard = () => { setIsVirtualKeyboardOpen(true); setIsMenuOpen(false); };
 
-  const activateVirtualKeyboard = (): void => {
-    setIsVirtualKeyboardOpen(true);
-    setIsMenuOpen(false);
-  };
-
-  const toggleLibrasMenu = (): void => {
-    setIsLibrasMenuOpen(!isLibrasMenuOpen);
-    setIsMenuOpen(false);
-  };
-
-  const toggleCategory = (categoryId: string): void => {
-    const newExpanded = new Set(expandedCategories);
-    if (newExpanded.has(categoryId)) {
-      newExpanded.delete(categoryId);
-    } else {
-      newExpanded.add(categoryId);
-    }
-    setExpandedCategories(newExpanded);
-  };
-
-  const toggleShowAll = (): void => {
-    if (showAll) {
-      setExpandedCategories(new Set());
-    } else {
-      setExpandedCategories(new Set(categories.map((c) => c.id)));
-    }
-    setShowAll(!showAll);
-  };
-
-  const LibrasIcon = () => (
-    <svg
-      viewBox="0 0 100 100"
-      className={`w-6 h-6 ${isHighContrast ? "text-yellow-400" : "text-green-600"}`}
-      aria-label="Ícone de Libras"
-    >
-      <path
-        d="M30 20 Q40 15 45 25 L45 40 Q40 45 35 40 L30 35 Z"
-        fill="currentColor"
-      />
-      <path
-        d="M45 25 Q55 20 60 30 L60 45 Q55 50 50 45 L45 40 Z"
-        fill="currentColor"
-        opacity="0.8"
-      />
-      <path
-        d="M60 30 Q70 25 75 35 L75 50 Q70 55 65 50 L60 45 Z"
-        fill="currentColor"
-        opacity="0.6"
-      />
-      <circle cx="35" cy="70" r="6" fill="currentColor" />
-      <path
-        d="M30 75 Q40 80 45 75 Q50 80 45 85 Q35 90 30 85 Z"
-        fill="currentColor"
-        opacity="0.8"
-      />
-    </svg>
-  );
-
-  // Teclado Virtual - Aparece em baixo
   const VirtualKeyboard = () => {
-    const [input, setInput] = useState<string>("");
-    
-    const keys = [
-      ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-      ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-      ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-      ['Z', 'X', 'C', 'V', 'B', 'N', 'M'],
-      [' ', '⌫', 'Enter']
-    ];
-
-    const handleKeyPress = (key: string) => {
-      if (key === '⌫') {
-        setInput(prev => prev.slice(0, -1));
-      } else if (key === 'Enter') {
-        setInput(prev => prev + '\n');
-      } else if (key === ' ') {
-        setInput(prev => prev + ' ');
-      } else {
-        setInput(prev => prev + key);
-      }
-    };
-
+    const [typed, setTyped] = useState("");
+    const keys = [['1','2','3','4','5','6','7','8','9','0'],['Q','W','E','R','T','Y','U','I','O','P'],['A','S','D','F','G','H','J','K','L'],['Z','X','C','V','B','N','M'],[' ','⌫','Enter']];
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-[100002] bg-white/95 backdrop-blur-sm border-t border-green-200">
-        <div className="max-w-4xl mx-auto p-4">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className={`text-lg font-bold ${isHighContrast ? "text-yellow-400" : "text-green-900"}`}>
-              Teclado Virtual
-            </h2>
-            <button
-              onClick={() => setIsVirtualKeyboardOpen(false)}
-              className={isHighContrast ? "text-yellow-400 hover:text-yellow-300 p-1" : "text-green-700 hover:text-green-900 p-1"}
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <div className={`mb-3 p-3 rounded-lg border min-h-[60px] ${isHighContrast ? "bg-black border-yellow-400 text-yellow-400" : "bg-green-50 border-green-300 text-green-900"}`}>
-            {input || "Digite usando o teclado virtual..."}
-          </div>
-
-          <div className="space-y-1">
-            {keys.map((row, rowIndex) => (
-              <div key={rowIndex} className="flex justify-center gap-1">
-                {row.map((key) => (
-                  <button
-                    key={key}
-                    onClick={() => handleKeyPress(key)}
-                    className={`
-                      flex-1 max-w-[40px] h-10 rounded-lg font-semibold transition-all duration-200 text-sm
-                      ${key === ' ' ? 'max-w-[120px]' : ''}
-                      ${key === 'Enter' ? 'max-w-[60px] text-xs' : ''}
-                      ${
-                        isHighContrast
-                          ? "bg-yellow-600 hover:bg-yellow-700 text-black border border-yellow-400"
-                          : "bg-green-600 hover:bg-green-700 text-white border border-green-700"
-                      }
-                    `}
-                  >
-                    {key === '⌫' ? '⌫' : key === 'Enter' ? 'Enter' : key}
-                  </button>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-3 flex gap-2">
-            <button
-              onClick={() => setInput('')}
-              className={`flex-1 py-2 rounded-lg font-semibold text-sm ${
-                isHighContrast 
-                  ? "bg-yellow-400 hover:bg-yellow-500 text-black" 
-                  : "bg-green-500 hover:bg-green-600 text-white"
-              }`}
-            >
-              Limpar
-            </button>
-          </div>
+      <div className="max-w-4xl mx-auto p-8">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className={`text-2xl font-black uppercase ${isHighContrast ? "text-yellow-400" : "text-[#004d2b]"}`}>Teclado Virtual Premium</h2>
+          <button onClick={() => setIsVirtualKeyboardOpen(false)} className="p-2 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"><X size={24} /></button>
+        </div>
+        <div className={`mb-6 p-6 rounded-3xl border-4 min-h-[100px] text-xl font-bold ${isHighContrast ? "bg-black border-yellow-400 text-yellow-400" : "bg-green-50 border-green-200 text-[#004d2b]"}`}>
+          {typed || "Comece a digitar..."}
+        </div>
+        <div className="space-y-2">
+          {keys.map((row, i) => (
+            <div key={i} className="flex justify-center gap-2">
+              {row.map(k => (
+                <button 
+                  key={k} 
+                  onClick={() => k === '⌫' ? setTyped(t=>t.slice(0,-1)) : k === 'Enter' ? setTyped(t=>t+'\n') : setTyped(t=>t+k)}
+                  className={`h-14 rounded-2xl font-black text-sm transition-all active:scale-95 flex-1 max-w-[60px] ${k === ' ' ? 'max-w-[300px]' : ''} ${isHighContrast ? "bg-yellow-600 text-black border-b-4 border-yellow-800" : "bg-[#004d2b] text-white border-b-4 border-[#002b18]"}`}
+                >
+                  {k}
+                </button>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -429,404 +146,57 @@ const AccessibilityWidget = () => {
   return (
     <>
       <style jsx global>{`
-        .high-contrast {
-          background-color: #000 !important;
-          color: #fff !important;
-        }
-        .high-contrast * {
-          color: #fff !important;
-          background-color: #000 !important;
-          border-color: #ff0 !important;
-        }
-        .high-contrast button,
-        .high-contrast [role="button"],
-        .high-contrast [role="link"] {
-          background-color: #333 !important;
-          border: 2px solid #ff0 !important;
-          color: #ff0 !important;
-        }
+        .high-contrast { background-color: #000 !important; color: #fff !important; }
+        .high-contrast * { color: #fff !important; background-color: #000 !important; border-color: #ff0 !important; }
+        .high-contrast button { background-color: #333 !important; border: 2px solid #ff0 !important; color: #ff0 !important; }
       `}</style>
 
-      {/* Botão Principal */}
-      <div className="fixed bottom-10 left-5 z-[99999] flex items-center">
+
+
+      {/* Floating Button */}
+      <div className="fixed bottom-10 left-5 z-[99999]">
         <button
           onClick={toggleMenu}
-          aria-label="Menu de Acessibilidade"
-          aria-expanded={isMenuOpen}
-          className={`
-            bg-white w-[60px] h-[60px] rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-all duration-300 border-none ml-2 hover:scale-110 hover:shadow-xl
-            ${
-              isHighContrast
-                ? "bg-black text-yellow-400 border-2 border-yellow-400"
-                : "border border-gray-300 hover:border-green-500"
-            }
-          `}
+          className={`w-[65px] h-[65px] rounded-[2rem] flex items-center justify-center shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 ${isHighContrast ? "bg-black border-4 border-yellow-400" : "bg-white border-2 border-green-50 hover:border-green-500"}`}
         >
           <AccessibilityIcon highContrast={isHighContrast} />
         </button>
 
-        {/* Menu de Opções */}
-        <div
-          className={`
-            ${
-              isMenuOpen ? "block" : "hidden"
-            } absolute bottom-[70px] left-0 w-[280px] bg-white rounded-xl shadow-2xl overflow-hidden z-[100000] border border-gray-200
-            ${isHighContrast ? "bg-black border-2 border-yellow-400" : ""}
-          `}
-        >
-          <div
-            className={`bg-gradient-to-r from-green-600 to-green-700 text-white px-4 py-3 font-bold flex justify-between items-center rounded-t-xl
-            ${isHighContrast ? "border-b-2 border-yellow-400" : ""}`}
-          >
-            <span className="flex items-center gap-2">
-              <AccessibilityIcon />
-              Acessibilidade
-            </span>
-            <button
-              onClick={closeMenu}
-              aria-label="Fechar menu de acessibilidade"
-              className={`bg-transparent border-none text-white cursor-pointer p-1 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors
-                ${isHighContrast ? "hover:bg-yellow-400/20" : ""}`}
-            >
-              <X size={18} />
-            </button>
+        {/* Floating Menu */}
+        <div className={`${isMenuOpen ? "translate-y-0 opacity-100 scale-100" : "translate-y-10 opacity-0 scale-95 pointer-events-none"} absolute bottom-[80px] left-0 w-[300px] bg-white/95 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden z-[100000] border-2 transition-all duration-500 ${isHighContrast ? "bg-black border-4 border-yellow-400" : "border-green-50"}`}>
+          <div className={`bg-[#004d2b] p-6 flex justify-between items-center relative overflow-hidden`}>
+            <span className="flex items-center gap-3 text-white font-black uppercase text-[10px] tracking-widest z-10"><div className="bg-yellow-400/20 p-2 rounded-xl"><Eye size={16} className="text-yellow-400" /></div>Acessibilidade</span>
+            <button onClick={closeMenu} className="bg-white/10 hover:bg-white/20 text-white rounded-xl p-2 transition-all z-20"><X size={16} /></button>
           </div>
-
-          <div className="p-2 space-y-1">
-            <div
-              onClick={() => adjustFontSize(1)}
-              className={`
-                cursor-pointer flex items-center px-3 py-3 rounded-lg transition-all duration-200
-                ${
-                  isHighContrast
-                    ? "text-yellow-400 hover:bg-yellow-400/10 border border-yellow-400/30"
-                    : "text-green-800 hover:bg-green-50 hover:text-green-700 border border-transparent hover:border-green-200"
-                }
-              `}
-            >
-              <FaSearchPlus className="mr-3 text-lg w-5 text-center text-green-600" /> 
-              <span className="font-medium">Aumentar Texto</span>
+          <div className="p-4 space-y-2 bg-gradient-to-b from-white to-green-50/50">
+            <div className="grid grid-cols-2 gap-2 mb-2">
+               <button onClick={() => adjustFontSize(1)} className={`flex flex-col items-center p-4 rounded-2xl border-2 transition-all ${isHighContrast ? "border-yellow-400 text-yellow-400" : "border-green-50 text-[#004d2b] hover:border-green-400 hover:bg-white"}`}><FaSearchPlus size={18} /><span className="text-[9px] font-black uppercase mt-1">Aumentar</span></button>
+               <button onClick={() => adjustFontSize(-1)} className={`flex flex-col items-center p-4 rounded-2xl border-2 transition-all ${isHighContrast ? "border-yellow-400 text-yellow-400" : "border-green-50 text-[#004d2b] hover:border-green-400 hover:bg-white"}`}><FaSearchMinus size={18} /><span className="text-[9px] font-black uppercase mt-1">Diminuir</span></button>
             </div>
-
-            <div
-              onClick={() => adjustFontSize(-1)}
-              className={`
-                cursor-pointer flex items-center px-3 py-3 rounded-lg transition-all duration-200
-                ${
-                  isHighContrast
-                    ? "text-yellow-400 hover:bg-yellow-400/10 border border-yellow-400/30"
-                    : "text-green-800 hover:bg-green-50 hover:text-green-700 border border-transparent hover:border-green-200"
-                }
-              `}
-            >
-              <FaSearchMinus className="mr-3 text-lg w-5 text-center text-green-600" /> 
-              <span className="font-medium">Diminuir Texto</span>
-            </div>
-
-            <div
-              onClick={toggleContrast}
-              className={`
-                cursor-pointer flex items-center px-3 py-3 rounded-lg transition-all duration-200
-                ${
-                  isHighContrast
-                    ? "text-yellow-400 hover:bg-yellow-400/10 border border-yellow-400/30"
-                    : "text-green-800 hover:bg-green-50 hover:text-green-700 border border-transparent hover:border-green-200"
-                }
-              `}
-            >
-              <FaAdjust className="mr-3 text-lg w-5 text-center text-green-600" /> 
-              <span className="font-medium">Alto Contraste</span>
-            </div>
-
-            <div
-              onClick={activateScreenReader}
-              className={`
-                cursor-pointer flex items-center px-3 py-3 rounded-lg transition-all duration-200
-                ${
-                  isHighContrast
-                    ? "text-yellow-400 hover:bg-yellow-400/10 border border-yellow-400/30"
-                    : "text-green-800 hover:bg-green-50 hover:text-green-700 border border-transparent hover:border-green-200"
-                }
-              `}
-            >
-              <FaAssistiveListeningSystems className="mr-3 text-lg w-5 text-center text-green-600" /> 
-              <span className="font-medium">Leitor de Tela</span>
-            </div>
-
-            <div
-              onClick={activateVirtualKeyboard}
-              className={`
-                cursor-pointer flex items-center px-3 py-3 rounded-lg transition-all duration-200
-                ${
-                  isHighContrast
-                    ? "text-yellow-400 hover:bg-yellow-400/10 border border-yellow-400/30"
-                    : "text-green-800 hover:bg-green-50 hover:text-green-700 border border-transparent hover:border-green-200"
-                }
-              `}
-            >
-              <FaKeyboard className="mr-3 text-lg w-5 text-center text-green-600" /> 
-              <span className="font-medium">Teclado Virtual</span>
-            </div>
-
-            <div
-              onClick={toggleLibrasMenu}
-              className={`
-                cursor-pointer flex items-center px-3 py-3 rounded-lg transition-all duration-200
-                ${
-                  isHighContrast
-                    ? "text-yellow-400 hover:bg-yellow-400/10 border border-yellow-400/30"
-                    : "text-green-800 hover:bg-green-50 hover:text-green-700 border border-transparent hover:border-green-200"
-                }
-              `}
-            >
-              <LibrasIcon />
-              <span className="ml-3 font-medium">VLibras</span>
-            </div>
+            {[
+              { icon: <FaAdjust size={18} />, label: "Alto Contraste", action: toggleContrast },
+              { icon: <FaAssistiveListeningSystems size={18} />, label: "Leitor de Tela", action: activateScreenReader },
+              { icon: <FaKeyboard size={18} />, label: "Teclado Virtual", action: activateVirtualKeyboard },
+            ].map((opt, i) => (
+              <button key={i} onClick={opt.action} className={`w-full flex items-center px-5 py-4 rounded-2xl transition-all duration-300 group ${isHighContrast ? "text-yellow-400 hover:bg-yellow-400/10 border-2 border-yellow-400/30" : "text-[#004d2b] bg-white border-2 border-transparent hover:border-green-200 hover:shadow-lg"}`}>
+                <div className="mr-4 group-hover:scale-110 transition-transform">{opt.icon}</div>
+                <span className="text-[10px] font-black uppercase tracking-widest">{opt.label}</span>
+              </button>
+            ))}
+            <p className="text-[8px] text-center font-black text-gray-300 uppercase tracking-widest pt-4">BoraSiô | Mobilidade para Todos</p>
           </div>
         </div>
       </div>
 
-      {/* Menu de Libras - Tema Verde */}
-      {isLibrasMenuOpen && (
-        <div
-          className={`fixed inset-0 ${
-            isHighContrast ? "bg-black/95" : "bg-gradient-to-br from-green-50 to-yellow-50"
-          } backdrop-blur-sm flex items-center justify-center p-4 z-[100001]`}
-        >
-          <div
-            className={`bg-gradient-to-br from-green-50 to-yellow-50 rounded-3xl p-8 max-w-6xl w-full max-h-[95vh] overflow-y-auto shadow-2xl border-2 border-green-200
-            ${isHighContrast ? "border-2 border-yellow-400 bg-black" : ""}`}
-          >
-            <div className="flex justify-between items-center mb-8">
-              <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-2xl ${isHighContrast ? "bg-yellow-400/20 border border-yellow-400" : "bg-green-100 border border-green-200"}`}>
-                  <LibrasIcon />
-                </div>
-                <div>
-                  <h1
-                    className={`text-4xl font-bold ${isHighContrast ? "text-yellow-400" : "text-green-900"}`}
-                  >
-                    Aprenda Libras
-                  </h1>
-                  <p
-                    className={`text-lg ${isHighContrast ? "text-yellow-300" : "text-green-700"}`}
-                  >
-                    Língua Brasileira de Sinais - Comunicação Inclusiva
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsLibrasMenuOpen(false)}
-                className={`p-2 rounded-xl transition-colors ${
-                  isHighContrast
-                    ? "text-yellow-400 hover:bg-yellow-400/20"
-                    : "text-green-700 hover:bg-green-100"
-                }`}
-              >
-                <X size={28} />
-              </button>
-            </div>
-
-            {/* Demonstração Interativa */}
-            <div className={`mb-8 rounded-2xl p-6 ${isHighContrast ? "bg-yellow-400/10 border-2 border-yellow-400" : "bg-green-100 border border-green-200"}`}>
-              <h3 className={`text-xl font-bold mb-4 flex items-center gap-2 ${isHighContrast ? "text-yellow-400" : "text-green-800"}`}>
-                <Play size={20} />
-                Como Aprender Libras
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className={`text-center p-4 rounded-xl ${isHighContrast ? "bg-yellow-400/20" : "bg-white"}`}>
-                  <div className="text-4xl mb-2">👀</div>
-                  <h4 className={`font-bold mb-2 ${isHighContrast ? "text-yellow-400" : "text-green-800"}`}>Observe</h4>
-                  <p className={isHighContrast ? "text-yellow-300 text-sm" : "text-green-700 text-sm"}>Preste atenção nos movimentos das mãos e expressões faciais</p>
-                </div>
-                <div className={`text-center p-4 rounded-xl ${isHighContrast ? "bg-yellow-400/20" : "bg-white"}`}>
-                  <div className="text-4xl mb-2">👐</div>
-                  <h4 className={`font-bold mb-2 ${isHighContrast ? "text-yellow-400" : "text-green-800"}`}>Pratique</h4>
-                  <p className={isHighContrast ? "text-yellow-300 text-sm" : "text-green-700 text-sm"}>Repita os sinais até se sentir confortável</p>
-                </div>
-                <div className={`text-center p-4 rounded-xl ${isHighContrast ? "bg-yellow-400/20" : "bg-white"}`}>
-                  <div className="text-4xl mb-2">💬</div>
-                  <h4 className={`font-bold mb-2 ${isHighContrast ? "text-yellow-400" : "text-green-800"}`}>Comunique</h4>
-                  <p className={isHighContrast ? "text-yellow-300 text-sm" : "text-green-700 text-sm"}>Use os sinais no dia a dia para fixar o aprendizado</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-center mb-8">
-              <button
-                onClick={toggleShowAll}
-                className={`flex items-center gap-3 px-6 py-3 rounded-2xl font-bold transition-all duration-300 shadow-lg
-                  ${
-                    isHighContrast
-                      ? "bg-yellow-600 hover:bg-yellow-700 text-black"
-                      : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
-                  }`}
-              >
-                {showAll ? <EyeOff size={20} /> : <Eye size={20} />}
-                {showAll ? "Ocultar Todos" : "Expandir Todos"}
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {categories.map((category) => (
-                <div
-                  key={category.id}
-                  className={`rounded-2xl p-6 transition-all duration-300
-                    ${
-                      isHighContrast
-                        ? "bg-yellow-400/10 border-2 border-yellow-400 hover:bg-yellow-400/20"
-                        : "bg-white border border-green-200 hover:shadow-lg hover:border-green-300"
-                    }`}
-                >
-                  <button
-                    onClick={() => toggleCategory(category.id)}
-                    className="w-full flex items-center justify-between mb-4"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className={`text-3xl p-3 rounded-xl ${isHighContrast ? "bg-yellow-400/20" : "bg-green-100"}`}>
-                        {category.icon}
-                      </div>
-                      <h3
-                        className={`text-xl font-bold text-left ${isHighContrast ? "text-yellow-400" : "text-green-900"}`}
-                      >
-                        {category.title}
-                      </h3>
-                    </div>
-                    {expandedCategories.has(category.id) ? (
-                      <ChevronUp
-                        className={isHighContrast ? "text-yellow-400" : "text-green-600"}
-                        size={24}
-                      />
-                    ) : (
-                      <ChevronDown
-                        className={isHighContrast ? "text-yellow-400" : "text-green-600"}
-                        size={24}
-                      />
-                    )}
-                  </button>
-
-                  {expandedCategories.has(category.id) && (
-                    <div className="grid grid-cols-2 gap-3">
-                      {category.signs.map((signId) => {
-                        const sign = signData[signId];
-                        return (
-                          <button
-                            key={signId}
-                            onClick={() => setSelectedSign(signId)}
-                            className={`rounded-xl p-4 text-center transition-all duration-200 transform hover:scale-105 group
-                              ${
-                                isHighContrast
-                                  ? "bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-400/30"
-                                  : "bg-green-50 hover:bg-green-100 border border-green-200 hover:border-green-300"
-                              }`}
-                          >
-                            <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
-                              {sign.emoji}
-                            </div>
-                            <div
-                              className={`font-bold text-sm mb-1 ${isHighContrast ? "text-yellow-400" : "text-green-800"}`}
-                            >
-                              {sign.title}
-                            </div>
-                            <div
-                              className={`text-xs ${isHighContrast ? "text-yellow-300" : "text-green-600"}`}
-                            >
-                              {sign.demo}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* Virtual Keyboard Modal */}
+      {isVirtualKeyboardOpen && (
+        <div className="fixed inset-0 z-[100002] flex items-end">
+           <div className="absolute inset-0 bg-[#004d2b]/60 backdrop-blur-sm" onClick={() => setIsVirtualKeyboardOpen(false)}></div>
+           <div className="relative w-full bg-white rounded-t-[5rem] border-t-8 border-white p-12 shadow-2xl animate-in slide-in-from-bottom-full duration-700">
+              <VirtualKeyboard />
+           </div>
         </div>
       )}
-
-      {/* Modal de Detalhes do Sinal */}
-      {selectedSign && (
-        <div
-          className={`fixed inset-0 ${
-            isHighContrast ? "bg-black/95" : "bg-black/80"
-          } backdrop-blur-sm flex items-center justify-center p-4 z-[100002]`}
-        >
-          <div
-            className={`rounded-3xl p-8 max-w-2xl w-full relative
-            ${
-              isHighContrast
-                ? "bg-black border-2 border-yellow-400"
-                : "bg-gradient-to-br from-green-50 to-yellow-50 border-2 border-green-200"
-            }`}
-          >
-            <button
-              onClick={() => setSelectedSign(null)}
-              className={`absolute top-6 right-6 p-2 rounded-xl transition-colors
-                ${
-                  isHighContrast
-                    ? "text-yellow-400 hover:bg-yellow-400/20"
-                    : "text-green-700 hover:bg-green-100"
-                }`}
-            >
-              <X size={24} />
-            </button>
-
-            <div className="text-center">
-              <div className="text-6xl mb-6 animate-bounce">
-                {signData[selectedSign].emoji}
-              </div>
-              <h3
-                className={`text-3xl font-bold mb-4 ${
-                  isHighContrast ? "text-yellow-400" : "text-green-900"
-                }`}
-              >
-                {signData[selectedSign].title}
-              </h3>
-              <div
-                className={`text-xl font-mono mb-6 p-3 rounded-xl ${
-                  isHighContrast 
-                    ? "bg-yellow-400/20 text-yellow-300" 
-                    : "bg-green-100 text-green-700"
-                }`}
-              >
-                {signData[selectedSign].demo}
-              </div>
-              <p
-                className={`text-lg leading-relaxed mb-6 ${
-                  isHighContrast ? "text-yellow-200" : "text-green-800"
-                }`}
-              >
-                {signData[selectedSign].description}
-              </p>
-
-              {/* Demonstração Prática */}
-              <div className={`mt-6 p-4 rounded-xl ${isHighContrast ? "bg-yellow-400/10" : "bg-green-100"}`}>
-                <h4 className={`text-xl font-bold mb-3 ${isHighContrast ? "text-yellow-400" : "text-green-800"}`}>
-                  💡 Como Fazer:
-                </h4>
-                <div className="text-left space-y-2">
-                  <div className={`flex items-center gap-2 ${isHighContrast ? "text-yellow-300" : "text-green-700"}`}>
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span>Posicione suas mãos conforme a descrição</span>
-                  </div>
-                  <div className={`flex items-center gap-2 ${isHighContrast ? "text-yellow-300" : "text-green-700"}`}>
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span>Faça os movimentos suavemente</span>
-                  </div>
-                  <div className={`flex items-center gap-2 ${isHighContrast ? "text-yellow-300" : "text-green-700"}`}>
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span>Pratique algumas vezes até memorizar</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Teclado Virtual - Aparece em baixo */}
-      {isVirtualKeyboardOpen && <VirtualKeyboard />}
     </>
   );
 };

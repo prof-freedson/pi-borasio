@@ -75,101 +75,111 @@ export default function CaronaChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9999]">
+    <div className="fixed bottom-6 right-6 z-[9999] font-sans selection:bg-yellow-400 selection:text-[#004d2b]">
       {!open ? (
         <button
           onClick={() => setOpen(true)}
-          className="bg-yellow-400 text-green-800 p-4 rounded-full shadow-lg hover:bg-yellow-500 transition transform hover:scale-110 flex items-center justify-center relative"
+          className="group bg-[#004d2b] text-white p-5 rounded-[2rem] shadow-2xl hover:bg-[#003823] transition-all duration-500 transform hover:scale-105 flex items-center gap-3 relative border-2 border-white/10"
           aria-label="Abrir chat de atendimento"
         >
-          <MessageCircle className="w-6 h-6" />
-          <span className="absolute -top-2 -right-2 bg-green-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-            ●
-          </span>
+          <div className="relative">
+             <img
+                src="/img/vitorino.png"
+                alt="Vitorino"
+                className="w-10 h-10 rounded-2xl border-2 border-yellow-400 object-cover shadow-lg"
+              />
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-[#004d2b] animate-pulse"></div>
+          </div>
+          <div className="text-left hidden md:block pr-2">
+             <p className="text-[10px] font-black uppercase tracking-widest text-yellow-400">Fale com o</p>
+             <p className="text-sm font-black uppercase tracking-tighter">Vitorino</p>
+          </div>
         </button>
       ) : (
-        <div className="w-80 h-[28rem] bg-white rounded-xl shadow-xl flex flex-col overflow-hidden border border-yellow-300 relative">
-          {/* Cabeçalho */}
-          <div className="bg-gradient-to-r from-green-700 to-green-800 p-3 flex justify-between items-center rounded-t-xl z-10">
-            <div className="flex items-center space-x-3">
+        <div className="w-[22rem] h-[32rem] bg-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden border-4 border-white relative animate-in slide-in-from-bottom-10 fade-in duration-500">
+          {/* Cabeçalho Premium */}
+          <div className="bg-[#004d2b] p-6 flex justify-between items-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/10 rounded-full blur-3xl -z-0"></div>
+            
+            <div className="flex items-center space-x-4 z-10">
               <div className="relative">
                 <img
                   src="/img/vitorino.png"
                   alt="Vitorino"
-                  className="w-9 h-9 rounded-full border-2 border-yellow-400 object-cover"
+                  className="w-12 h-12 rounded-2xl border-2 border-yellow-400 object-cover shadow-xl"
                 />
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[#004d2b]"></div>
               </div>
               <div>
-                <h2 className="font-bold text-white">Vitorino</h2>
-                <p className="text-xs text-yellow-200">Online</p>
+                <h2 className="font-black text-white uppercase text-sm tracking-tighter">Vitorino</h2>
+                <div className="flex items-center gap-1.5 pt-0.5">
+                   <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
+                   <p className="text-[10px] font-black text-yellow-400/80 uppercase tracking-widest">Especialista local</p>
+                </div>
               </div>
             </div>
             <button
               onClick={handleCloseChat}
-              className="text-yellow-300 hover:text-white transition-colors p-1 z-20"
+              className="bg-white/10 hover:bg-white/20 text-white rounded-xl p-2.5 transition-all z-20 group"
               aria-label="Fechar chat"
-              style={{ position: "relative" }}
             >
-              <X size={20} />
+              <X size={18} className="group-hover:rotate-90 transition-transform" />
             </button>
           </div>
 
           {/* Área de mensagens */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-gradient-to-b from-yellow-50 to-white">
+          <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-green-50/30 no-scrollbar">
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm ${
-                  msg.from === "vitorino"
-                    ? "bg-yellow-100 text-green-900 rounded-tl-none shadow-sm"
-                    : "bg-green-600 text-white self-end rounded-tr-none"
-                }`}
+                className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"} animate-in fade-in slide-in-from-bottom-2 duration-300`}
               >
-                {msg.text}
+                <div
+                  className={`relative p-4 rounded-[1.8rem] max-w-[85%] text-[13px] font-medium leading-relaxed shadow-sm transition-all ${
+                    msg.from === "vitorino"
+                      ? "bg-white text-[#004d2b] rounded-tl-none border border-green-100"
+                      : "bg-[#004d2b] text-white rounded-tr-none shadow-[#004d2b]/20"
+                  }`}
+                >
+                  <div className="whitespace-pre-line">{msg.text}</div>
+                </div>
               </div>
             ))}
             {loading && (
-              <div className="whitespace-pre-line p-3 rounded-xl max-w-[85%] text-sm bg-gray-100 text-green-700 rounded-tl-none shadow-sm">
-                digitando…
+              <div className="flex justify-start">
+                 <div className="bg-white p-4 rounded-[1.8rem] rounded-tl-none border border-green-100 flex gap-1">
+                    <div className="w-1.5 h-1.5 bg-[#004d2b]/20 rounded-full animate-bounce"></div>
+                    <div className="w-1.5 h-1.5 bg-[#004d2b]/20 rounded-full animate-bounce delay-100"></div>
+                    <div className="w-1.5 h-1.5 bg-[#004d2b]/20 rounded-full animate-bounce delay-200"></div>
+                 </div>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="p-3 border-t border-yellow-200 bg-white">
-            <div className="relative">
+          {/* Input Premium */}
+          <div className="p-6 bg-white border-t border-green-50">
+            <div className="relative group">
               <input
                 type="text"
-                className="w-full border border-yellow-300 px-4 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent pr-12"
+                className="w-full bg-green-50/50 border-2 border-transparent px-5 py-4 rounded-2xl text-[13px] font-bold text-[#004d2b] placeholder:text-gray-400 focus:outline-none focus:border-[#004d2b]/20 focus:bg-white transition-all pr-14 shadow-inner"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Digite sua mensagem..."
+                placeholder="Pergunte ao Vitorino..."
               />
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || loading}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-yellow-400 text-green-800 p-1.5 rounded-full hover:bg-yellow-500 disabled:opacity-50 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#004d2b] text-white p-2.5 rounded-xl hover:bg-[#003823] disabled:opacity-20 transition-all shadow-lg active:scale-95 group-hover:shadow-[#004d2b]/20"
                 aria-label="Enviar mensagem"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
+                <MessageCircle size={18} fill="currentColor" className="opacity-80" />
               </button>
             </div>
+            <p className="text-[8px] text-center font-black text-gray-300 uppercase tracking-widest mt-4">
+              Papo reto com inteligência ludovicense
+            </p>
           </div>
         </div>
       )}
