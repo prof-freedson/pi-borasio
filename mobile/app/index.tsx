@@ -290,8 +290,7 @@ export default function App() {
         </View>
 
         <View className="items-center pb-12">
-          <Text className="text-gray-400 font-bold text-xs tracking-[4px] uppercase mb-2">Borasiô Mobile</Text>
-          <Text className="text-gray-300 text-xs">© 2024 • São Luís - MA</Text>
+          <Text className="text-gray-300 text-xs">© 2026 Borasiô • São Luís - MA</Text>
         </View>
       </ScrollView>
 
