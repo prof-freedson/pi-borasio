@@ -19,6 +19,8 @@ export default function RootLayout() {
         <Stack.Screen name="usuario/index" />
         <Stack.Screen name="pessoal/login" />
         <Stack.Screen name="transito-inteligente/index" />
+        <Stack.Screen name="desvios-inteligentes/index" />
+        <Stack.Screen name="pessoalmotorista/loginmotorista/index" />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal', headerShown: true }} />
       </Stack>
       <StatusBar style="auto" />
