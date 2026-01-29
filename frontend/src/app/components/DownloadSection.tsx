@@ -58,7 +58,7 @@ const DownloadSection = () => {
               className="group bg-yellow-400 hover:bg-yellow-300 text-[#004d2b] font-bold py-4 px-10 rounded-2xl transition-all duration-300 shadow-lg flex items-center justify-center gap-3 w-full sm:w-auto"
             >
               <Download className="w-6 h-6 group-hover:animate-bounce" />
-              <span>Baixar APK Agora</span>
+              <span>Baixar Agora</span>
             </button>
           </div>
 

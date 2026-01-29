@@ -15,7 +15,7 @@ export default function DownloadPage() {
         </h1>
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
           A revolução da mobilidade maranhense está a um clique de distância. 
-          Baixe o APK e comece a economizar hoje mesmo.
+          Baixe o app e comece a economizar hoje mesmo.
         </p>
       </div>
       
