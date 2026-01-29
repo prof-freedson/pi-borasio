@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
+import React from 'react';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, TextInput, Alert } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import BoletoContent from './BoletoContent';
+import * as Clipboard from 'expo-clipboard';
+import { useRouter } from 'expo-router';
 
 interface PagamentoContentProps {
     state: {
@@ -11,213 +11,188 @@ interface PagamentoContentProps {
         descontoAplicado: boolean;
         setDescontoAplicado: (d: boolean) => void;
         pagamentoFinalizado: boolean;
-        setPagamentoFinalizado: (f: boolean) => void;
+        setPagamentoFinalizado: (pf: boolean) => void;
         valorOriginal: number;
         valorComDesconto: number;
         corridaSelecionada: any;
-        codigoBarrasNumerico: string;
         isLoading: boolean;
     };
     handlers: {
-        handleDownloadPdf: () => Promise<void>;
-        handleCopiarLinha: () => Promise<void>;
-        formatarLinhaDigitavel: (c: string) => string;
-        gerarCodigoBarrasVisual: () => string;
+        handleFinalizarPagamento: () => void;
     };
 }
 
 export default function PagamentoContent({ state, handlers }: PagamentoContentProps) {
     const router = useRouter();
-    const [codigoVoucher, setCodigoVoucher] = useState('');
-    const [mensagemVoucher, setMensagemVoucher] = useState('');
-    const [tipoMensagemVoucher, setTipoMensagemVoucher] = useState<'success' | 'error' | ''>('');
-
-    const { 
-        metodoPagamento, setMetodoPagamento, 
-        descontoAplicado, setDescontoAplicado, 
-        pagamentoFinalizado, setPagamentoFinalizado,
-        valorOriginal, valorComDesconto,
-        corridaSelecionada, isLoading 
+    const {
+        metodoPagamento,
+        setMetodoPagamento,
+        pagamentoFinalizado,
+        valorComDesconto,
+        corridaSelecionada,
+        isLoading
     } = state;
 
-    const handleAplicarVoucher = () => {
-        if (!codigoVoucher.trim()) {
-            setMensagemVoucher('Insira um voucher');
-            setTipoMensagemVoucher('error');
-            return;
-        }
+    const { handleFinalizarPagamento } = handlers;
 
-        if (codigoVoucher.toUpperCase() !== 'OUT31/10') {
-            setMensagemVoucher('Voucher inválido');
-            setTipoMensagemVoucher('error');
-            setDescontoAplicado(false);
-            return;
-        }
-
-        if (valorOriginal < 5.00) {
-            setMensagemVoucher('Valor mínimo R$ 5,00');
-            setTipoMensagemVoucher('error');
-            setDescontoAplicado(false);
-        } else {
-            const perc = valorOriginal > 10.00 ? 30 : 20;
-            setMensagemVoucher(`Voucher aplicado! ${perc}% de desconto`);
-            setTipoMensagemVoucher('success');
-            setDescontoAplicado(true);
-        }
+    const handleCopyPix = async () => {
+        await Clipboard.setStringAsync('00020126360014BR.GOV.BCB.PIX0114+5598988888888520400005303986540510.005802BR5913BoraSio Transp6008SAO LUIS62070503***6304E2B1');
+        Alert.alert("Sucesso", "Chave PIX (Copia e Cola) copiada para a área de transferência!");
     };
 
-    const handleFinalizar = () => {
-        setPagamentoFinalizado(true);
-        const valorFinal = descontoAplicado ? valorComDesconto : valorOriginal;
-        Alert.alert(
-            "Sucesso", 
-            `Pagamento de R$ ${valorFinal.toFixed(2).replace('.', ',')} realizado!`,
-            [{ text: "OK", onPress: () => router.push("/") }]
-        );
+    const handleBackToHome = () => {
+        router.replace('/');
     };
 
     if (isLoading) {
         return (
             <View className="flex-1 justify-center items-center">
                 <ActivityIndicator size="large" color="#004d2b" />
+                <Text className="mt-4 text-[#004d2b] font-bold">Carregando detalhes...</Text>
+            </View>
+        );
+    }
+
+    if (pagamentoFinalizado) {
+        return (
+            <View className="flex-1 justify-center items-center p-6">
+                <View className="bg-white p-8 rounded-full mb-6 shadow-sm">
+                    <Feather name="check" size={80} color="#004d2b" />
+                </View>
+                <Text className="text-2xl font-black text-[#004d2b] text-center mb-2">Pagamento Realizado!</Text>
+                <Text className="text-gray-600 text-center mb-10 px-4">Sua corrida foi confirmada com sucesso. O motorista já recebeu sua solicitação e está a caminho do ponto de embarque.</Text>
+                
+                <TouchableOpacity 
+                    className="bg-[#004d2b] w-full py-5 rounded-3xl items-center shadow-lg"
+                    onPress={handleBackToHome}
+                >
+                    <Text className="text-white font-black text-lg">Entendido, ir para Início</Text>
+                </TouchableOpacity>
             </View>
         );
     }
 
     return (
-        <KeyboardAvoidingView 
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-            className="flex-1"
-        >
-            <ScrollView 
-                className="flex-1 px-4 py-6" 
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 40 }}
-            >
-                <View className="bg-white rounded-[32px] shadow-sm border border-green-50 overflow-hidden mb-6">
-                    <View className="p-6">
-                        <Text className="text-2xl font-black text-[#004d2b] mb-6">Pagamento</Text>
-
-                        {/* Card de Informação da Corrida */}
-                        <View className="mb-6 p-4 bg-green-50/50 rounded-2xl border border-green-100">
-                            <Text className="text-[10px] font-black text-[#004d2b] uppercase tracking-widest mb-3">Detalhes da Viagem</Text>
-                            <View className="flex-row flex-wrap">
-                                <View className="w-1/2 mb-3">
-                                    <Text className="text-[8px] text-gray-400 font-bold uppercase">De</Text>
-                                    <Text className="text-gray-800 text-xs font-bold" numberOfLines={1}>{corridaSelecionada?.origem}</Text>
-                                </View>
-                                <View className="w-1/2 mb-3">
-                                    <Text className="text-[8px] text-gray-400 font-bold uppercase">Para</Text>
-                                    <Text className="text-gray-800 text-xs font-bold" numberOfLines={1}>{corridaSelecionada?.destino}</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        {/* Métodos de Pagamento */}
-                        <View className="gap-y-3 mb-8">
-                            {[
-                                { id: 'credito', label: 'Cartão de crédito', icon: 'credit-card', lib: Feather },
-                                { id: 'pix', label: 'Pix', icon: 'qrcode', lib: MaterialCommunityIcons },
-                                { id: 'boleto', label: 'Boleto', icon: 'barcode', lib: MaterialCommunityIcons },
-                            ].map((m) => {
-                                const Icon = m.lib;
-                                const active = metodoPagamento === m.id;
-                                return (
-                                    <TouchableOpacity 
-                                        key={m.id}
-                                        onPress={() => setMetodoPagamento(m.id)}
-                                        className={`flex-row items-center p-4 rounded-2xl border ${active ? 'border-[#FFD700] bg-green-50/30' : 'border-gray-50 bg-white'}`}
-                                    >
-                                        <View className={`w-10 h-10 rounded-xl items-center justify-center mr-4 ${active ? 'bg-green-100' : 'bg-gray-50'}`}>
-                                            <Icon name={m.icon as any} size={20} color="#004d2b" />
-                                        </View>
-                                        <Text className={`font-bold text-sm ${active ? 'text-[#004d2b]' : 'text-gray-400'}`}>{m.label}</Text>
-                                        {active && <View className="ml-auto w-2 h-2 rounded-full bg-[#FFD700]" />}
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
-
-                        {/* Conteúdo Dinâmico */}
-                        {metodoPagamento === 'credito' && (
-                            <View className="mb-8 p-6 bg-gray-50 rounded-3xl border border-gray-100">
-                                <TextInput placeholder="Número do Cartão" className="bg-white p-4 rounded-xl mb-4 border border-gray-100 font-bold" keyboardType="numeric" />
-                                <View className="flex-row gap-x-4">
-                                    <TextInput placeholder="MM/AA" className="flex-1 bg-white p-4 rounded-xl border border-gray-100 font-bold text-center" maxLength={5} />
-                                    <TextInput placeholder="CVC" className="flex-1 bg-white p-4 rounded-xl border border-gray-100 font-bold text-center" secureTextEntry maxLength={4} />
-                                </View>
-                            </View>
-                        )}
-
-                        {metodoPagamento === 'pix' && (
-                            <View className="mb-8 items-center bg-green-50/20 p-6 rounded-3xl border border-green-50">
-                                <Image 
-                                    source={{ uri: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=PIXMOCK` }} 
-                                    className="w-40 h-40 bg-white p-2 rounded-2xl mb-4"
-                                />
-                                <Text className="font-black text-2xl text-[#004d2b]">R$ {(descontoAplicado ? valorComDesconto : valorOriginal).toFixed(2).replace('.', ',')}</Text>
-                            </View>
-                        )}
-
-                        {metodoPagamento === 'boleto' && (
-                            <BoletoContent 
-                                valor={descontoAplicado ? valorComDesconto : valorOriginal}
-                                corrida={corridaSelecionada}
-                                handlers={handlers}
-                                codigoBarrasNumerico={state.codigoBarrasNumerico}
-                            />
-                        )}
-
-                        {/* Voucher */}
-                        <View className="mb-8">
-                            <Text className="text-[10px] font-black text-[#004d2b] uppercase tracking-[2px] mb-4">Voucher</Text>
-                            <View className="flex-row gap-x-2">
-                                <TextInput 
-                                    className="flex-1 bg-gray-50 p-4 rounded-xl font-bold uppercase border border-gray-100 text-xs"
-                                    placeholder="CUPOM"
-                                    value={codigoVoucher}
-                                    onChangeText={setCodigoVoucher}
-                                />
-                                <TouchableOpacity onPress={handleAplicarVoucher} className="bg-green-600 px-6 rounded-xl justify-center">
-                                    <Text className="text-white font-black text-[10px]">OK</Text>
-                                </TouchableOpacity>
-                            </View>
-                            {mensagemVoucher !== '' && (
-                                <Text className={`mt-2 text-[10px] font-bold ml-1 ${tipoMensagemVoucher === 'success' ? 'text-green-600' : 'text-red-500'}`}>{mensagemVoucher}</Text>
-                            )}
-                        </View>
-
-                        {/* Totais */}
-                        <View className="border-t border-gray-50 pt-6">
-                            <View className="flex-row justify-between mb-2">
-                                <Text className="text-gray-400 font-bold text-[10px] uppercase">Subtotal</Text>
-                                <Text className="text-gray-600 font-bold text-xs">R$ {valorOriginal.toFixed(2).replace('.', ',')}</Text>
-                            </View>
-                            {descontoAplicado && (
-                                <View className="flex-row justify-between mb-2">
-                                    <Text className="text-green-500 font-bold text-[10px] uppercase">Desconto</Text>
-                                    <Text className="text-green-500 font-bold text-xs">-R$ {(valorOriginal - valorComDesconto).toFixed(2).replace('.', ',')}</Text>
-                                </View>
-                            )}
-                            <View className="flex-row justify-between mt-4">
-                                <Text className="text-[#004d2b] font-black text-xl uppercase tracking-tighter">Total</Text>
-                                <Text className="text-[#004d2b] font-black text-2xl tracking-tighter">
-                                    R$ {(descontoAplicado ? valorComDesconto : valorOriginal).toFixed(2).replace('.', ',')}
-                                </Text>
-                            </View>
-                        </View>
+        <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
+            {/* Trip Summary Card */}
+            <View className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mb-6">
+                <Text className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Resumo da Corrida</Text>
+                
+                <View className="flex-row items-center mb-5">
+                    <View className="w-12 h-12 bg-green-50 rounded-2xl items-center justify-center mr-4">
+                        <Feather name="map-pin" size={24} color="#004d2b" />
+                    </View>
+                    <View className="flex-1">
+                        <Text className="text-gray-400 text-xs font-bold uppercase mb-0.5">Destino</Text>
+                        <Text className="text-[#004d2b] font-black text-lg" numberOfLines={1}>{corridaSelecionada?.destino}</Text>
                     </View>
                 </View>
 
+                <View className="h-[1px] bg-gray-100 w-full mb-5" />
+
+                <View className="flex-row justify-between items-end">
+                    <View>
+                        <Text className="text-gray-400 text-xs font-bold uppercase mb-1">Total a Pagar</Text>
+                        <Text className="text-3xl font-black text-[#004d2b]">R$ {valorComDesconto.toFixed(2).replace('.', ',')}</Text>
+                    </View>
+                    <View className="bg-green-50 px-4 py-2 rounded-2xl border border-green-100">
+                        <Text className="text-[#004d2b] text-xs font-black uppercase tracking-tighter">{corridaSelecionada?.veiculo}</Text>
+                    </View>
+                </View>
+            </View>
+
+            {/* Payment Method Selection */}
+            <Text className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 ml-2">Forma de Pagamento</Text>
+            
+            <View className="flex-row gap-x-4 mb-8">
                 <TouchableOpacity 
-                    className={`w-full bg-[#FFD700] p-5 rounded-2xl flex-row justify-center items-center shadow-lg ${pagamentoFinalizado ? 'opacity-40' : ''}`}
-                    onPress={handleFinalizar}
-                    disabled={pagamentoFinalizado}
+                    onPress={() => setMetodoPagamento('credito')}
+                    activeOpacity={0.7}
+                    className={`flex-1 p-5 rounded-3xl border-2 items-center justify-center ${metodoPagamento === 'credito' ? 'bg-white border-[#004d2b] shadow-md' : 'bg-gray-50 border-transparent opacity-60'}`}
                 >
-                    <Text className="text-[#004d2b] font-black text-lg uppercase tracking-widest mr-2">Finalizar</Text>
-                    <Feather name="arrow-right" size={20} color="#004d2b" />
+                    <Feather name="credit-card" size={28} color={metodoPagamento === 'credito' ? '#004d2b' : '#9ca3af'} />
+                    <Text className={`mt-3 font-black text-xs uppercase tracking-widest ${metodoPagamento === 'credito' ? 'text-[#004d2b]' : 'text-gray-400'}`}>Cartão</Text>
                 </TouchableOpacity>
-            </ScrollView>
-        </KeyboardAvoidingView>
+
+                <TouchableOpacity 
+                    onPress={() => setMetodoPagamento('pix')}
+                    activeOpacity={0.7}
+                    className={`flex-1 p-5 rounded-3xl border-2 items-center justify-center ${metodoPagamento === 'pix' ? 'bg-white border-[#004d2b] shadow-md' : 'bg-gray-50 border-transparent opacity-60'}`}
+                >
+                    <Feather name="zap" size={28} color={metodoPagamento === 'pix' ? '#004d2b' : '#9ca3af'} />
+                    <Text className={`mt-3 font-black text-xs uppercase tracking-widest ${metodoPagamento === 'pix' ? 'text-[#004d2b]' : 'text-gray-400'}`}>PIX</Text>
+                </TouchableOpacity>
+            </View>
+
+            {/* Specific Content */}
+            {metodoPagamento === 'credito' && (
+                <View className="bg-white p-7 rounded-[40px] border border-gray-100 shadow-sm mb-8">
+                    <Text className="text-[#004d2b] font-black text-xl mb-6">Dados do Cartão</Text>
+                    
+                    <View className="mb-5">
+                        <Text className="text-gray-400 text-[10px] font-bold uppercase mb-2 ml-1">Número do Cartão</Text>
+                        <TextInput 
+                            placeholder="0000 0000 0000 0000"
+                            placeholderTextColor="#d1d5db"
+                            className="bg-gray-50 p-5 rounded-2xl border border-gray-100 text-gray-800 font-bold text-base"
+                            keyboardType="numeric"
+                        />
+                    </View>
+
+                    <View className="flex-row gap-x-4">
+                        <View className="flex-1">
+                            <Text className="text-gray-400 text-[10px] font-bold uppercase mb-2 ml-1">Validade</Text>
+                            <TextInput 
+                                placeholder="MM/AA"
+                                placeholderTextColor="#d1d5db"
+                                className="bg-gray-50 p-5 rounded-2xl border border-gray-100 text-gray-800 font-bold text-base text-center"
+                                keyboardType="numeric"
+                            />
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-gray-400 text-[10px] font-bold uppercase mb-2 ml-1">CVV</Text>
+                            <TextInput 
+                                placeholder="000"
+                                placeholderTextColor="#d1d5db"
+                                className="bg-gray-50 p-5 rounded-2xl border border-gray-100 text-gray-800 font-bold text-base text-center"
+                                keyboardType="numeric"
+                                secureTextEntry
+                            />
+                        </View>
+                    </View>
+                </View>
+            )}
+
+            {metodoPagamento === 'pix' && (
+                <View className="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm mb-8 items-center">
+                    <View className="bg-green-50 p-8 rounded-[40px] mb-6 shadow-inner">
+                        <MaterialCommunityIcons name="qrcode-scan" size={140} color="#004d2b" />
+                    </View>
+                    <Text className="text-[#004d2b] font-black text-xl mb-3">Pague com PIX</Text>
+                    <Text className="text-gray-500 text-center text-sm mb-8 px-6 leading-5">Aponte a câmera do seu aplicativo de banco para o QR Code acima ou utilize a chave abaixo.</Text>
+                    
+                    <TouchableOpacity 
+                        onPress={handleCopyPix}
+                        activeOpacity={0.7}
+                        className="flex-row items-center border-2 border-dashed border-green-100 bg-green-50/30 p-5 rounded-2xl w-full justify-center"
+                    >
+                        <Feather name="copy" size={20} color="#004d2b" />
+                        <Text className="text-[#004d2b] font-black ml-3 uppercase tracking-widest text-xs">Copiar Código PIX</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+
+            {/* Bottom Button */}
+            {!pagamentoFinalizado && (
+                <TouchableOpacity 
+                    onPress={handleFinalizarPagamento}
+                    activeOpacity={0.8}
+                    className="bg-[#004d2b] flex-row py-5 rounded-[25px] items-center justify-center shadow-2xl mb-12"
+                >
+                    <Text className="text-white font-black text-lg mr-3">Confirmar e Pagar</Text>
+                    <Feather name="arrow-right" size={24} color="white" />
+                </TouchableOpacity>
+            )}
+        </ScrollView>
     );
 }

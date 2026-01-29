@@ -9,7 +9,7 @@ export default function UserTypeSelectionScreen() {
 
   const handleSelectType = (type: 'passageiro' | 'motorista') => {
     if (type === 'motorista') {
-      router.push('/pessoalmotorista/cadastro-motorista/index');
+      router.push('/pessoalmotorista/cadastro-motorista');
     } else {
       // Assuming there's a passenger registration or it goes to the general one
       // router.push('/pessoal/cadastro');
