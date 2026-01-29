@@ -185,16 +185,38 @@ export default function App() {
           </View>
         </View>
 
-        {/* Welcome Section */}
-        <View className="px-6 -mt-6">
-          <View className="bg-white rounded-3xl p-6 shadow-xl shadow-black/5 border border-gray-100">
-            <Text className="text-xs font-bold text-green-700 uppercase tracking-widest mb-2">Bem-vindo a São Luís</Text>
-            <Text className="text-2xl font-black text-gray-900 mb-3 leading-tight">
+        {/* Welcome Section (Moved below Carousel) */}
+        <View className="px-6 py-8">
+          <View className="bg-white rounded-[40px] p-8 shadow-xl shadow-black/5 border border-gray-100">
+            <Text className="text-xs font-black text-green-700 uppercase tracking-widest mb-3">Bem-vindo a São Luís</Text>
+            <Text className="text-3xl font-black text-gray-900 mb-4 leading-tight">
               Mobilidade que entende o nosso ritmo.
             </Text>
-            <Text className="text-gray-500 leading-relaxed">
+            <Text className="text-gray-500 leading-relaxed mb-8 text-base font-medium">
               O Borasiô nasceu para conectar quem precisa se deslocar com quem busca uma forma mais rápida e barata de atravessar a ilha.
             </Text>
+
+            <View className="space-y-6 gap-6">
+              <View className="flex-row items-start">
+                <View className="bg-green-100 p-3 rounded-2xl mr-4">
+                  <Feather name="shield" size={24} color="#047857" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-gray-900 font-black text-lg mb-1">Segurança em primeiro lugar</Text>
+                  <Text className="text-gray-500 text-sm leading-5">Motoristas verificados e recursos de segurança para sua tranquilidade.</Text>
+                </View>
+              </View>
+
+              <View className="flex-row items-start">
+                <View className="bg-green-100 p-3 rounded-2xl mr-4">
+                  <Feather name="map" size={24} color="#047857" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-gray-900 font-black text-lg mb-1">Conectando a cidade</Text>
+                  <Text className="text-gray-500 text-sm leading-5">Rotas inteligentes que abrangem toda a região metropolitana de São Luís.</Text>
+                </View>
+              </View>
+            </View>
           </View>
         </View>
 
