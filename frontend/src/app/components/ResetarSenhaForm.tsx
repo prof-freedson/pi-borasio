@@ -5,17 +5,12 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 export default function ResetarSenhaForm() {
+  const searchParams = useSearchParams();
+  const tokenDaURL = searchParams.get('token') || '';
   const [novaSenha, setNovaSenha] = useState('')
   const [confirmarNovaSenha, setConfirmarNovaSenha] = useState('')
   const [mensagem, setMensagem] = useState('')
   const [carregando, setCarregando] = useState(false)
-  const searchParams = useSearchParams()
-  const [token, setToken] = useState('')
-
-  useEffect(() => {
-    const t = searchParams.get('token')
-    if (t) setToken(t)
-  }, [searchParams])
 
   // Função para validar força da senha
   function validarForcaSenha(senha: string) {
@@ -40,15 +35,17 @@ export default function ResetarSenhaForm() {
       return
     }
 
-    if (!token) {
+    if (!tokenDaURL) {
       setMensagem('Token de redefinição não encontrado. Verifique o link.')
       return
     }
 
     setCarregando(true)
     try {
-      const res = await fetch('http://localhost:8080/api/password-recovery/reset?token=' + token + '&newPassword=' + encodeURIComponent(novaSenha), {
+      const res = await fetch('/api/resetar-senha', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: tokenDaURL, novaSenha }),
       })
       if (res.ok) {
         setMensagem('Senha redefinida com sucesso!')
