@@ -2,16 +2,21 @@
 
 import { useState } from 'react';
 import {
-  FaFacebook,
-  FaInstagram,
-  FaGoogle,
-  FaWhatsapp,
-  FaTiktok,
-  FaMapMarkerAlt,
-  FaApple,
-  FaGooglePlay
-} from 'react-icons/fa';
-import Image from 'next/image'; // Importe o componente Image do Next.js
+  Mail,
+  Phone,
+  MapPin,
+  Instagram,
+  Facebook,
+  MessageCircle,
+  Send,
+  Smartphone,
+  CheckCircle2,
+  AlertCircle,
+  ExternalLink,
+  ChevronRight
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function ContatoPage() {
   const [form, setForm] = useState({ nome: '', email: '', mensagem: '' });
@@ -21,7 +26,6 @@ export default function ContatoPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    // Limpa o erro quando o usuário começa a digitar
     if (errors[e.target.name as keyof typeof errors]) {
       setErrors({ ...errors, [e.target.name]: '' });
     }
@@ -56,12 +60,11 @@ export default function ContatoPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
     setSubmitStatus('idle');
-    
+
     try {
-      // Simular envio para API
       await new Promise(resolve => setTimeout(resolve, 1500));
       setSubmitStatus('success');
       setForm({ nome: '', email: '', mensagem: '' });
@@ -74,226 +77,199 @@ export default function ContatoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-green-100 px-4 sm:px-8 md:px-16 flex flex-col">
-      {/* Elementos decorativos com padrões maranhenses */}
-      <div className="absolute top-0 left-0 w-40 h-40 opacity-10">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20,20 Q40,5 60,20 T100,20 Q85,40 100,60 T100,100 Q80,85 60,100 T20,100 Q35,80 20,60 T20,20" 
-                fill="#004d2b" />
-        </svg>
-      </div>
-      
-      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl p-8 my-10 md:my-20 mx-auto relative overflow-hidden">
-        
-        {/* Detalhe decorativo no canto */}
-        <div className="absolute -bottom-10 -right-10 w-40 h-40 opacity-5">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,0 Q25,30 0,60 Q30,75 0,100 Q50,80 100,100 Q75,50 100,0 Q50,25 0,0" 
-                  fill="#004d2b" />
-          </svg>
+    <div className="min-h-screen bg-green-100 font-poppins relative overflow-hidden">
+      {/* Background patterns */}
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-green-200/50 to-transparent pointer-events-none" />
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-green-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 relative z-10">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#004d2b] mb-4">
+            Vamos de <span className="text-amber-600">BoraSiô?</span>
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Tem alguma dúvida, sugestão ou quer ser nosso parceiro? Nossa equipe está pronta para te atender com o jeitinho maranhense.
+          </p>
         </div>
-        
-        {/* Lado esquerdo - Informações de contato */}
-        <div className="flex flex-col items-start justify-between space-y-8 z-10">
-          
-          {/* Cabeçalho com logo e saudação maranhense */}
-          <div className="w-full">
-            <div className="flex items-center mb-2">
-              {/* Logo do BoraSiô - substituindo o círculo BS */}
-              <div className="w-16 h-16 mr-3 flex items-center justify-center">
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 bg-white rounded-3xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-green-50">
+
+          {/* Info Side */}
+          <div className="lg:col-span-5 bg-[#004d2b] p-8 md:p-12 text-white flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-12">
                 <Image
-                  src="/img/borasio.png" // Caminho para a imagem da logo
-                  alt="Logo BoraSiô"
+                  src="/img/borasio.png"
+                  alt="BoraSiô Logo"
                   width={64}
                   height={64}
                   className="object-contain"
                 />
+                <h2 className="text-2xl font-bold tracking-tight">Central de Atendimento</h2>
               </div>
-              <h2 className="text-3xl font-bold text-green-900 sm:text-4xl">BoraSiô</h2>
-            </div>
-            <p className="text-gray-600 italic font-light mt-2">
-              Vamos conversar? É só chamar!
-            </p>
-          </div>
 
-          {/* Localização, E-mail e WhatsApp */}
-          <div className="w-full">
-            <h3 className="text-xl font-semibold text-green-800 mb-4 sm:text-2xl flex items-center">
-              <span className="w-3 h-3 bg-amber-500 rounded-full mr-2"></span>
-              Onde a gente fica
-            </h3>
-            <div className="flex items-start space-x-3 text-gray-700 mb-5 p-3 bg-green-50 rounded-lg border border-green-100">
-              <FaMapMarkerAlt className="mt-1 text-green-700 flex-shrink-0 text-lg" />
-              <p>
-                Avenida dos Holandeses, 500<br />
-                Bairro Ponta D'Areia, São Luís - MA 65075-000
-              </p>
-            </div>
-
-            <div className="flex items-start space-x-3 text-gray-700 mb-4 p-3 bg-green-50 rounded-lg border border-green-100">
-              <FaGoogle className="mt-1 text-green-700 flex-shrink-0 text-lg" />
-              <a href="mailto:contato@borasio.com" className="hover:text-green-700 transition">contato@borasio.com</a>
-            </div>
-
-            <div className="flex items-start space-x-3 text-gray-700 p-3 bg-green-50 rounded-lg border border-green-100">
-              <FaWhatsapp className="mt-1 text-green-700 flex-shrink-0 text-lg" />
-              <a href="https://wa.me/5598999999999" className="hover:text-green-700 transition">(98) 99999-9999</a>
-            </div>
-          </div>
-
-          {/* Redes Sociais */}
-          <div className="w-full">
-            <h3 className="text-xl font-semibold text-green-800 mb-4 sm:text-2xl flex items-center">
-              <span className="w-3 h-3 bg-amber-500 rounded-full mr-2"></span>
-              Segue a gente:
-            </h3>
-            <div className="flex space-x-4 text-gray-700 text-2xl bg-green-50 p-4 rounded-lg border border-green-100">
-              <a href="https://facebook.com" aria-label="Facebook" className="hover:text-green-700 transition-transform hover:scale-110 p-2 bg-white rounded-full shadow-sm">
-                <FaFacebook />
-              </a>
-              <a href="https://instagram.com" aria-label="Instagram" className="hover:text-green-700 transition-transform hover:scale-110 p-2 bg-white rounded-full shadow-sm">
-                <FaInstagram />
-              </a>
-              <a href="https://tiktok.com" aria-label="TikTok" className="hover:text-green-700 transition-transform hover:scale-110 p-2 bg-white rounded-full shadow-sm">
-                <FaTiktok />
-              </a>
-            </div>
-          </div>
-
-          {/* Baixe nosso aplicativo */}
-          <div className="w-full mt-6 bg-gradient-to-r from-green-100 to-amber-100 p-5 rounded-xl border border-green-200">
-            <h3 className="text-xl font-semibold text-green-800 mb-3 text-center sm:text-2xl">
-              Baixe nosso aplicativo
-            </h3>
-            <p className="text-gray-700 text-center mb-4 text-sm sm:text-base">
-              Já pensou em chamar um BoraSiô pelo celular? É rapidinho!
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
-              <a 
-                href="#" 
-                className="flex items-center justify-center space-x-2 bg-white hover:bg-gray-50 transition px-4 py-3 rounded-lg shadow-sm border border-green-200"
-                aria-label="Download no Google Play"
-              >
-                <FaGooglePlay className="text-xl text-green-800" />
-                <div className="text-left">
-                  <div className="text-xs text-gray-500">Disponível no</div>
-                  <div className="text-sm font-medium text-green-800">Google Play</div>
+              <div className="space-y-10">
+                <div className="flex items-start gap-4 group">
+                  <div className="bg-white/10 p-3 rounded-2xl group-hover:bg-yellow-400 group-hover:text-[#004d2b] transition-all duration-300">
+                    <MapPin className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-yellow-400 font-semibold mb-1 uppercase tracking-wider text-xs">Onde estamos</h3>
+                    <p className="text-green-50 text-lg">
+                      Av. dos Holandeses, 500<br />
+                      Ponta D'Areia, São Luís - MA
+                    </p>
+                  </div>
                 </div>
-              </a>
-              <a 
-                href="#" 
-                className="flex items-center justify-center space-x-2 bg-white hover:bg-gray-50 transition px-4 py-3 rounded-lg shadow-sm border border-green-200"
-                aria-label="Download na App Store"
-              >
-                <FaApple className="text-xl text-green-800" />
-                <div className="text-left">
-                  <div className="text-xs text-gray-500">Baixe na</div>
-                  <div className="text-sm font-medium text-green-800">App Store</div>
+
+                <div className="flex items-start gap-4 group">
+                  <div className="bg-white/10 p-3 rounded-2xl group-hover:bg-yellow-400 group-hover:text-[#004d2b] transition-all duration-300">
+                    <MessageCircle className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-yellow-400 font-semibold mb-1 uppercase tracking-wider text-xs">WhatsApp</h3>
+                    <a href="https://wa.me/5598999999999" className="text-green-50 text-lg hover:text-white transition-colors">
+                      (98) 99999-9999
+                    </a>
+                  </div>
                 </div>
-              </a>
+
+                <div className="flex items-start gap-4 group">
+                  <div className="bg-white/10 p-3 rounded-2xl group-hover:bg-yellow-400 group-hover:text-[#004d2b] transition-all duration-300">
+                    <Mail className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-yellow-400 font-semibold mb-1 uppercase tracking-wider text-xs">E-mail</h3>
+                    <a href="mailto:contato@borasio.com" className="text-green-50 text-lg hover:text-white transition-colors">
+                      contato@borasio.com
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-16">
+              <h3 className="text-sm font-semibold text-yellow-400 uppercase tracking-[0.2em] mb-6">Nossas Redes</h3>
+              <div className="flex gap-4">
+                {[
+                  { icon: <Instagram className="w-5 h-5" />, href: "https://instagram.com" },
+                  { icon: <Facebook className="w-5 h-5" />, href: "https://facebook.com" },
+                  { icon: <Smartphone className="w-5 h-5" />, href: "#" },
+                ].map((social, i) => (
+                  <a key={i} href={social.href} className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/10 hover:bg-yellow-400 hover:text-[#004d2b] transition-all duration-300 border border-white/5">
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
 
-          <p className="text-xs text-gray-500 mt-8 self-center">
-            © 2025 BoraSiô. Todos os direitos reservados. <a href="#" className="hover:text-green-700">Política de privacidade</a>
-          </p>
+          {/* Form Side */}
+          <div className="lg:col-span-7 p-8 md:p-12 lg:p-16">
+            <h2 className="text-3xl font-bold text-[#004d2b] mb-2">Envie uma mensagem</h2>
+            <p className="text-gray-500 mb-8 font-medium">Preencha o formulário abaixo e responderemos em até 24 horas.</p>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="nome" className="block text-sm font-bold text-[#004d2b] mb-2 uppercase tracking-wide">Seu Nome</label>
+                <input
+                  type="text"
+                  id="nome"
+                  name="nome"
+                  placeholder="Ex: João da Silva"
+                  value={form.nome}
+                  onChange={handleChange}
+                  className={`w-full px-5 py-4 rounded-2xl bg-gray-50 border ${errors.nome ? 'border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-[#004d2b] focus:ring-green-100'} transition-all focus:outline-none focus:ring-4 placeholder:text-gray-400`}
+                />
+                {errors.nome && <div className="flex items-center gap-1 mt-2 text-red-500 text-sm font-medium"><AlertCircle className="w-4 h-4" /> {errors.nome}</div>}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-bold text-[#004d2b] mb-2 uppercase tracking-wide">E-mail</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="exemplo@email.com"
+                    value={form.email}
+                    onChange={handleChange}
+                    className={`w-full px-5 py-4 rounded-2xl bg-gray-50 border ${errors.email ? 'border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-[#004d2b] focus:ring-green-100'} transition-all focus:outline-none focus:ring-4 placeholder:text-gray-400`}
+                  />
+                  {errors.email && <div className="flex items-center gap-1 mt-2 text-red-500 text-sm font-medium"><AlertCircle className="w-4 h-4" /> {errors.email}</div>}
+                </div>
+                <div>
+                  <label htmlFor="whatsapp" className="block text-sm font-bold text-[#004d2b] mb-2 uppercase tracking-wide">WhatsApp (Opcional)</label>
+                  <input
+                    type="text"
+                    id="whatsapp"
+                    placeholder="(98) 90000-0000"
+                    className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-200 focus:border-[#004d2b] focus:ring-green-100 transition-all focus:outline-none focus:ring-4 placeholder:text-gray-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="mensagem" className="block text-sm font-bold text-[#004d2b] mb-2 uppercase tracking-wide">Mensagem</label>
+                <textarea
+                  id="mensagem"
+                  name="mensagem"
+                  rows={4}
+                  placeholder="Como podemos te ajudar hoje?"
+                  value={form.mensagem}
+                  onChange={handleChange}
+                  className={`w-full px-5 py-4 rounded-2xl bg-gray-50 border ${errors.mensagem ? 'border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-[#004d2b] focus:ring-green-100'} transition-all focus:outline-none focus:ring-4 placeholder:text-gray-400 resize-none`}
+                />
+                {errors.mensagem && <div className="flex items-center gap-1 mt-2 text-red-500 text-sm font-medium"><AlertCircle className="w-4 h-4" /> {errors.mensagem}</div>}
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full sm:w-auto px-10 py-5 rounded-2xl bg-gradient-to-r from-[#004d2b] to-[#006b3d] text-white font-bold text-lg shadow-[0_10px_30px_-10px_rgba(0,77,43,0.3)] hover:shadow-[0_15px_40px_-10px_rgba(0,77,43,0.4)] hover:-translate-y-1 transition-all disabled:opacity-70 disabled:pointer-events-none flex items-center justify-center gap-3`}
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Enviando...</span>
+                  </div>
+                ) : (
+                  <>
+                    <span>Enviar Mensagem</span>
+                    <Send className="w-5 h-5" />
+                  </>
+                )}
+              </button>
+
+              {submitStatus === 'success' && (
+                <div className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <CheckCircle2 className="w-6 h-6 flex-shrink-0" />
+                  <p className="font-semibold">Mensagem enviada com sucesso! Em breve entraremos em contato.</p>
+                </div>
+              )}
+
+              {submitStatus === 'error' && (
+                <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <AlertCircle className="w-6 h-6 flex-shrink-0" />
+                  <p className="font-semibold">Ocorreu um erro ao enviar. Por favor, tente novamente.</p>
+                </div>
+              )}
+            </form>
+          </div>
         </div>
 
-        {/* Lado direito - Formulário */}
-        <div className="text-center z-10">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-green-900 mb-2 sm:text-4xl">Manda um alô pra gente!</h2>
-            <p className="text-gray-600 text-base md:text-lg">
-              Tem dúvida, sugestão ou elogio? É só mandar! A gente adora conversar.
-            </p>
-          </div>
-          
-          <form onSubmit={handleSubmit} className="space-y-5 text-left bg-white p-6 rounded-xl shadow-sm border border-green-100">
-            <div>
-              <label htmlFor="nome" className="block text-sm font-medium text-green-800 mb-1">
-                Seu nome
-              </label>
-              <input
-                type="text"
-                id="nome"
-                name="nome"
-                placeholder="Como podemos te chamar?"
-                value={form.nome}
-                onChange={handleChange}
-                className={`w-full p-3 rounded-lg border ${errors.nome ? 'border-red-500' : 'border-green-200'} focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition`}
-                aria-invalid={!!errors.nome}
-                aria-describedby={errors.nome ? "nome-error" : undefined}
-              />
-              {errors.nome && <p id="nome-error" className="text-red-500 text-sm mt-1">{errors.nome}</p>}
+        {/* Footer Area with quick download */}
+        <div className="mt-16 max-w-2xl mx-auto">
+          <div className="bg-amber-50 rounded-[2.5rem] p-10 border border-amber-100 flex flex-col items-center text-center gap-6 shadow-sm">
+            <div className="bg-white p-5 rounded-2xl shadow-sm">
+              <Smartphone className="w-10 h-10 text-amber-600" />
             </div>
-            
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-green-800 mb-1">
-                Seu e-mail
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Pra gente retornar o contato"
-                value={form.email}
-                onChange={handleChange}
-                className={`w-full p-3 rounded-lg border ${errors.email ? 'border-red-500' : 'border-green-200'} focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition`}
-                aria-invalid={!!errors.email}
-                aria-describedby={errors.email ? "email-error" : undefined}
-              />
-              {errors.email && <p id="email-error" className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            <div className="space-y-2">
+              <h4 className="text-2xl font-black text-[#004d2b] tracking-tight">Ainda não tem o App?</h4>
+              <p className="text-gray-600 font-medium max-w-md">Baixe agora na sua loja de aplicativos e comece a economizar com o jeitinho maranhense.</p>
             </div>
-            
-            <div>
-              <label htmlFor="mensagem" className="block text-sm font-medium text-green-800 mb-1">
-                Sua mensagem
-              </label>
-              <textarea
-                id="mensagem"
-                name="mensagem"
-                placeholder="Fala com a gente..."
-                rows={4}
-                value={form.mensagem}
-                onChange={handleChange}
-                className={`w-full p-3 rounded-lg border ${errors.mensagem ? 'border-red-500' : 'border-green-200'} focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition`}
-                aria-invalid={!!errors.mensagem}
-                aria-describedby={errors.mensagem ? "mensagem-error" : undefined}
-              ></textarea>
-              {errors.mensagem && <p id="mensagem-error" className="text-red-500 text-sm mt-1">{errors.mensagem}</p>}
-            </div>
-            
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={`w-full bg-gradient-to-r from-green-700 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition font-semibold shadow-md ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-            >
-              {isSubmitting ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Enviando...
-                </span>
-              ) : 'Manda ver!'}
-            </button>
-          </form>
-          
-          {submitStatus === 'success' && (
-            <div className="p-3 bg-green-100 text-green-800 rounded-lg mt-4 text-left border border-green-200">
-              ✅ <strong>Oba!</strong> Mensagem enviada com sucesso! A gente retorna em breve.
-            </div>
-          )}
-          {submitStatus === 'error' && (
-            <div className="p-3 bg-red-100 text-red-800 rounded-lg mt-4 text-left border border-red-200">
-              ❌ <strong>Ih!</strong> Deu um probleminha. Tenta de novo mais tarde, tá bom?
-            </div>
-          )}
-          
-          {/* Elemento decorativo no rodapé do formulário */}
-          <div className="mt-6 text-xs text-gray-500 italic">
-            A gente responde rapidinho, pode confiar!
+            <Link href="#" className="mt-4 px-12 py-5 bg-[#004d2b] text-white rounded-2xl font-bold hover:bg-[#003823] transition-all hover:scale-105 shadow-lg shadow-[#004d2b]/20">Baixar Agora</Link>
           </div>
         </div>
       </div>
