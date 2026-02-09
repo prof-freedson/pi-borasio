@@ -81,7 +81,7 @@ const Hero = () => {
     if (!isAutoPlaying) return;
 
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselContent.length);
+      setCurrentSlide((prev: number) => (prev + 1) % carouselContent.length);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -89,13 +89,13 @@ const Hero = () => {
 
   // Navegação do carrossel
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % carouselContent.length);
+    setCurrentSlide((prev: number) => (prev + 1) % carouselContent.length);
     setIsAutoPlaying(false);
     setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + carouselContent.length) % carouselContent.length);
+    setCurrentSlide((prev: number) => (prev - 1 + carouselContent.length) % carouselContent.length);
     setIsAutoPlaying(false);
     setTimeout(() => setIsAutoPlaying(true), 10000);
   };
@@ -241,18 +241,18 @@ const Hero = () => {
             {carouselContent[currentSlide].title}
           </h1>
 
-          <p className="text-lg sm:text-xl lg:text-2xl text-white mb-8 max-w-2xl">
+          <p className="text-lg sm:text-xl lg:text-2xl text-white mb-8 max-w-2xl text-justify">
             {carouselContent[currentSlide].subtitle}
           </p>
 
           <button
             ref={buttonRef}
             onClick={openModal}
-            className="bg-[#004d2b] hover:bg-[#003823] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 shadow-md focus:ring-2 focus:ring-offset-2 focus:ring-[#004d2b] focus:outline-none flex items-center gap-2"
+            className="bg-[#004d2b] hover:bg-[#003823] text-white font-bold py-4 px-10 rounded-xl transition-all duration-300 shadow-lg hover:shadow-[#004d2b]/30 hover:-translate-y-1 focus:ring-4 focus:ring-[#004d2b]/20 focus:outline-none flex items-center gap-3"
             aria-label="Abrir menu de navegação"
           >
-            <Zap className="w-5 h-5" />
-            Saiba mais
+            <Zap className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+            <span className="tracking-wide">Saiba mais</span>
           </button>
         </div>
 
@@ -352,7 +352,7 @@ const Hero = () => {
             <h2 className="text-3xl sm:text-4xl font-bold text-[#004d2b] mb-4">
               Uma Solução Pensada Para a Região Metropolitana de São Luís
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto text-justify">
               Descubra como o Borasiô transforma a mobilidade urbana na Ilha do Amor com tecnologia, eficiência e um toque local.
             </p>
           </div>
@@ -361,21 +361,23 @@ const Hero = () => {
           <div className="w-full flex flex-col gap-8">
             <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
               {/* Conteúdo à esquerda */}
-              <div className="flex-1 bg-gradient-to-br from-green-600 to-green-800 rounded-xl shadow-xl p-8 sm:p-10 text-white">
-                <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                  {regionalContent.icon}
-                  <h3 className="text-2xl sm:text-3xl font-bold text-yellow-300">
+              <div className="flex-1 bg-gradient-to-br from-[#004d2b] to-[#006b3d] rounded-3xl shadow-2xl p-8 sm:p-12 text-white transform transition-transform duration-500 hover:scale-[1.02]">
+                <div className="flex items-center gap-5 mb-6 sm:mb-8">
+                  <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm">
+                    {regionalContent.icon}
+                  </div>
+                  <h3 className="text-3xl sm:text-4xl font-extrabold text-yellow-400 leading-none">
                     {regionalContent.title}
                   </h3>
                 </div>
-                <p className="text-gray-200 mb-6 sm:mb-8 text-base sm:text-lg">
+                <p className="text-green-50 mb-8 sm:mb-10 text-lg sm:text-xl font-light leading-relaxed opacity-90 text-justify">
                   {regionalContent.desc}
                 </p>
-                <ul className="space-y-3 text-gray-100 text-sm sm:text-base">
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-green-50 text-base">
                   {regionalContent.details.map((detail, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <CheckCircle className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0" />
-                      <span>{detail}</span>
+                    <li key={index} className="flex items-start gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
+                      <CheckCircle className="w-6 h-6 text-yellow-400 flex-shrink-0" />
+                      <span className="font-medium">{detail}</span>
                     </li>
                   ))}
                 </ul>
@@ -387,21 +389,23 @@ const Hero = () => {
             {/* Seção Eficiência Borasiô */}
             <div className="flex flex-col md:flex-row-reverse items-center gap-8 mb-8">
               {/* Conteúdo à direita */}
-              <div className="flex-1 bg-gradient-to-tl from-green-600 to-green-800 rounded-xl shadow-xl p-8 sm:p-10 text-white">
-                <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                  {efficiencyContent.icon}
-                  <h3 className="text-2xl sm:text-3xl font-bold text-yellow-300">
+              <div className="flex-1 bg-gradient-to-tl from-[#004d2b] to-[#006b3d] rounded-3xl shadow-2xl p-8 sm:p-12 text-white transform transition-transform duration-500 hover:scale-[1.02]">
+                <div className="flex items-center gap-5 mb-6 sm:mb-8">
+                  <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm">
+                    {efficiencyContent.icon}
+                  </div>
+                  <h3 className="text-3xl sm:text-4xl font-extrabold text-yellow-400 leading-none">
                     {efficiencyContent.title}
                   </h3>
                 </div>
-                <p className="text-gray-200 mb-6 sm:mb-8 text-base sm:text-lg">
+                <p className="text-green-50 mb-8 sm:mb-10 text-lg sm:text-xl font-light leading-relaxed opacity-90 text-justify">
                   {efficiencyContent.desc}
                 </p>
-                <ul className="space-y-3 text-gray-100 text-sm sm:text-base">
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-green-50 text-base">
                   {efficiencyContent.details.map((detail, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <CheckCircle className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0" />
-                      <span>{detail}</span>
+                    <li key={index} className="flex items-start gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
+                      <CheckCircle className="w-6 h-6 text-yellow-400 flex-shrink-0" />
+                      <span className="font-medium">{detail}</span>
                     </li>
                   ))}
                 </ul>
@@ -421,15 +425,18 @@ const Hero = () => {
                 <Link
                   key={index}
                   href={`/${item.title}`}
-                  className="bg-white rounded-xl p-6 flex flex-col items-center text-center shadow-lg hover:shadow-xl transition-all duration-300 group hover:-translate-y-2"
+                  className="bg-white rounded-3xl p-8 flex flex-col items-center text-center shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_60px_-15px_rgba(0,77,43,0.2)] transition-all duration-500 group hover:-translate-y-3 border border-green-50"
                 >
-                  <div className="bg-green-100 p-4 rounded-full mb-5 transition-colors duration-300 group-hover:bg-green-200">
-                    {item.icon}
+                  <div className="bg-green-50 p-6 rounded-2xl mb-6 transition-all duration-500 group-hover:bg-[#004d2b] group-hover:rotate-[360deg]">
+                    {React.cloneElement(item.icon as React.ReactElement<any>, { className: "w-8 h-8 text-[#004d2b] transition-colors duration-500 group-hover:text-white" })}
                   </div>
-                  <h4 className="text-lg font-bold text-[#004d2b] mb-2">
+                  <h4 className="text-xl font-bold text-[#004d2b] mb-3">
                     {item.displayTitle || item.title}
                   </h4>
-                  <p className="text-sm text-gray-600 flex-grow">{item.desc}</p>
+                  <p className="text-base text-gray-500 leading-relaxed flex-grow text-justify">{item.desc}</p>
+                  <div className="mt-6 text-[#004d2b] font-bold text-sm flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    Saber mais <ChevronRight className="w-4 h-4" />
+                  </div>
                 </Link>
               ))}
             </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, MapPin, Users, DollarSign, Music, Star, ExternalLink, Shield, CheckCircle, Eye, Users as UsersIcon, Map } from 'lucide-react';
+import { Calendar, MapPin, Users, DollarSign, Music, Star, ExternalLink, Shield, CheckCircle, Eye, Users as UsersIcon, Map, Sparkles, Navigation, Info } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 // Interface para tipagem dos eventos
@@ -243,128 +243,64 @@ export default function EventosSaoLuisPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-[#004d2b] to-green-700 text-white py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-            Eventos em São Luís
-          </h1>
-          <p className="text-xl text-green-100 max-w-2xl mx-auto mb-6">
-            Descubra os melhores eventos culturais, shows e festivais da capital maranhense
-          </p>
-          
-          {/* Seção Informativa sobre Eventos e Caronas */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6 text-left max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-4 text-green-50">✨ Viva a Cultura de São Luís!</h2>
-            <p className="text-green-100 mb-4">
-              São Luís, a <strong>Ilha do Amor</strong>, é palco de uma rica cena cultural com <strong>festas tradicionais, 
-              shows de reggae, festivais de Bumba Meu Boi</strong> e muito mais. De eventos gratuitos na praça 
-              a grandes shows na orla, há sempre algo especial acontecerendo na cidade.
-            </p>
-            <p className="text-green-100 mb-4">
-              <strong>🚗 A carona solidária te leva com segurança</strong> para curtir os melhores eventos da cidade, 
-              evitando preocupações com estacionamento e trânsito, além de ser uma opção econômica e sustentável.
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#f8faf8] font-sans selection:bg-yellow-400 selection:text-[#004d2b]">
+      {/* Dynamic Background Blobs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-green-500/5 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-yellow-400/5 rounded-full blur-[120px] animate-pulse delay-1000"></div>
+      </div>
 
-          {/* Seção de Segurança - Focada em Eventos e Caronas */}
-          <div className="bg-gradient-to-br from-white to-green-50 rounded-2xl p-8 max-w-4xl mx-auto shadow-xl border border-green-100">
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-green-100 p-2 rounded-full">
-                    <Shield className="w-8 h-8 text-green-600" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-800">Dicas de Segurança</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm border border-green-50">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold text-gray-800 mb-1">Verifique o Motorista</h4>
-                      <p className="text-gray-600 text-sm">
-                        Confirme a foto, nome e placa do veículo antes de entrar na carona
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm border border-green-50">
-                    <Eye className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold text-gray-800 mb-1">Compartilhe seu Trajeto</h4>
-                      <p className="text-gray-600 text-sm">
-                        Avise amigos ou familiares sobre seu destino e horário estimado
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm border border-green-50">
-                    <UsersIcon className="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold text-gray-800 mb-1">Prefira Locais Movimentados</h4>
-                      <p className="text-gray-600 text-sm">
-                        Combine encontros em pontos conhecidos e bem iluminados para embarque
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm border border-green-50">
-                    <Map className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold text-gray-800 mb-1">Conheça o Evento</h4>
-                      <p className="text-gray-600 text-sm">
-                        Pesquise sobre o local do evento e tenha um plano de como chegar e sair
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex-1">
-                {isClient && (
-                  <div className="relative">
-                    <img 
-                      src="img/seguranca-eventos.png"
-                      alt="Dicas de segurança para eventos e caronas em São Luís" 
-                      className="w-full h-auto rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
-                  </div>
-                )}
-              </div>
+      {/* Hero Section - Premium Immersive */}
+      <header className="relative pt-24 pb-32 px-6 overflow-hidden z-10">
+        <div className="max-w-7xl mx-auto relative">
+          <div className="flex flex-col items-center text-center space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md rounded-full border border-green-100 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <Sparkles className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#004d2b]">A Ilha do Amor te espera</span>
             </div>
-          </div>
 
-          <div className="mt-6 flex items-center justify-center gap-4 text-sm">
-            <div className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full">
-              <Calendar className="w-4 h-4" />
-              <span>Atualizado automaticamente</span>
+            <h1 className="text-5xl md:text-7xl font-black text-[#004d2b] tracking-tight leading-[0.95] max-w-4xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
+              Cultura em <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-800 to-green-600">Movimento</span>
+            </h1>
+
+            <p className="text-lg md:text-xl text-gray-500 font-medium max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1200">
+              Explore o vibrante cenário cultural de São Luís. Dos tambores aos palcos, encontre sua próxima experiência inesquecível.
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-1400">
+              <div className="flex -space-x-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden shadow-lg">
+                    <img src={`https://i.pravatar.cc/100?u=${i}`} alt="User" />
+                  </div>
+                ))}
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-black text-[#004d2b] leading-tight">+2.4k pessoas</p>
+                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Já usaram carona para eventos hoje</p>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Filtros Melhorados */}
-      <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-b sticky top-0 z-10 shadow-sm">
+      {/* Categories / Filters - Sticky Glassmorphism */}
+      <nav className="sticky top-0 z-[50] py-6 px-4 backdrop-blur-xl bg-white/70 border-b border-green-50 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             {categories.map(category => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`flex items-center gap-3 px-5 py-2.5 rounded-full font-semibold transition-all border-2 ${
+                className={`group relative flex items-center gap-3 px-6 py-3 rounded-2xl font-black transition-all ${
                   selectedCategory === category.id
-                    ? 'bg-[#004d2b] text-white border-[#004d2b] shadow-lg'
-                    : 'bg-white text-gray-700 border-gray-200 hover:border-[#004d2b] hover:text-[#004d2b]'
+                    ? 'bg-[#004d2b] text-white shadow-xl shadow-green-900/20'
+                    : 'bg-white text-gray-400 hover:text-[#004d2b] hover:bg-green-50/50 border border-gray-100'
                 }`}
               >
-                <span className="text-sm">{category.name}</span>
-                <span className={`text-xs px-2 py-1 rounded-full min-w-6 ${
-                  selectedCategory === category.id 
-                    ? 'bg-white/20 text-white' 
-                    : 'bg-gray-100 text-gray-600'
+                <span className="text-xs uppercase tracking-widest">{category.name}</span>
+                <span className={`text-[10px] px-2 py-0.5 rounded-md transition-colors ${
+                  selectedCategory === category.id ? 'bg-white/20' : 'bg-gray-100'
                 }`}>
                   {category.count}
                 </span>
@@ -372,102 +308,184 @@ export default function EventosSaoLuisPage() {
             ))}
           </div>
         </div>
-      </section>
+      </nav>
 
-      {/* Grid de Eventos */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8">
+      <main className="relative z-10 py-20 px-6">
         <div className="max-w-7xl mx-auto">
           {loading ? (
-            <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#004d2b] mx-auto mb-4"></div>
-              <p className="text-gray-600 text-lg">Buscando eventos em São Luís...</p>
-              <p className="text-gray-500 text-sm mt-2">Usando Eventbrite API</p>
+            <div className="flex flex-col items-center justify-center py-32 space-y-6">
+              <div className="relative w-20 h-20">
+                <div className="absolute inset-0 border-4 border-green-100 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-[#004d2b] border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-[#004d2b] animate-pulse">Sincronizando Cultura...</p>
             </div>
           ) : (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredEvents.map(event => (
-                  <div key={event.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-green-200 group">
-                    <div className="relative">
-                      <img
-                        src={event.image}
-                        alt={event.title}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className={`absolute top-4 right-4 ${
-                        event.type === 'gratuito' 
-                          ? 'bg-green-500 text-white' 
-                          : 'bg-yellow-500 text-gray-800'
-                      } px-3 py-1 rounded-full font-bold text-sm shadow-lg`}>
-                        {event.type === 'gratuito' ? '🎉 GRÁTIS' : '💸 PAGO'}
-                      </div>
-                      <div className="absolute bottom-4 left-4 bg-black/60 text-white px-2 py-1 rounded text-xs">
-                        {event.participants} pessoas
-                      </div>
-                    </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {filteredEvents.map(event => (
+                <div 
+                  key={event.id} 
+                  className="group bg-white rounded-[2.5rem] shadow-xl shadow-green-900/5 hover:shadow-2xl hover:shadow-green-900/10 transition-all duration-500 border border-gray-50 overflow-hidden flex flex-col"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                     
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2">
-                        {event.title}
-                      </h3>
-                      
-                      <p className="text-gray-600 mb-4 text-sm line-clamp-3">
-                        {event.description}
-                      </p>
-                      
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center gap-2 text-gray-500">
-                          <Calendar className="w-4 h-4 flex-shrink-0" />
-                          <span className="text-sm">
-                            {formatEventDate(event.date, event.time)}
-                          </span>
-                        </div>
-                        <div className="flex items-start gap-2 text-gray-500">
-                          <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm leading-tight">{event.location}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-500">
-                          <DollarSign className="w-4 h-4" />
-                          <span className={`text-sm font-semibold ${
-                            event.type === 'gratuito' ? 'text-green-600' : 'text-yellow-600'
-                          }`}>
-                            {event.price}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex gap-3">
-                        <button 
-                          onClick={() => handlePedirCorrida(event)}
-                          className="flex-1 bg-[#004d2b] hover:bg-green-800 text-white font-semibold py-3 px-4 rounded-lg transition-colors text-center flex items-center justify-center gap-2 text-sm"
-                        >
-                          <Map className="w-4 h-4" />
-                          Pedir Corrida
-                        </button>
-                        <button className="bg-green-100 hover:bg-green-200 text-[#004d2b] p-3 rounded-lg transition-colors">
-                          <Users className="w-4 h-4" />
-                        </button>
+                    <div className="absolute top-6 right-6">
+                      <div className={`px-4 py-2 rounded-2xl font-black text-xs uppercase tracking-widest backdrop-blur-md shadow-lg ${
+                        event.type === 'gratuito' 
+                          ? 'bg-green-500/90 text-white' 
+                          : 'bg-yellow-400/90 text-[#004d2b]'
+                      }`}>
+                        {event.type === 'gratuito' ? 'Gratuito' : (event.price === 'Pago' ? 'Pago' : 'A partir de ' + event.price)}
                       </div>
                     </div>
+
+                    <div className="absolute bottom-6 left-6 flex items-center gap-2">
+                       <div className="bg-white/20 backdrop-blur-md p-1.5 rounded-full border border-white/30">
+                          <Users className="w-3 h-3 text-white" />
+                       </div>
+                       <span className="text-[10px] font-black text-white uppercase tracking-widest">{event.participants} Confirmados</span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-8 flex flex-col flex-1">
+                    <div className="flex items-center gap-2 mb-4">
+                       <span className="px-2.5 py-1 bg-green-50 text-green-700 text-[9px] font-black uppercase tracking-widest rounded-lg">
+                          {event.category}
+                       </span>
+                       <div className="w-1 h-1 rounded-full bg-gray-200"></div>
+                       <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">
+                          {formatEventDate(event.date, event.time)}
+                       </span>
+                    </div>
+
+                    <h3 className="text-2xl font-black text-[#004d2b] mb-4 tracking-tight leading-tight group-hover:text-green-700 transition-colors">
+                      {event.title}
+                    </h3>
+                    
+                    <p className="text-sm font-medium text-gray-500 mb-8 line-clamp-3 leading-relaxed">
+                      {event.description}
+                    </p>
+                    
+                    <div className="mt-auto space-y-6">
+                      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-3xl border border-gray-100 group/loc transition-colors hover:bg-white hover:border-green-200">
+                        <div className="bg-white p-2 rounded-xl shadow-sm group-hover/loc:bg-[#004d2b] group-hover/loc:text-white transition-all">
+                          <MapPin className="w-4 h-4 text-[#004d2b] group-hover/loc:text-white" />
+                        </div>
+                        <div className="overflow-hidden">
+                          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none mb-1">Localização</p>
+                          <p className="text-xs font-black text-[#004d2b] truncate uppercase">{event.location}</p>
+                        </div>
+                      </div>
+                      
+                      <button 
+                        onClick={() => handlePedirCorrida(event)}
+                        className="w-full bg-yellow-400 hover:bg-yellow-300 text-[#004d2b] font-black py-4 rounded-2xl shadow-lg shadow-yellow-400/20 active:scale-95 transition-all text-xs uppercase tracking-widest flex items-center justify-center gap-3 overflow-hidden group/btn"
+                      >
+                        <Navigation className="w-4 h-4 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                        Pedir Corrida
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!loading && filteredEvents.length === 0 && (
+            <div className="text-center py-32 bg-white rounded-[4rem] shadow-xl border border-gray-50 max-w-2xl mx-auto">
+              <div className="bg-green-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8 border border-green-100">
+                <Music className="w-10 h-10 text-green-700 opacity-40" />
+              </div>
+              <h3 className="text-2xl font-black text-[#004d2b] mb-4 uppercase tracking-tighter">Silêncio na Pista</h3>
+              <p className="text-gray-400 font-medium px-12">
+                Nenhum evento encontrado nesta categoria. Que tal explorar outras vibrações?
+              </p>
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* Security & Experience Section - Premium Redesign */}
+      <section className="py-32 px-6 bg-[#004d2b] relative overflow-hidden">
+        {/* Background Texture */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-yellow-400/10 rounded-full blur-[150px] -mr-[400px] -mt-[400px]"></div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div className="space-y-12">
+              <div className="space-y-6">
+                <div className="bg-yellow-400 w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-yellow-400/20">
+                   <Shield className="w-8 h-8 text-[#004d2b]" />
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-tight">
+                  Sua segurança é o nosso <span className="text-yellow-400">melhor espetáculo</span>
+                </h2>
+                <p className="text-lg text-green-100/60 font-medium leading-relaxed">
+                  Não importa se o show é grátis ou VIP, sua integridade é prioridade. Siga nossas diretrizes para uma experiência impecável.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[
+                  { icon: <CheckCircle className="text-green-400" />, title: "Check do Carro", desc: "Confira placa e modelo no app." },
+                  { icon: <Eye className="text-blue-400" />, title: "Em Tempo Real", desc: "Compartilhe sua rota ativa." },
+                  { icon: <UsersIcon className="text-purple-400" />, title: "Vá em Grupo", desc: "Prefira caronas com mais pessoas." },
+                  { icon: <Map className="text-orange-400" />, title: "Ponto Seguro", desc: "Escolha locais bem iluminados." }
+                ].map((item, i) => (
+                  <div key={i} className="bg-white/5 backdrop-blur-sm p-6 rounded-[2.5rem] border border-white/10 hover:bg-white/10 transition-colors">
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="bg-white/10 p-2 rounded-xl">
+                        {item.icon}
+                      </div>
+                      <h4 className="font-black text-white text-sm uppercase tracking-widest">{item.title}</h4>
+                    </div>
+                    <p className="text-xs text-green-100/40 font-medium leading-relaxed">{item.desc}</p>
                   </div>
                 ))}
               </div>
-              
-              {filteredEvents.length === 0 && (
-                <div className="text-center py-16">
-                  <Music className="w-20 h-20 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-2xl font-semibold text-gray-600 mb-2">
-                    Nenhum evento encontrado
-                  </h3>
-                  <p className="text-gray-500 max-w-md mx-auto">
-                    Não encontramos eventos para os filtros selecionados. Tente alterar as categorias ou verifique novamente mais tarde.
-                  </p>
+            </div>
+
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-yellow-400/20 rounded-[3rem] blur-3xl group-hover:bg-yellow-400/30 transition-all duration-700"></div>
+              <div className="relative rounded-[3rem] overflow-hidden border-8 border-white/10 shadow-2xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?w=800&h=1000&fit=crop"
+                  alt="Segurança em Eventos" 
+                  className="w-full h-auto transform transition-transform duration-1000 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#004d2b] via-transparent to-transparent"></div>
+                <div className="absolute bottom-10 left-10 right-10 p-8 bg-white/10 backdrop-blur-xl rounded-[2rem] border border-white/20">
+                   <div className="flex items-center gap-4">
+                      <div className="bg-green-500 w-3 h-3 rounded-full animate-ping"></div>
+                      <p className="text-white font-black text-sm uppercase tracking-[0.2em]">Monitoramento Ativo 24/7</p>
+                   </div>
                 </div>
-              )}
-            </>
-          )}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Footer Info Pill */}
+      <footer className="py-12 px-6 flex justify-center">
+         <div className="bg-white px-8 py-4 rounded-full shadow-lg border border-gray-100 flex items-center gap-4">
+            <div className="bg-green-100 p-2 rounded-full">
+               <Calendar className="w-4 h-4 text-[#004d2b]" />
+            </div>
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+               Eventos sincronizados com <span className="text-[#004d2b]">Eventbrite Cloud</span>
+            </p>
+         </div>
+      </footer>
     </div>
+
   );
 }

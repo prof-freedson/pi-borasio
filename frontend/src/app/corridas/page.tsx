@@ -1,6 +1,6 @@
 "use client"
 
-import { MapPin, Users, ArrowRight, Clock, Star, Navigation, Calendar, Trees, Car, Share2 } from "lucide-react";
+import { MapPin, Users, ArrowRight, Clock, Star, Navigation, Calendar, Trees, Car, Share2, ChevronLeft, Activity } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect } from "react";
@@ -573,33 +573,97 @@ export default function CorridasPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-50 to-yellow-50 flex flex-col items-center gap-6 p-4">
-      {/* Cabeçalho */}
-      <div className="w-full max-w-4xl text-center">
-        <h1 className="text-3xl font-bold text-green-900 mb-2">Encontre Sua Corrida</h1>
-        <p className="text-green-700">Escolha o tipo de serviço que melhor atende suas necessidades</p>
-      </div>
+    <div className="min-h-screen bg-green-50/50 font-sans selection:bg-yellow-400 selection:text-[#004d2b]">
+      {/* Header Premium */}
+      <header className="bg-[#004d2b] text-white py-6 px-4 md:px-8 border-b border-white/5 sticky top-0 z-[100] shadow-xl">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <button 
+            onClick={() => router.back()} 
+            className="flex items-center gap-2 hover:bg-white/10 px-4 py-2 rounded-xl transition-all border border-transparent hover:border-white/10"
+          >
+            <ChevronLeft className="w-5 h-5" />
+            <span className="font-medium">Voltar</span>
+          </button>
+          
+          <div className="flex items-center gap-3">
+            <div className="bg-yellow-400 p-2 rounded-lg">
+              <Car className="w-5 h-5 text-[#004d2b] fill-[#004d2b]" />
+            </div>
+            <h1 className="text-xl md:text-2xl font-black tracking-tight uppercase">Corridas Disponíveis</h1>
+          </div>
 
-      {/* Abas de Navegação */}
-      <div className="w-full max-w-4xl">
-        <div className="flex bg-white rounded-2xl shadow-md p-1 mb-6 overflow-x-auto">
+          <div className="hidden sm:flex items-center gap-2 bg-green-900/50 border border-green-700 px-3 py-1 rounded-full">
+            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-green-300">Tempo Real</span>
+          </div>
+        </div>
+      </header>
+
+      <main className="py-8 px-4 md:px-8 max-w-7xl mx-auto space-y-8">
+        {/* Banner de Info */}
+        <div className="bg-white rounded-[3rem] p-8 md:p-12 shadow-2xl relative overflow-hidden border-8 border-white group">
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-green-50 to-transparent -z-10"></div>
+          <div className="absolute -top-10 -right-10 w-48 h-48 bg-yellow-400/10 rounded-full blur-[60px] group-hover:bg-yellow-400/20 transition-all duration-700"></div>
+          
+          <div className="max-w-2xl space-y-4">
+            <div className="inline-flex items-center gap-2 bg-[#004d2b] text-white px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
+              <Activity className="w-3 h-3 text-yellow-400" /> Sistema de Match Inteligente
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black text-[#004d2b] leading-tight">
+              {getAbaTitulo(abaAtiva)}
+            </h2>
+            <p className="text-lg text-gray-500 font-medium">
+              {getAbaDescricao(abaAtiva)}
+            </p>
+          </div>
+
+          {/* Badges de Destaque */}
+          <div className="flex flex-wrap gap-3 mt-8">
+            {abaAtiva === 'geral' && (
+              <>
+                <span className="bg-green-100 text-[#004d2b] px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-green-200">🚗 Disponível 24h</span>
+                <span className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-yellow-200">📍 Qualquer Destino</span>
+              </>
+            )}
+            {abaAtiva === 'ilha' && (
+              <>
+                <span className="bg-green-100 text-[#004d2b] px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-green-200">🕐 Horários Fixos</span>
+                <span className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-yellow-200">💰 Preços Reduzidos</span>
+              </>
+            )}
+            {abaAtiva === 'rural' && (
+              <>
+                <span className="bg-green-100 text-[#004d2b] px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-green-200">🚜 Veículos 4x4</span>
+                <span className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-yellow-200">📦 Espaço para Carga</span>
+              </>
+            )}
+            {abaAtiva === 'grupo' && (
+              <>
+                <span className="bg-green-100 text-[#004d2b] px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-green-200">👥 Economia Social</span>
+                <span className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-yellow-200">🤝 Viagem Coletiva</span>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Abas Estilizadas */}
+        <div className="flex bg-white/50 backdrop-blur-md rounded-[2.5rem] p-2 border border-green-100 overflow-x-auto no-scrollbar">
           {(['geral', 'ilha', 'evento', 'rural', 'grupo'] as const).map((tipo) => (
             <button
               key={tipo}
               onClick={() => {
                 setAbaAtiva(tipo);
-                // Limpa o filtro de evento ao trocar de aba, permitindo ver todas as corridas de evento
                 setFiltroDestinoEvento(null);
               }}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 whitespace-nowrap min-w-[120px] ${
+              className={`flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-3xl font-black text-[10px] uppercase tracking-widest transition-all duration-500 whitespace-nowrap min-w-[150px] ${
                 abaAtiva === tipo
-                  ? 'bg-green-600 text-white shadow-lg' // TODOS VERDE AGORA
-                  : 'text-green-700 hover:bg-green-50'
+                  ? 'bg-[#004d2b] text-white shadow-xl translate-y-[-2px]'
+                  : 'text-[#004d2b] hover:bg-white/80'
               }`}
             >
               {getAbaIcon(tipo)}
-              <span className="hidden sm:inline">
-                {tipo === 'geral' ? 'Geral' : 
+              <span>
+                {tipo === 'geral' ? 'Frequente' : 
                  tipo === 'ilha' ? 'Modo Ilha' : 
                  tipo === 'evento' ? 'Eventos' : 
                  tipo === 'rural' ? 'Zona Rural' :
@@ -609,283 +673,146 @@ export default function CorridasPage() {
           ))}
         </div>
 
-        {/* Informações da Aba Ativa */}
-        <div className="bg-white rounded-2xl shadow-md p-6 mb-6 border border-green-100">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-green-900 mb-2">
-              {getAbaTitulo(abaAtiva)}
-            </h2>
-            <p className="text-green-700 mb-4">
-              {getAbaDescricao(abaAtiva)}
-            </p>
+        {/* Grid de Corridas */}
+        <div id="corridas-list" className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {corridasFiltradas.map((corrida) => {
+            const colors = getCorridaColor(corrida.tipo);
+            const isSelected = corrida.id === selectedCorridaId;
             
-            {/* Badges informativas */}
-            <div className="flex flex-wrap justify-center gap-3">
-              {abaAtiva === 'ilha' && (
-                <>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    🕐 Horários Fixos
-                  </span>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    💰 Preços Especiais
-                  </span>
-                </>
-              )}
-              {abaAtiva === 'evento' && (
-                <>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    📅 Datas Específicas
-                  </span>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    🎫 Ideal para Shows
-                  </span>
-                </>
-              )}
-              {abaAtiva === 'rural' && (
-                <>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    🚜 Veículos Robustos
-                  </span>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    📦 Espaço para Cargas
-                  </span>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    🌄 Rotas Rurais
-                  </span>
-                </>
-              )}
-              {abaAtiva === 'grupo' && (
-                <>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    💰 Economia Compartilhada
-                  </span>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    👥 Até 70% de Desconto
-                  </span>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    🤝 Viagem Social
-                  </span>
-                </>
-              )}
-              {abaAtiva === 'geral' && (
-                <>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    🚗 Disponível 24h
-                  </span>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    📍 Qualquer Destino
-                  </span>
-                </>
-              )}
-            </div>
-          </div>
+            return (
+              <div
+                id={`corrida-${corrida.id}`}
+                key={corrida.id}
+                className={`group bg-white rounded-[3rem] overflow-hidden border-2 transition-all duration-500 flex flex-col h-full ${
+                  isSelected 
+                  ? 'border-yellow-400 shadow-2xl scale-[1.02]' 
+                  : 'border-white hover:border-green-200 shadow-xl hover:shadow-[#004d2b]/10'
+                }`}
+              >
+                {/* Header do Card */}
+                <div className="p-8 pb-4">
+                   <div className="flex justify-between items-start mb-6">
+                      <div className="flex items-center gap-4">
+                         <div className="bg-[#004d2b] w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-3 transition-transform">
+                            <span className="text-white font-black text-lg uppercase">
+                              {corrida.motorista.split(' ')[0].charAt(0)}{corrida.motorista.split(' ')[1]?.charAt(0) || ''}
+                            </span>
+                         </div>
+                         <div>
+                            <h4 className="font-black text-[#004d2b] uppercase text-sm tracking-tight">{corrida.motorista}</h4>
+                            <div className="flex items-center gap-2 mt-1">
+                               <div className="flex gap-0.5">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star key={i} size={10} className={`${i < Math.floor(corrida.avaliacao) ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'}`} />
+                                  ))}
+                               </div>
+                               <span className="text-[10px] font-black text-gray-400">{corrida.avaliacao}</span>
+                            </div>
+                         </div>
+                      </div>
+                      <div className="text-right">
+                         <p className="text-3xl font-black text-[#004d2b] tracking-tighter">{corrida.preco}</p>
+                         <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">por pessoa</p>
+                      </div>
+                   </div>
+
+                   {/* Rota */}
+                   <div className="relative pl-8 space-y-6 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-green-50">
+                      <div className="relative">
+                         <div className="absolute -left-[25px] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white border-2 border-[#004d2b] z-10"></div>
+                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Partida</p>
+                         <p className="font-bold text-[#004d2b]">{corrida.origem}</p>
+                      </div>
+                      <div className="relative">
+                         <div className="absolute -left-[25px] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-yellow-400 z-10"></div>
+                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Chegada</p>
+                         <p className="font-bold text-[#004d2b]">{corrida.destino}</p>
+                      </div>
+                   </div>
+                </div>
+
+                {/* Footer do Card */}
+                <div className="mt-auto p-8 pt-0 space-y-6">
+                   <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100 flex items-center gap-3">
+                         <Clock size={16} className="text-[#004d2b]" />
+                         <div>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tempo</p>
+                            <p className="text-xs font-bold text-[#004d2b]">{corrida.tempoEstimado}</p>
+                         </div>
+                      </div>
+                      <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100 flex items-center gap-3">
+                         <Users size={16} className="text-[#004d2b]" />
+                         <div>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Vagas</p>
+                            <p className="text-xs font-bold text-[#004d2b]">{corrida.assentos} assento(s)</p>
+                         </div>
+                      </div>
+                   </div>
+
+                   {corrida.tipo === 'grupo' && corrida.economia && (
+                     <div className="bg-yellow-400/10 p-4 rounded-2xl border border-yellow-400/20 flex items-center justify-between">
+                        <span className="text-[10px] font-black text-[#004d2b] uppercase tracking-widest">Economia Real</span>
+                        <span className="text-sm font-black text-green-700">-{corrida.economia}</span>
+                     </div>
+                   )}
+
+                   <div className="flex items-center justify-between gap-4">
+                      <div className="flex-1">
+                         <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Veículo</p>
+                         <p className="text-[10px] font-bold text-[#004d2b] truncate">{corrida.veiculo}</p>
+                      </div>
+                      <button 
+                        onClick={() => handleSelectCorrida(corrida)}
+                        className="bg-[#004d2b] hover:bg-[#003823] text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl hover:-translate-y-1 active:scale-95 flex items-center gap-2"
+                      >
+                        {corrida.tipo === 'grupo' ? 'Aderir' : 'Escolher'}
+                        <ArrowRight size={14} />
+                      </button>
+                   </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
 
-      {/* Lista de Corridas */}
-      <div id="corridas-list" className="w-full max-w-4xl space-y-6">
-        {corridasFiltradas.map((corrida) => {
-          const colors = getCorridaColor(corrida.tipo);
-          
-          return (
-            <div
-              id={`corrida-${corrida.id}`}
-              key={corrida.id}
-              className={`bg-white rounded-2xl overflow-hidden border transition-all duration-300 transform ${corrida.id === selectedCorridaId ? 'border-yellow-400 shadow-2xl -translate-y-1' : 'border-green-100 hover:shadow-xl hover:-translate-y-1'}`}
-            >
-              {/* Cabeçalho com informações do motorista */}
-              <div className={`p-4 flex justify-between items-center text-white bg-gradient-to-r ${colors.bg}`}>
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${colors.button}`}>
-                    {corrida.tipo === 'grupo' ? (
-                      <Share2 className="w-5 h-5 text-white" />
-                    ) : (
-                      <span className="font-bold text-sm">
-                        {corrida.motorista.split(' ')[0].charAt(0)}{corrida.motorista.split(' ')[1]?.charAt(0) || ''}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <p className="font-semibold">{corrida.motorista}</p>
-                    <div className="flex items-center gap-1 text-sm">
-                      <Star className="w-4 h-4 fill-yellow-300 text-yellow-300" />
-                      <span>{corrida.avaliacao}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold">{corrida.preco}</p>
-                  <p className="text-sm opacity-90">por pessoa</p>
-                  {corrida.tipo === 'grupo' && corrida.economia && (
-                    <p className="text-xs opacity-80 line-through">
-                      Economia: {corrida.economia}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Informações específicas por tipo */}
-              {(corrida.tipo === 'ilha' || corrida.tipo === 'evento' || corrida.tipo === 'rural' || corrida.tipo === 'grupo') && (
-                <div className={`px-5 py-2 border-b ${colors.lightBg} ${colors.border} ${colors.text}`}>
-                  <div className="flex items-center justify-center gap-4 text-sm">
-                    {corrida.tipo === 'ilha' && (
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        <span>Horário: {corrida.horario}</span>
-                      </div>
-                    )}
-                    {corrida.tipo === 'evento' && (
-                      <>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>{corrida.data}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          <span>{corrida.horario}</span>
-                        </div>
-                      </>
-                    )}
-                    {corrida.tipo === 'rural' && (
-                      <>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          <span>Horário: {corrida.horario}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Trees className="w-4 h-4" />
-                          <span>Zona Rural</span>
-                        </div>
-                      </>
-                    )}
-                    {corrida.tipo === 'grupo' && (
-                      <>
-                        <div className="flex items-center gap-1">
-                          <Users className="w-4 h-4" />
-                          <span>{corrida.pessoas} pessoas no grupo</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          <span>{corrida.horario}</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Rota */}
-              <div className="p-5">
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center pt-1">
-                    <div className={`w-3 h-3 rounded-full ${colors.dot} mb-1`}></div>
-                    <div className="w-0.5 h-8 bg-gray-300"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  </div>
-                  
-                  <div className="flex-1">
-                    <div className="mb-4">
-                      <p className="text-sm text-gray-500">Partindo de</p>
-                      <p className={`font-semibold ${colors.text}`}>{corrida.origem}</p>
-                    </div>
-                    
-                    <div>
-                      <p className="text-sm text-gray-500">Destino</p>
-                      <p className={`font-semibold ${colors.text}`}>{corrida.destino}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{corrida.tempoEstimado}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4" />
-                      <span>{corrida.assentos} assento(s)</span>
-                    </div>
-                    {corrida.tipo === 'grupo' && corrida.economia && (
-                      <div className="flex items-center gap-1 text-green-600 font-semibold">
-                        <span>💰 {corrida.economia} economia</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <button 
-                    onClick={() => handleSelectCorrida(corrida)}
-                    className={`px-6 py-2 rounded-full font-medium transition-colors flex items-center gap-2 ${colors.button} text-white`}
-                  >
-                    {corrida.tipo === 'grupo' ? 'Entrar no Grupo' : 'Selecionar'}
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Informações do veículo */}
-              <div className={`px-5 py-3 border-t ${colors.lightBg} ${colors.border} ${colors.text}`}>
-                <p className="text-sm text-center">{corrida.veiculo}</p>
-                {corrida.tipo === 'rural' && (
-                  <p className="text-xs text-center mt-1 opacity-75">
-                    🚜 Veículo adaptado para estradas rurais
-                  </p>
-                )}
-                {corrida.tipo === 'grupo' && (
-                  <p className="text-xs text-center mt-1 opacity-75">
-                    👥 Viagem compartilhada com economia garantida
-                  </p>
-                )}
-              </div>
+        {/* Mensagem de Vazio Premium */}
+        {corridasFiltradas.length === 0 && (
+          <div className="bg-white rounded-[3rem] p-20 text-center border-4 border-dashed border-green-100 shadow-2xl">
+            <div className="bg-green-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8">
+               <MapPin className="w-10 h-10 text-[#004d2b] opacity-20" />
             </div>
-          );
-        })}
-      </div>
-
-      {/* Mensagem quando não há corridas */}
-      {corridasFiltradas.length === 0 && (
-        <div className="w-full max-w-4xl text-center py-12">
-          <div className="bg-white rounded-2xl shadow-md p-8 border border-green-100">
-            <MapPin className="w-16 h-16 text-green-400 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-green-900 mb-2">
-              Nenhuma corrida disponível
+            <h3 className="text-2xl font-black text-[#004d2b] uppercase tracking-tighter mb-4">
+              Nenhuma corrida encontrada
             </h3>
-            <p className="text-green-700">
-              Não encontramos corridas {abaAtiva === 'ilha' ? 'do Modo Ilha' : abaAtiva === 'evento' ? 'para eventos' : abaAtiva === 'rural' ? 'da Zona Rural' : abaAtiva === 'grupo' ? 'em grupo' : ''} no momento.
+            <p className="text-gray-500 max-w-md mx-auto font-medium">
+              Não existem viagens disponíveis no momento para esta categoria. Tente novamente em alguns minutos ou altere o filtro.
             </p>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Rodapé informativo */}
-      <div className="w-full max-w-4xl mt-4 p-4 bg-white rounded-lg border border-green-200">
-        <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-green-700">
+        {/* Info Legenda */}
+        <div className="flex flex-wrap items-center justify-center gap-8 py-6 px-12 bg-white rounded-full border border-green-100 shadow-lg max-w-fit mx-auto">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-600"></div>
-            <span>Ponto de partida</span>
+            <div className="w-3 h-3 rounded-full border-2 border-[#004d2b]"></div>
+            <span className="text-[8px] font-black text-[#004d2b] uppercase tracking-[0.2em]">Partida</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <span>Destino</span>
+            <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+            <span className="text-[8px] font-black text-[#004d2b] uppercase tracking-[0.2em]">Destino</span>
           </div>
           <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 fill-yellow-300 text-yellow-300" />
-            <span>Avaliação do motorista</span>
+            <Star size={12} className="fill-yellow-400 text-yellow-400" />
+            <span className="text-[8px] font-black text-[#004d2b] uppercase tracking-[0.2em]">Motorista 5★</span>
           </div>
-          {abaAtiva === 'rural' && (
-            <div className="flex items-center gap-2">
-              <Trees className="w-4 h-4 text-green-600" />
-              <span>Zona Rural</span>
-            </div>
-          )}
-          {abaAtiva === 'grupo' && (
-            <div className="flex items-center gap-2">
-              <Share2 className="w-4 h-4 text-green-600" />
-              <span>Corrida Compartilhada</span>
-            </div>
-          )}
         </div>
-      </div>
-    </main>
+      </main>
+
+      <footer className="py-12 border-t border-green-100">
+        <p className="text-center text-gray-400 text-[10px] font-black uppercase tracking-widest">
+          &copy; 2024 BoraSiô | Inteligência de Match Urbano
+        </p>
+      </footer>
+    </div>
   );
 }
