@@ -91,10 +91,22 @@ export default function App() {
 
   const featureCards: BenefitItem[] = [
     {
+      title: "tempo-real",
+      displayTitle: "Tempo Real",
+      desc: "Monitore o trânsito da cidade ao vivo.",
+      icon: "clock",
+    },
+    {
       title: "transito-inteligente",
       displayTitle: "Trânsito Inteligente",
       desc: "Rotas em tempo real evitando trânsitos locais.",
       icon: "activity",
+    },
+    {
+      title: "desvios-inteligentes",
+      displayTitle: "Desvios Inteligentes",
+      desc: "Evite obras e interdições com rotas alternativas.",
+      icon: "alert-triangle",
     },
     {
       title: "eventos-culturais",
