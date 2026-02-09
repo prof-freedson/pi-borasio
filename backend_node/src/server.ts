@@ -1,22 +1,7 @@
-import "dotenv/config";
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
+import { config } from "./config/config.js";
+import app from "./app.js";
 
-const app = express();
-
-// Middlewares
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
-
-// Rota de teste
-app.get("/", (req, res) => {
-    res.json({ message: "API Backend Node.js rodando!" });
-});
-
-// Inicialização do servidor
-const PORT = process.env.PORT || 3000;
+const PORT = config.port;
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
