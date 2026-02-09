@@ -1,327 +1,203 @@
-# Guia Avançado de Engenharia de Agentes: Padrão Google AntiGravity
+# Plano Mestre de Implementação de Agent Skills: Sistema Profissional
 
-Este documento serve como a "Source of Truth" para a implementação de Agent Skills no projeto, incorporando as melhores práticas das arquiteturas de Agentes (Anthropic, OpenAI, Google Deepmind).
+Este documento define a arquitetura, padrões e a biblioteca de "Skills" (Habilidades) para os agentes de IA que atuarão no projeto Borasio (Frontend Next.js, Backend Node.js, Mobile Expo).
 
-## 1. Filosofia: Agentic Engineering no Ecossistema AntiGravity
-
-O "Google AntiGravity" opera sob o princípio de **Ferramentas Estendidas**. Um agente padrão possui ferramentas genéricas (`view_file`, `run_command`). "Skills" são **pacotes de especialização** que ensinam o agente a realizar tarefas complexas de domínio específico, reduzindo alucinação e garantindo conformidade.
-
-### Principais Diferenças (vs. Prompt Simples)
-1.  **Determinismo**: Skills delegam lógica complexa para scripts (Python/Bash) em vez de pedir para o LLM "pensar" na lógica inteira.
-2.  **Encapsulamento**: O Agente vê apenas a "Assinatura" da skill (Descrição/Frontmatter). As instruções detalhadas são carregadas apenas quando necessário (Lazy Loading / Progressive Disclosure).
-3.  **Idempotência**: Uma boa skill pode ser executada múltiplas vezes sem quebrar o sistema (verifica existência de arquivos antes de criar).
+O objetivo é transformar tarefas repetitivas em micro-processos determinísticos de alta qualidade, seguindo o padrão **Agent Skills** (Google Antigravity / Anthropic).
 
 ---
 
-## 2. Arquitetura do Diretório `.agent`
+## 1. Protocolo de Arquitetura de Skills
 
-A estrutura de pastas deve ser rigorosa para que o parser do agente (Sistema Operacional do Agente) consiga indexar as habilidades corretamente.
+### Estrutura de Diretórios
+Todas as skills devem residir na raiz do repositório, seguindo estritamente esta hierarquia:
 
 ```text
-.agent/
-├── config.yaml          # Configurações globais (opcional: linters padrão, env vars)
-├── rules/               # Regras de contexto (.cursorrules equivalent)
-│   └── stack-rules.md   # "Sempre use Tailwind", "Sempre trate erros com try/catch"
-├── workflows/           # Sequências lineares de tarefas
-│   └── deploy-dev.md    # Passo a passo para deploy
-└── skills/              # Habilidades Atômicas e Reutilizáveis
-    ├── [category]-[action]/
-    │   ├── SKILL.md             # O cérebro da skill (Prompt System)
-    │   ├── scripts/             # Os músculos da skill (Execução Determinística)
-    │   │   ├── generator.py
-    │   │   └── validator.sh
-    │   └── templates/           # O esqueleto (Arquivos base)
-    │       └── component.tsx.hbs
+agent/
+└── skills/
+    ├── [nome-da-skill]/
+    │   ├── SKILL.md          # OBRIGATÓRIO: Cérebro da skill
+    │   ├── examples/         # OBRIGATÓRIO: 1-Shot learning (Exemplos de saída perfeita)
+    │   ├── scripts/          # OPCIONAL: Scripts de automação (.ts, .sh, .py)
+    │   └── resources/        # OPCIONAL: Templates (.ejs, .txt), Schemas, Dicionários
 ```
 
----
+### Anatomia do Arquivo `SKILL.md`
+Este arquivo é o prompt de sistema que isola o contexto da IA para aquela tarefa específica. Deve conter:
 
-## 3. Implementação Detalhada das Skills
-
-Abaixo, a implementação aprofundada das Skills identificadas, com foco em segurança de tipos, tratamento de erros e integração com o VS Code (Cursor/AntiGravity).
-
-### A. Skill: Backend Resource Factory (`new-backend-resource`)
-
-Focada em **Padronização Arquitetural**. No Backend, a consistência entre Controller, Service e Route é vital.
-
-**Caminho:** `.agent/skills/new-backend-resource/SKILL.md`
-```markdown
----
-name: new-backend-resource
-description: Gera um novo recurso CRUD completo (Controller, Service, Rotas) na API Node.js. Use quando o usuário pedir "Crie o CRUD de Usuários" ou "Adicione entidade de Carros".
-version: 2.0.0
-author: System Architect
----
-
-# New Backend Resource
-
-Esta habilidade orquestra a criação de arquivos boilerplate para garantir a arquitetura em camadas.
-
-## Variáveis Necessárias
-*   `ResourceName` (string): Nome da entidade em PascalCase (ex: `RideHistory`).
-
-## Procedimento
-
-1.  **Verificação de Pré-condições**:
-    *   Verifique se a pasta `backend_node/src` existe.
-
-2.  **Execução do Gerador**:
-    *   Execute o script Python que gera os arquivos físicos.
-    ```bash
-    python .agent/skills/new-backend-resource/scripts/scaffold_resource.py [ResourceName]
-    ```
-
-3.  **Wiring (Ligação)**:
-    *   O script **não** altera o arquivo `server.ts` automaticamente (para evitar corrupção por regex complexo).
-    *   **VOCÊ (Agente)** deve ler `backend_node/src/server.ts` e adicionar:
-        1.  O import da rota.
-        2.  A linha `app.use('/resource', router)`.
-
-4.  **Validação**:
-    *   Rode `npm run build` (ou verifique com linter) para garantir que não há erros de importação.
-```
-
-**Script Inteligente:** `.agent/skills/new-backend-resource/scripts/scaffold_resource.py`
-*(Versão robusta com verificação de existência)*
-
-```python
-import sys
-import os
-
-def create_file_safe(path, content):
-    if os.path.exists(path):
-        print(f"SKIP: {{path}} already exists.")
-        return False
-    
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write(content)
-    print(f"CREATE: {{path}}")
-    return True
-
-def main():
-    if len(sys.argv) < 2:
-        print("Error: Missing ResourceName argument.")
-        sys.exit(1)
-
-    resource_name = sys.argv[1] # PascalCase ex: RideHistory
-    kebab_name = ''.join(['-' + c.lower() if c.isupper() else c for c in resource_name]).lstrip('-') # kebab-case ex: ride-history
-    
-    base_path = os.path.join("backend_node", "src")
-    
-    # Templates definidos aqui para evitar dependência externa
-    templates = {
-        f"controllers/{{kebab_name}}.controller.ts": f"""...conteúdo do controller...""",
-        f"services/{{kebab_name}}.service.ts": f"""...conteúdo do service...""",
-        f"routes/{{kebab_name}}.routes.ts": f"""...conteúdo da rota..."""
-    }
-
-    # Execução
-    created_count = 0
-    for rel_path, content in templates.items():
-        full_path = os.path.join(base_path, rel_path)
-        if create_file_safe(full_path, content):
-            created_count += 1
-            
-    if created_count > 0:
-        print(f"Successfully scaffolded {{resource_name}}.")
-    else:
-        print("No files created (resource likely exists).")
-
-if __name__ == "__main__":
-    main()
-```
+1.  **YAML Frontmatter**: Metadados para indexação.
+2.  **Descrição da Tarefa**: O que deve ser feito.
+3.  **Inputs Necessários**: O que o agente deve buscar antes de começar.
+4.  **Regras de Ouro**: Restrições inegociáveis (ex: "Nunca use `any` no TypeScript").
+5.  **Fluxo de Trabalho Detalhado**: Algoritmo passo-a-passo.
 
 ---
 
-### B. Skill: Mobile Route Builder (`new-mobile-screen`)
+## 2. Catálogo de Skills (Implementação)
 
-Focada em **Expo Router & NativeWind**. O desafio aqui é garantir que o arquivo seja criado no local certo para a navegação do Expo funcionar.
+Abaixo está o detalhamento técnico das skills necessárias para cobrir o ciclo de vida do desenvolvimento.
 
-**Caminho:** `.agent/skills/new-mobile-screen/SKILL.md`
-```markdown
----
-name: new-mobile-screen
-description: Cria uma nova tela no aplicativo mobile. Inteligente o suficiente para lidar com rotas dinâmicas (ex: [id]) e grupos ((tabs)).
-version: 2.0.0
----
+### Categoria A: Meta-Skills (Automação da Automação)
 
-# New Mobile Screen Generator
-
-## Análise de Rota
-1.  Interprete o pedido do usuário para determinar o caminho da rota.
-    *   "Tela de Login" -> `app/login.tsx` (ou `app/(auth)/login.tsx` se houver grupos)
-    *   "Detalhes da Corrida" -> `app/ride/[id].tsx`
-
-## Execução
-Execute o script passando o caminho *relativo a app/*:
-```bash
-python .agent/skills/new-mobile-screen/scripts/create_screen.py "ride/[id]"
-```
-
-## Pós-Execução (Ação do Agente)
-1.  Se a nova tela precisar aparecer em uma *Tab Bar*, edite `app/(tabs)/_layout.tsx`.
-2.  Importe componentes visuais básicos se o usuário pediu (ex: botões, inputs).
-```
+#### 1. `skill-creator`
+*   **Descrição:** Gera a estrutura de arquivos para uma nova skill, garantindo que o padrão acima seja seguido.
+*   **Pasta:** `agent/skills/skill-creator`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Inputs:** Nome da nova skill (kebab-case), Descrição breve.
+    *   **Fluxo:**
+        1.  Verificar se `agent/skills/{nome}` já existe.
+        2.  Criar diretório `agent/skills/{nome}`.
+        3.  Criar subdiretórios `examples` e `scripts` (vazios, com .gitkeep).
+        4.  Escrever `SKILL.md` usando um template padrão que incentiva a descrição detalhada de passos.
+*   **Auxiliares (`resources/`):**
+    *   `template-skill.md`: Um esqueleto pré-preenchido de skill.
 
 ---
 
-### C. Skill: Prisma Database Sync (`sync-database`)
+### Categoria B: Backend (Node.js/Prisma/Express)
 
-Focada em **Segurança Operacional**. Manipular banco de dados é arriscado; a skill força um "Checklist de Voo".
+#### 2. `node-resource` (Scaffold de API)
+*   **Descrição:** Cria todo o stack vertical (camadas) para uma nova entidade no backend.
+*   **Pasta:** `agent/skills/node-resource`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Inputs:** Nome do Recurso (Singular e Plural, ex: `Product`, `Products`).
+    *   **Regras:** Usar Zod para validação. Seguir padrão Controller-Service.
+    *   **Fluxo:**
+        1.  Criar Schema de Validação em `src/schemas/{resource}.schema.ts`.
+        2.  Criar Service (Lógica Prisma) em `src/services/{resource}.service.ts`.
+        3.  Criar Controller (Req/Res) em `src/controllers/{resource}.controller.ts`.
+        4.  Criar Rotas Express em `src/routes/{resource}.routes.ts`.
+        5.  Registrar rota no arquivo principal de rotas.
+*   **Exemplos (`examples/`):**
+    *   `user.controller.ts`: Um controller "padrão ouro" com tratamento de erros.
+    *   `user.service.ts`: Um service demonstrando injeção de dependência e chamadas Prisma.
 
-**Caminho:** `.agent/skills/sync-database/SKILL.md`
-```markdown
----
-name: sync-database
-description: Executa o ciclo seguro de migração do banco de dados (Schema -> Format -> Validate -> Scrape -> Migrate).
-version: 2.0.0
----
+#### 3. `prisma-migration`
+*   **Descrição:** Gerencia a evolução do banco de dados de forma segura.
+*   **Pasta:** `agent/skills/prisma-migration`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Inputs:** Alteração desejada (ex: "Adicionar campo 'phone' na tabela Users").
+    *   **Fluxo:**
+        1.  Ler `prisma/schema.prisma`.
+        2.  Editar o modelo adicionando o campo com tipo correto.
+        3.  Executar comando `npx prisma format` para validar sintaxe.
+        4.  Executar `npx prisma migrate dev --name {descrição_curta}`.
+        5.  (Opcional) Executar `npx prisma generate` para atualizar tipagem do cliente.
 
-# Prisma Safe Migration Protocol
+#### 4. `socket-event-handler`
+*   **Descrição:** Padroniza a criação de eventos em tempo real com Socket.io.
+*   **Pasta:** `agent/skills/socket-event-handler`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Inputs:** Nome do Evento (ex: `message:receive`), Doador de dados (Payload).
+    *   **Fluxo:**
+        1.  Definir interface do Payload em arquivo de tipos.
+        2.  Criar handler isolado em `src/sockets/handlers/{evento}.handler.ts`.
+        3.  Registrar handler no arquivo de inicialização do Socket.
+*   **Exemplos (`examples/`):**
+    *   `chat.handler.ts`: Exemplo de handler que valida dados e emite resposta.
 
-ESTA SKILL NÃO USA SCRIPTS PYTHON. Ela orquestra comandos do sistema (CLI) em ordem estrita.
-
-## Protocolo
-
-1.  **Format & Validate** (Obrigatório antes de qualquer coisa)
-    *   Garanta que o schema é válido antes de tentar migrar.
-    ```powershell
-    cd backend_node
-    npx prisma format
-    npx prisma validate
-    ```
-    *   *Se falhar*: PARE. Corrija o schema com o usuário.
-
-2.  **Migration em Dev**
-    *   Crie a migração com nome descritivo.
-    ```powershell
-    npx prisma migrate dev --name "{{migration_name}}"
-    ```
-
-3.  **Regeneração do Cliente** (Opcional, mas recomendado)
-    *   Geralmente `migrate dev` já faz isso, mas force para garantir types atualizados no editor.
-    ```powershell
-    npx prisma generate
-    ```
-
-4.  **Notificação**
-    *   Informe o usuário: "Banco de dados sincronizado. Types do Prisma atualizados."
-```
-
----
-
-## 4. Best Practices: Como Escrever Suas Próximas Skills
-
-Ao criar novas Skills para este projeto, siga estas regras de ouro extraídas da documentação do AntiGravity/Codex:
-
-### 1. Progressive Disclosure (Divulgação Progressiva)
-Não coloque *tudo* no `SKILL.md`. Se a instrução for muito longa, crie um arquivo `INSTRUCTIONS.md` na pasta da skill e peça para o agente lê-lo apenas se necessário. Mantenha o `SKILL.md` leve para não poluir a janela de contexto do LLM.
-
-### 2. Separação de Preocupações (Separation of Concerns)
-*   **LLM (Agente)**: Ótimo para entender intenção, editar código existente, fazer "wiring" (conectar peças).
-*   **Scripts (Python/Bash)**: Ótimos para scaffolding (criar arquivos do zero), regex complexos, manipulação de arquivos em massa.
-*   **Regra**: Se a tarefa envolve criar mais de 2 arquivos com conteúdo padrão, faça um script. Se envolve editar lógica de negócio variável, deixe o Agente fazer.
-
-### 3. Human-in-the-Loop Aprovals
-Para operações destrutivas (ex: `DROP TABLE`, `rm -rf`), a Skill deve explicitamente incluir um passo: "Pergunte ao usuário por confirmação antes de executar este comando".
-
-### 4. Contexto do Projeto
-Sempre use caminhos absolutos baseados na raiz do workspace.
-*   Errado: `cd src && touch file.ts`
-*   Certo: `create_file "backend_node/src/file.ts"`
-
-## 6. Exemplos de Prompts para Criação de Skills (Meta-Prompts)
-
-Para expandir o repertório do seu agente, você deve instruí-lo a criar novas skills. Abaixo estão 3 exemplos de **Prompts que você (Usuário) deve enviar ao Agente** para gerar skills robustas em cada camada do projeto.
-
-### 1. Frontend Scope (Next.js + Tailwind)
-**Objetivo:** Automatizar a criação de componentes atômicos.
-
-> **Prompt do Usuário:**
-> "Atue como Engenheiro Frontend Sênior. Analise a estrutura de componentes em `frontend/src/components`. Quero que você crie uma nova Skill chamada `new-web-component`.
->
-> **Requisitos da Skill:**
-> 1.  Deve aceitar o nome do componente (ex: `ButtonPrimary`) e o tipo (ex: `ui`, `form`, `layout`).
-> 2.  Deve criar uma pasta com o nome do componente contendo:
->     *   `index.tsx`: O componente React com tipagem TS e classes Tailwind.
->     *   `scripts/generator.py`: Script Python para criar os arquivos e pastas (evite alucinação).
-> 3.  **Regra de Ouro**: O componente deve ser exportado como default.
->
-> Gere a estrutura completa em `.agent/skills/new-web-component`."
-
-### 2. Backend Scope (Node.js + Patterns)
-**Objetivo:** Padronizar a implementação de Testes Unitários.
-
-> **Prompt do Usuário:**
-> "Atue como QA Lead. Crie uma Skill chamada `add-backend-test` para o projeto `backend_node`.
->
-> **Comportamento da Skill:**
-> 1.  O agente deve ler um arquivo Service existente (ex: `UserService.ts`).
-> 2.  Deve propor um arquivo de teste correspondente em `backend_node/tests/unit/` usando Jest.
-> 3.  **Diferencial**: A Skill deve ler o arquivo `SKILL.md` atual para entender as regras de mock do Prisma.
->
-> Por favor, escreva o `SKILL.md` dessa nova habilidade focando em diretrizes de 'Given-When-Then'."
-
-### 3. Mobile Scope (Expo Router)
-**Objetivo:** Criar Hooks customizados padronizados.
-
-> **Prompt do Usuário:**
-> "Crie uma Skill `new-mobile-hook` focada no diretório `mobile/hooks`.
->
-> **Especificações:**
-> 1.  A skill deve criar um arquivo `use[Nome].ts`.
-> 2.  Deve incluir um template básico com `useState` e `useEffect` do React.
-> 3.  Use um script Python simples em `scripts/scaffold_hook.py` para garantir que o arquivo seja criado no caminho correto.
->
-> Defina o Frontmatter do `SKILL.md` com um gatilho claro: 'Use esta skill quando o usuário pedir para extrair lógica de UI para um custom hook'."
+#### 5. `mailer-template`
+*   **Descrição:** Cria templates de e-mail e funções de envio.
+*   **Pasta:** `agent/skills/mailer-template`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Fluxo:**
+        1.  Criar template HTML em `src/templates/emails/`.
+        2.  Criar função de envio em `src/services/email.service.ts` usando `nodemailer`.
+        3.  Configurar substituição de variáveis (handlebars ou string replace).
 
 ---
 
-## 7. Exemplos de Invocação de Tarefas (Como usar as Skills)
+### Categoria C: Frontend & Mobile (Interface)
 
-Uma vez que as skills estão criadas (como sugerido na seção 6), o agente passará a "escutar" intenções específicas. Abaixo estão exemplos de como você, como usuário, deve solicitar tarefas para ativar essas skills automaticamente.
+#### 6. `next-component` (Web)
+*   **Descrição:** Cria componentes visuais reutilizáveis para o Next.js.
+*   **Pasta:** `agent/skills/next-component`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Regras:** Usar `interface Props`. Usar Tailwind CSS. Ser Cliente Component (`"use client"`) apenas se necessário.
+    *   **Fluxo:**
+        1.  Criar arquivo chamando `src/components/{Categoria}/{Nome}.tsx`.
+        2.  Exportar componente nomeado (não default).
+*   **Exemplos (`examples/`):**
+    *   `Card.tsx`: Exemplo de componente funcional limpo e tipado.
 
-### 1. Invocando Frontend Skill (`new-web-component`)
-**Cenário:** Você precisa de um novo card de perfil no design system.
+#### 7. `expo-screen` (Mobile)
+*   **Descrição:** Cria telas navegáveis para o app Expo.
+*   **Pasta:** `agent/skills/expo-screen`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Regras:** Usar NativeWind (`className`). Compatibilidade com Expo Router.
+    *   **Fluxo:**
+        1.  Determinar rota baseada no nome (ex: `app/(tabs)/profile.tsx`).
+        2.  Criar arquivo da tela com `SafeAreaView`.
+        3.  Configurar `Stack.Screen` para título dinâmico.
 
-> **Seu Prompt:**
-> "Preciso de um novo componente visual. Crie um `ProfileCard` na categoria `ui`. Ele deve ter uma imagem de avatar e um nome."
->
-> **O que o Agente fará:**
-> *   Detecta a intenção de criar componente.
-> *   Lê `.agent/skills/new-web-component/SKILL.md`.
-> *   Executa: `python .agent/skills/new-web-component/scripts/generator.py ProfileCard ui`.
-> *   Edita o `index.tsx` gerado para adicionar a imagem e texto solicitados.
+#### 8. `form-builder`
+*   **Descrição:** Constrói formulários complexos automaticamente.
+*   **Pasta:** `agent/skills/form-builder`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Inputs:** Schema Zod ou Model do Prisma de referência. Título do Form.
+    *   **Fluxo:**
+        1.  Analisar campos (tipo, obrigatório/opcional).
+        2.  Gerar componente React usando `react-hook-form` e `zod-resolver`.
+        3.  Mapear tipos de inputs (text -> Input, boolean -> Switch/Checkbox, enum -> Select).
+        4.  Adicionar mensagens de erro visuais.
 
-### 2. Invocando Backend Skill (`add-backend-test`)
-**Cenário:** Você acabou de implementar o `RideService` e quer garantir qualidade.
-
-> **Seu Prompt:**
-> "Agora que o `RideService` está pronto, gere os testes unitários para ele cobrindo o caso de sucesso e erro de validação."
->
-> **O que o Agente fará:**
-> *   Detecta a intenção de teste.
-> *   Aciona `add-backend-test`.
-> *   Lê `backend_node/src/services/RideService.ts` para entender os métodos.
-> *   Cria `backend_node/tests/unit/RideService.test.ts` usando o padrão Jest definido na skill.
-
-### 3. Invocando Mobile Skill (`new-mobile-hook`)
-**Cenário:** A lógica de fetch de corridas está poluindo o componente visual.
-
-> **Seu Prompt:**
-> "A lógica de buscar corridas no `IndexScreen` está muito complexa. Refatore criando um custom hook chamado `useRideHistory`."
->
-> **O que o Agente fará:**
-> *   Detecta intenção de refatoração/criação de hook.
-> *   Aciona `new-mobile-hook`.
-> *   Executa script de scaffold para criar `mobile/hooks/useRideHistory.ts`.
-> *   Move o código de `useEffect` e `useState` da tela para o novo hook.
+#### 9. `animation-wrapper`
+*   **Descrição:** Adiciona camadas de animação a componentes existentes.
+*   **Pasta:** `agent/skills/animation-wrapper`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Inputs:** Arquivo alvo, Tipo de animação (Fade, Slide, Scale).
+    *   **Fluxo:**
+        1.  Importar biblioteca (Framer Motion no Next, Reanimated no Expo).
+        2.  Envelopar o retorno JSX com o componente animado (ex: `<motion.div>`).
+        3.  Aplicar variantes de animação pré-definidas.
 
 ---
 
-## 8. Próximos Passos para o Usuário
+### Categoria D: Integração & "Cola"
 
-1.  Crie a pasta `.agent` na raiz do projeto `pi-borasio`.
-2.  Copie os códigos acima para seus respectivos arquivos.
-3.  Reinicie a sessão do agente (ou use `/reload`) para que ele indexe as novas habilidades.
+#### 10. `api-bridge-gen`
+*   **Descrição:** Conecta o Frontend ao Backend gerando funções de fetch.
+*   **Pasta:** `agent/skills/api-bridge-gen`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Inputs:** Arquivo de rota do backend (para análise).
+    *   **Fluxo:**
+        1.  Identificar método (GET, POST), URL e tipos de Body/Response.
+        2.  Criar hook customizado no frontend `src/hooks/api/use{Recurso}.ts` (usando React Query ou Fetch direto).
+        3.  Garantir tipagem correta de entrada e saída.
+
+#### 11. `zod-share` (Sincronização de Tipos)
+*   **Descrição:** Compartilha contratos entre back e front.
+*   **Pasta:** `agent/skills/zod-share`
+*   **Fluxo:**
+    1.  Identificar schemas Zod no backend.
+    2.  Copiar ou gerar pacote compartilhado para o frontend, garantindo que a validação no cliente seja idêntica à do servidor.
+
+---
+
+### Categoria E: Qualidade & Documentação
+
+#### 12. `unit-test-gen`
+*   **Descrição:** Gera testes unitários para lógica de negócios e componentes.
+*   **Pasta:** `agent/skills/unit-test-gen`
+*   **Conteúdo do `SKILL.md`:**
+    *   **Inputs:** Arquivo de código fonte.
+    *   **Fluxo:**
+        1.  Analisar exports do arquivo.
+        2.  Criar arquivo `.test.ts` ou `.spec.ts` adjacente.
+        3.  Gerar casos de teste para: "Caminho Feliz", "Erros Comuns", "Bordas".
+*   **Exemplos (`examples/`):**
+    *   Exemplo de teste Jest com Mock de banco de dados.
+
+#### 13. `sentry-guard`
+*   **Descrição:** Blinda código crítico com monitoramento.
+*   **Pasta:** `agent/skills/sentry-guard`
+*   **Fluxo:**
+    1.  Identificar funções assíncronas propensas a falha.
+    2.  Envelopar bloco em `try/catch`.
+    3.  No `catch`, adicionar `Sentry.captureException(error)`.
+
+#### 14. `doc-updater`
+*   **Descrição:** Mantém a documentação viva.
+*   **Pasta:** `agent/skills/doc-updater`
+*   **Fluxo:**
+    1.  Ler alterações recentes (diff git).
+    2.  Atualizar `README.md` ou documentação de API se houver mudança pública.
