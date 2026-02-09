@@ -75,7 +75,7 @@ export default function TransitoInteligentePage() {
   ];
 
   return (
-    <div className="bg-white min-h-screen font-sans selection:bg-yellow-400 selection:text-[#004d2b]">
+    <div className="bg-white min-h-screen selection:bg-yellow-400 selection:text-[#004d2b]">
       {/* Header - Estilo Borasiô Slim */}
       <header className="bg-[#004d2b] text-white py-6 px-4 sm:px-6 lg:px-8 sticky top-0 z-50 shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -217,13 +217,6 @@ export default function TransitoInteligentePage() {
           </Link>
         </div>
       </section>
-
-      {/* Footer minimalista */}
-      <footer className="py-12 border-t border-green-50">
-        <p className="text-center text-gray-400 text-sm font-medium tracking-tight">
-          &copy; 2024 BoraSiô | Inteligência em Mobilidade Urbana
-        </p>
-      </footer>
     </div>
   );
 }

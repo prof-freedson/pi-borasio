@@ -228,7 +228,7 @@ export default function TempoRealPage() {
   };
 
   return (
-    <div className="min-h-screen bg-green-50 font-sans selection:bg-yellow-400 selection:text-[#004d2b]">
+    <div className="min-h-screen bg-green-50 selection:bg-yellow-400 selection:text-[#004d2b]">
       {/* Header Premium */}
       <header className="bg-[#004d2b] text-white py-6 px-4 md:px-8 border-b border-white/5 sticky top-0 z-[100] shadow-xl">
         <div className="max-w-7xl mx-auto flex items-center justify-between">

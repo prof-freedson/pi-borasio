@@ -390,26 +390,26 @@ export default function ConexaoRuralTerminal() {
       {/* Steps Section */}
       <section className="py-24 px-4 overflow-hidden relative">
         {/* Background texture */}
-        <div className="absolute inset-0 bg-emerald-900 shadow-inner -z-10 skew-y-1 transform origin-top-left scale-110"></div>
+        <div className="absolute inset-0 bg-[#fcfdfc] shadow-inner -z-10 skew-y-1 transform origin-top-left scale-110"></div>
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">Como Agendar sua Viagem</h2>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-[#004d2b] mb-4">Como Agendar sua Viagem</h2>
             <div className="w-24 h-1.5 bg-yellow-400 mx-auto rounded-full"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((step, idx) => (
               <div key={idx} className="relative group perspective-1000">
-                <div className="bg-white/10 backdrop-blur-xl p-8 rounded-[3rem] border border-white/10 flex flex-col items-center text-center transition-all duration-500 hover:bg-white/20 hover:-rotate-y-3 shadow-2xl">
+                <div className="bg-white p-8 rounded-[3rem] border border-green-100 flex flex-col items-center text-center transition-all duration-500 hover:border-green-200 hover:-rotate-y-3 shadow-2xl shadow-green-900/5">
                   <div className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center text-[#004d2b] mb-6 shadow-xl group-hover:scale-110 transition-transform">
                     {step.icon}
                   </div>
-                  <h3 className="text-xl font-extrabold text-white mb-3">{step.title}</h3>
-                  <p className="text-white/80 text-sm leading-relaxed font-bold">{step.description}</p>
+                  <h3 className="text-xl font-extrabold text-[#004d2b] mb-3">{step.title}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed font-bold">{step.description}</p>
 
                   {/* Sequence number */}
-                  <div className="absolute top-6 right-8 text-4xl font-black text-white/5 italic">
+                  <div className="absolute top-6 right-8 text-5xl font-black text-[#004d2b]/10 italic">
                     0{idx + 1}
                   </div>
                 </div>

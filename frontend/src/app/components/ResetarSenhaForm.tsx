@@ -8,7 +8,7 @@ import Link from 'next/link'
 export default function ResetarSenhaForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const tokenDaURL = searchParams.get('token') || '';
+  const tokenDaURL = searchParams?.get('token') || '';
   const [novaSenha, setNovaSenha] = useState('')
   const [confirmarNovaSenha, setConfirmarNovaSenha] = useState('')
   const [mensagem, setMensagem] = useState('')

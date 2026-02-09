@@ -48,7 +48,7 @@ export default function OferecerCaronaPage() {
   const [isVisible, setIsVisible] = useState(false)
   
   // Verifica se veio da página de grupos
-  const tipoParam = searchParams.get('tipo')
+  const tipoParam = searchParams?.get('tipo')
   const [tipoCarona, setTipoCarona] = useState<'geral' | 'grupo'>(
     tipoParam === 'grupo' ? 'grupo' : 'geral'
   )
