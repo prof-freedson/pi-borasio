@@ -63,7 +63,7 @@ function UsuarioContent() {
   ]);
 
   useEffect(() => {
-    const corridaSelected = searchParams.get("corridaSelected");
+    const corridaSelected = searchParams?.get("corridaSelected");
     if (corridaSelected) {
       const storedCorrida = localStorage.getItem("selectedCorrida");
       if (storedCorrida) {
@@ -90,7 +90,7 @@ function UsuarioContent() {
   };
 
   return (
-    <div className="min-h-screen bg-green-50 font-sans selection:bg-yellow-400 selection:text-[#004d2b]">
+    <div className="min-h-screen bg-green-50 selection:bg-yellow-400 selection:text-[#004d2b]">
       {/* Modal de Confirmação */}
       {selectedCorrida && (
         <div className="fixed inset-0 bg-[#004d2b]/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
@@ -231,12 +231,12 @@ function UsuarioContent() {
                     <span className="text-lg font-black text-green-700">{c.valor}</span>
                   </div>
                   <div className="space-y-3 mb-4">
-                     <p className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                       <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> {c.origem}
-                     </p>
-                     <p className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                       <div className="w-1.5 h-1.5 rounded-full bg-yellow-500"></div> {c.destino}
-                     </p>
+                     <div className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                       <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> {c.origem}
+                     </div>
+                     <div className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                       <span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> {c.destino}
+                     </div>
                   </div>
                   <Link href="/feedback" className="w-full bg-white text-[#004d2b] font-bold py-2 rounded-xl border border-green-100 hover:bg-[#004d2b] hover:text-white transition-all text-center block text-sm">
                     Avaliar Viagem

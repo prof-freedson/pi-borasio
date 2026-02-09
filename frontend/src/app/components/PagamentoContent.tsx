@@ -1,10 +1,26 @@
 "use client"
 
-import { faCreditCard, faBarcode, faQrcode, faTicketAlt, faCheckCircle, faCopy, faDownload, faShieldAlt, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { 
+  CreditCard, 
+  Barcode, 
+  QrCode, 
+  Ticket, 
+  CheckCircle, 
+  Copy, 
+  Download, 
+  ShieldCheck, 
+  AlertTriangle,
+  ChevronLeft,
+  Zap,
+  Info,
+  Calendar,
+  Lock,
+  Wallet
+} from 'lucide-react'
 import { useState, useEffect } from 'react'
 import jsPDF from 'jspdf'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 
 type Corrida = {
   id: number;
@@ -41,10 +57,11 @@ export default function PagamentoContent() {
 
   // Carregar corrida selecionada do localStorage e URL parameters
   useEffect(() => {
+    if (!searchParams) return;
     setIsLoading(true)
     
     // Tentar obter da URL primeiro (valor direto)
-    const valorUrl = searchParams.get('valor')
+    const valorUrl = searchParams?.get('valor')
     
     // Tentar obter do localStorage (objeto completo)
     const corridaSalva = localStorage.getItem('selectedCorrida')
@@ -435,13 +452,27 @@ export default function PagamentoContent() {
     if (!corridaSelecionada) return null;
     
     return (
-      <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-        <h3 className="font-semibold text-green-800 mb-2">Informações da Corrida</h3>
-        <div className="grid grid-cols-2 gap-2 text-sm">
-          <div><span className="text-gray-600">Origem:</span> {corridaSelecionada.origem}</div>
-          <div><span className="text-gray-600">Destino:</span> {corridaSelecionada.destino}</div>
-          <div><span className="text-gray-600">Motorista:</span> {corridaSelecionada.motorista}</div>
-          <div><span className="text-gray-600">Veículo:</span> {corridaSelecionada.veiculo}</div>
+      <div className="mb-8 p-6 bg-green-50/50 rounded-[32px] border border-green-100/50 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-125 transition-transform duration-700">
+           <Zap className="w-24 h-24 text-[#004d2b]" />
+        </div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-4">
+             <div className="bg-[#004d2b] p-1.5 rounded-lg">
+                <Info className="w-4 h-4 text-white" />
+             </div>
+             <h3 className="font-black text-[#004d2b] uppercase text-xs tracking-widest">Resumo da Viagem</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Trajeto</p>
+               <p className="text-sm font-bold text-[#004d2b]">{corridaSelecionada.origem} → {corridaSelecionada.destino}</p>
+            </div>
+            <div className="space-y-1">
+               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Motorista & Veículo</p>
+               <p className="text-sm font-bold text-[#004d2b]">{corridaSelecionada.motorista} • {corridaSelecionada.veiculo}</p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -449,261 +480,348 @@ export default function PagamentoContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#DAF3D7] to-[#B8E1B3] py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
-          <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Carregando informações de pagamento...</p>
+      <div className="min-h-screen bg-[#fcfdfc] flex items-center justify-center p-6">
+        <div className="text-center">
+          <div className="relative inline-block mb-4">
+             <div className="w-16 h-16 border-4 border-green-100 border-t-[#004d2b] rounded-full animate-spin"></div>
           </div>
+          <p className="text-[#004d2b] font-black uppercase tracking-widest text-xs">Preparando checkout...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#DAF3D7] to-[#B8E1B3] py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
-        <div className="p-8">
-          <h1 className="text-2xl font-bold text-[#004d2b] mb-6">Finalizar Pagamento</h1>
-          
-          {pagamentoFinalizado && (
-            <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md flex items-center">
-              <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-green-500 text-xl" />
-              <div>
-                <p className="font-bold">Pagamento finalizado com sucesso!</p>
-                <p className="text-sm">Valor pago: R$ {valorFinal.toFixed(2).replace('.', ',')}</p>
-              </div>
-            </div>
-          )}
-          
-          {/* Exibir informações da corrida selecionada */}
-          {getInfoCorrida()}
-          
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold text-[#004d2b] mb-4">Método de pagamento</h2>
-            
-            <div className="space-y-3">
-              <div 
-                className={`flex items-center p-3 border rounded-md cursor-pointer transition-all ${metodoPagamento === 'credito' ? 'border-[#FFD700] bg-green-50 ring-2 ring-[#FFD700]' : 'border-gray-300'}`}
-                onClick={() => setMetodoPagamento('credito')}
-              >
-                <FontAwesomeIcon icon={faCreditCard} className="mr-3 text-[#004d2b]" />
-                <label className="block text-sm font-medium text-gray-700">
-                  Cartão de crédito
-                </label>
-              </div>
-              
-              <div 
-                className={`flex items-center p-3 border rounded-md cursor-pointer transition-all ${metodoPagamento === 'pix' ? 'border-[#FFD700] bg-green-50 ring-2 ring-[#FFD700]' : 'border-gray-300'}`}
-                onClick={() => setMetodoPagamento('pix')}
-              >
-                <FontAwesomeIcon icon={faQrcode} className="mr-3 text-[#004d2b]" />
-                <label className="block text-sm font-medium text-gray-700">
-                  Pix
-                </label>
-              </div>
+    <div className="min-h-screen bg-[#fcfdfc] relative overflow-hidden pb-20">
+      {/* Decorative Blobs */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-green-500/5 rounded-full blur-3xl -mr-64 -mt-64"></div>
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-yellow-400/5 rounded-full blur-3xl -ml-40 -mb-40"></div>
 
-              <div 
-                className={`flex items-center p-3 border rounded-md cursor-pointer transition-all ${metodoPagamento === 'boleto' ? 'border-[#FFD700] bg-green-50 ring-2 ring-[#FFD700]' : 'border-gray-300'}`}
-                onClick={() => setMetodoPagamento('boleto')}
-              >
-                <FontAwesomeIcon icon={faBarcode} className="mr-3 text-[#004d2b]" />
-                <label className="block text-sm font-medium text-gray-700">
-                  Boleto
-                </label>
+      <div className="max-w-3xl mx-auto px-6 pt-12 relative z-10">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+          <div className="flex items-center gap-6">
+            <button 
+              onClick={() => router.back()}
+              className="group p-4 bg-white hover:bg-[#004d2b] text-[#004d2b] hover:text-white rounded-2xl transition-all duration-300 shadow-xl shadow-green-900/5 border border-gray-100"
+            >
+              <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+            </button>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="px-2 py-0.5 bg-yellow-400 font-black text-[10px] uppercase rounded text-[#004d2b] tracking-wider">
+                   Checkout Seguro
+                </div>
               </div>
+              <h1 className="text-3xl md:text-4xl font-black text-[#004d2b] tracking-tight">
+                Finalizar Pagamento
+              </h1>
             </div>
           </div>
+          
+          <div className="flex items-center gap-3 bg-white px-5 py-3 rounded-2xl shadow-lg shadow-green-900/5 border border-gray-100">
+             <div className="bg-green-100 p-2 rounded-xl">
+                <ShieldCheck className="w-5 h-5 text-green-600" />
+             </div>
+             <div>
+                <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest text-left">Ambiente</p>
+                <p className="text-sm font-bold text-[#004d2b]">100% Protegido</p>
+             </div>
+          </div>
+        </div>
 
-          {metodoPagamento === 'credito' && (
-            <div className="mb-8 p-4 bg-green-50 rounded-lg border border-green-200">
-              <h3 className="text-lg font-semibold text-[#004d2b] mb-4">Dados do Cartão</h3>
-              <div className="space-y-4">
+        <div className="bg-white rounded-[40px] shadow-2xl shadow-green-900/10 border border-gray-100 overflow-hidden">
+          <div className="p-10 md:p-12">
+            
+            {pagamentoFinalizado && (
+              <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-[32px] flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="bg-green-500 text-white p-3 rounded-2xl shadow-lg shadow-green-500/20">
+                  <CheckCircle className="w-6 h-6" />
+                </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Número do cartão</label>
-                  <input type="text" placeholder="0000 0000 0000 0000" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#004d2b]" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Validade</label>
-                    <input type="text" placeholder="MM/AA" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#004d2b]" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">CVC</label>
-                    <input type="text" placeholder="123" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#004d2b]" />
-                  </div>
+                  <p className="font-black text-[#004d2b] uppercase text-sm tracking-widest">Pagamento Confirmado!</p>
+                  <p className="text-green-700/70 text-sm font-medium">Valor de R$ {valorFinal.toFixed(2).replace('.', ',')} processado com sucesso.</p>
                 </div>
               </div>
-            </div>
-          )}
-
-          {metodoPagamento === 'pix' && (
-            <div className="mb-8 p-4 bg-green-50 rounded-lg border border-green-200 text-center">
-              <h3 className="text-lg font-semibold text-[#004d2b] mb-4">Pagar com Pix</h3>
-              <p className="text-gray-600 mb-2">Escaneie o QR Code abaixo com seu app de pagamentos.</p>
-              <div className="flex justify-center my-4">
-                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(getPixCode())}`} alt="QR Code Pix" className="border-4 border-white rounded-lg shadow-md" />
-              </div>
-              <p className="font-bold text-xl text-[#004d2b]">Valor: R$ {getValorAtual()}</p>
-              <button 
-                onClick={() => navigator.clipboard.writeText(getPixCode())}
-                className="mt-4 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm py-2 px-4 rounded-lg flex items-center justify-center mx-auto"
-              >
-                <FontAwesomeIcon icon={faCopy} className="mr-2" />
-                Copiar código Pix
-              </button>
-            </div>
-          )}
-
-          {metodoPagamento === 'boleto' && (
-            <div className="mb-8 p-4 bg-green-50 rounded-lg border border-green-200 text-center">
-              <h3 className="text-lg font-semibold text-[#004d2b] mb-4">Pagamento com Boleto</h3>
-              <p className="text-gray-600 mb-4">
-                Geramos um boleto para você. Ele também será enviado para o seu e-mail.
-              </p>
+            )}
+            
+            {/* Exibir informações da corrida selecionada */}
+            {getInfoCorrida()}
+            
+            <div className="mb-12">
+              <h2 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+                <Wallet className="w-4 h-4" />
+                Método de pagamento
+              </h2>
               
-              <div className="border-2 border-dashed border-gray-400 p-4 rounded-lg bg-white text-left text-sm">
-                <div className="flex justify-between items-center border-b-2 border-gray-300 pb-2 mb-2">
-                  <div className="flex items-center gap-2">
-                    <img 
-                      src="/img/borasio.png" 
-                      alt="Logo BoraSiô" 
-                      className="h-8 w-auto"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        const fallback = document.createElement('div');
-                        fallback.className = 'text-2xl';
-                        fallback.textContent = '🚗';
-                        e.currentTarget.parentNode?.insertBefore(fallback, e.currentTarget);
-                      }}
-                    />
-                    <div className="font-bold text-lg text-gray-800">BoraSiô Transportes</div>
-                  </div>
-                  <div className="flex items-center gap-2 text-green-700 bg-green-100 px-2 py-1 rounded-md text-xs">
-                    <FontAwesomeIcon icon={faShieldAlt} />
-                    <span>Boleto Confiável</span>
-                  </div>
-                </div>
-                
-                <div className="font-mono text-sm mb-4 text-center bg-gray-100 p-2 rounded font-bold">
-                  {formatarLinhaDigitavel(codigoBarrasNumerico)}
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 text-xs mb-4">
-                  <div><span className="text-gray-500 block">Vencimento</span> <span className="font-bold">{getVencimentoBoleto()}</span></div>
-                  <div><span className="text-gray-500 block">Agência/Código Cedente</span> <span className="font-bold">0001 / 12345-6</span></div>
-                  <div><span className="text-gray-500 block">Nosso Número</span> <span className="font-bold">{Math.floor(Math.random() * 1000000000).toString().padStart(9, '0')}-{Math.floor(Math.random() * 10)}</span></div>
-                  <div><span className="text-gray-500 block">Valor do Documento</span> <span className="font-bold text-base">R$ {getValorAtual()}</span></div>
-                </div>
-                
-                <div className="text-center mt-4 p-3 bg-white border rounded">
-                  <div className="text-xs text-gray-500 mb-2">CÓDIGO DE BARRAS</div>
-                  <div className="font-mono text-xs bg-white p-2 border rounded-lg">
-                    <div className="tracking-tight leading-3 font-bold" style={{ 
-                      letterSpacing: '1px', 
-                      fontFamily: 'monospace',
-                      fontSize: '8px',
-                      lineHeight: '1.2'
-                    }}>
-                      {gerarCodigoBarrasVisual()}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {[
+                  { id: 'credito', label: 'Cartão', icon: CreditCard },
+                  { id: 'pix', label: 'Pix', icon: QrCode },
+                  { id: 'boleto', label: 'Boleto', icon: Barcode }
+                ].map((method) => (
+                  <button 
+                    key={method.id}
+                    className={`flex flex-col items-center justify-center p-6 rounded-[32px] border-2 transition-all duration-300 gap-3 group ${
+                      metodoPagamento === method.id 
+                        ? 'border-[#004d2b] bg-white shadow-2xl shadow-green-900/10 scale-[1.02]' 
+                        : 'border-gray-50 bg-gray-50/30 text-gray-400 hover:border-green-100 hover:bg-white'
+                    }`}
+                    onClick={() => setMetodoPagamento(method.id)}
+                  >
+                    <div className={`p-4 rounded-2xl transition-colors ${
+                      metodoPagamento === method.id ? 'bg-green-100 text-[#004d2b]' : 'bg-gray-100 group-hover:bg-green-50 group-hover:text-[#004d2b]'
+                    }`}>
+                      <method.icon className="w-6 h-6" />
                     </div>
-                    <div className="text-[6px] text-gray-400 mt-1 font-mono">
-                      {codigoBarrasNumerico}
+                    <span className={`font-black uppercase tracking-widest text-[10px] ${
+                      metodoPagamento === method.id ? 'text-[#004d2b]' : 'text-gray-400'
+                    }`}>
+                      {method.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              {metodoPagamento === 'credito' && (
+                <div className="p-8 bg-gray-50/50 rounded-[32px] border border-gray-100 animate-in fade-in duration-500">
+                  <h3 className="text-xs font-black text-[#004d2b] uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    Dados do Cartão
+                  </h3>
+                  <div className="space-y-6">
+                    <div className="relative">
+                      <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Número do cartão</label>
+                      <div className="relative">
+                         <CreditCard className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" />
+                         <input 
+                            type="text" 
+                            placeholder="0000 0000 0000 0000" 
+                            className="w-full bg-white p-5 pl-14 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-[#004d2b] transition-all font-bold text-[#004d2b] placeholder:text-gray-200 shadow-sm" 
+                         />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Validade</label>
+                        <input 
+                          type="text" 
+                          placeholder="MM/AA" 
+                          className="w-full bg-white p-5 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-[#004d2b] transition-all font-bold text-[#004d2b] placeholder:text-gray-200 shadow-sm" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">CVC</label>
+                        <div className="relative">
+                           <input 
+                            type="text" 
+                            placeholder="123" 
+                            className="w-full bg-white p-5 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-[#004d2b] transition-all font-bold text-[#004d2b] placeholder:text-gray-200 shadow-sm" 
+                           />
+                           <Lock className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" />
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </div>
+              )}
+
+              {metodoPagamento === 'pix' && (
+                <div className="p-8 bg-gray-50/50 rounded-[32px] border border-gray-100 text-center animate-in fade-in duration-500">
+                  <h3 className="text-xs font-black text-[#004d2b] uppercase tracking-widest mb-6 flex items-center justify-center gap-2">
+                    <QrCode className="w-4 h-4" />
+                    Pagar com Pix
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-8 font-medium">Escaneie o QR Code abaixo com seu app de pagamentos.</p>
+                  
+                  <div className="relative inline-block mb-8">
+                     <div className="absolute inset-0 bg-green-500/10 rounded-full blur-3xl scale-150"></div>
+                     <div className="relative bg-white p-6 rounded-[32px] shadow-2xl border border-gray-100">
+                        <img 
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(getPixCode())}`} 
+                          alt="QR Code Pix" 
+                          className="w-48 h-48 mx-auto" 
+                        />
+                     </div>
+                  </div>
+                  
+                  <div className="bg-white p-6 rounded-3xl border border-gray-100 mb-6">
+                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Valor do Pagamento</p>
+                     <p className="font-black text-3xl text-[#004d2b]">R$ {getValorAtual()}</p>
+                  </div>
+
+                  <button 
+                    onClick={() => navigator.clipboard.writeText(getPixCode())}
+                    className="w-full bg-[#004d2b] hover:bg-[#003823] text-white font-black py-5 px-8 rounded-2xl transition-all shadow-xl shadow-green-900/10 flex items-center justify-center gap-3 active:scale-95"
+                  >
+                    <Copy className="w-5 h-5" />
+                    Copiar código Pix
+                  </button>
+                </div>
+              )}
+
+              {metodoPagamento === 'boleto' && (
+                <div className="p-8 bg-gray-50/50 rounded-[32px] border border-gray-100 text-center animate-in fade-in duration-500">
+                  <h3 className="text-xs font-black text-[#004d2b] uppercase tracking-widest mb-6 flex items-center justify-center gap-2">
+                    <Barcode className="w-4 h-4" />
+                    Pagamento com Boleto
+                  </h3>
+                  
+                  <div className="bg-white rounded-[32px] p-8 shadow-xl border border-gray-100 text-left mb-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                       <ShieldCheck className="w-32 h-32 text-green-600" />
+                    </div>
+                    
+                    <div className="flex justify-between items-center mb-8 relative z-10 border-b border-gray-50 pb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-[#004d2b] p-2 rounded-xl">
+                           <Zap className="w-5 h-5 text-yellow-400" />
+                        </div>
+                        <div className="font-black text-lg text-[#004d2b] tracking-tight">BoraSiô Pay</div>
+                      </div>
+                      <div className="flex items-center gap-2 text-green-700 bg-green-50 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        <span>Boleto Seguro</span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-2xl font-mono text-[11px] mb-8 break-all border border-gray-100 text-gray-600 font-bold text-center">
+                      {formatarLinhaDigitavel(codigoBarrasNumerico)}
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-8 relative z-10">
+                      <div>
+                         <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Vencimento</p>
+                         <p className="font-bold text-[#004d2b]">{getVencimentoBoleto()}</p>
+                      </div>
+                      <div>
+                         <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Valor Total</p>
+                         <p className="font-black text-[#004d2b] text-xl">R$ {getValorAtual()}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <button 
+                      onClick={() => navigator.clipboard.writeText(formatarLinhaDigitavel(codigoBarrasNumerico))} 
+                      className="flex-1 bg-white hover:bg-gray-50 text-[#004d2b] font-black py-4 px-6 rounded-2xl border border-gray-100 flex items-center justify-center gap-2 transition-all active:scale-95"
+                    >
+                      <Copy className="w-4 h-4" /> Copiar Linha
+                    </button>
+                    <button 
+                      onClick={handleDownloadPdf}
+                      className="flex-1 bg-[#004d2b] hover:bg-[#003823] text-white font-black py-4 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-green-900/10 active:scale-95"
+                    >
+                      <Download className="w-4 h-4" /> Baixar PDF
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-12 pt-8 border-t border-gray-50 mb-12">
+              <h2 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+                <Ticket className="w-4 h-4" />
+                Voucher de desconto
+              </h2>
+              
+              <div className="bg-yellow-400/10 p-6 rounded-[32px] border border-yellow-400/20 mb-6 flex items-start gap-4">
+                <div className="bg-yellow-400 p-2 rounded-xl text-[#004d2b]">
+                   <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div className="text-[11px] text-[#004d2b] font-bold">
+                  <p className="uppercase tracking-widest mb-1">Cupom Especial: <span className="bg-yellow-400 px-1.5 py-0.5 rounded ml-1">OUT31/10</span></p>
+                  <p className="opacity-70 leading-relaxed">• 30% OFF em compras acima de R$ 10,00</p>
+                  <p className="opacity-70 leading-relaxed">• 20% OFF em compras partir de R$ 5,00</p>
+                </div>
+              </div>
+              
+              <div className="flex gap-3">
+                <input 
+                  type="text" 
+                  placeholder="EX: OUT31/10" 
+                  className="flex-1 bg-gray-50/50 p-5 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-[#004d2b] transition-all font-black text-[#004d2b] placeholder:text-gray-200"
+                  value={codigoVoucher}
+                  onChange={(e) => setCodigoVoucher(e.target.value)}
+                />
+                <button 
+                  className="bg-yellow-400 hover:bg-yellow-300 text-[#004d2b] font-black px-8 py-5 rounded-2xl transition-all shadow-xl shadow-yellow-400/20 active:scale-95 text-xs uppercase tracking-widest"
+                  onClick={handleAplicarVoucher}
+                >
+                  Aplicar
+                </button>
+              </div>
+              
+              {mensagemVoucher && (
+                <div className={`mt-4 p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest animate-in fade-in duration-300 ${
+                  tipoMensagemVoucher === 'success' 
+                    ? 'bg-green-50 text-green-700 border border-green-100' 
+                    : 'bg-red-50 text-red-700 border border-red-100'
+                }`}>
+                  {mensagemVoucher}
+                </div>
+              )}
+            </div>
+            
+            <div className="bg-[#004d2b] rounded-[40px] p-10 text-white relative overflow-hidden group shadow-2xl shadow-green-900/20">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform duration-700">
+                 <Zap className="w-48 h-48" />
+              </div>
+              
+              <div className="relative z-10 space-y-4">
+                <div className="flex justify-between items-center opacity-60">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">Subtotal</span>
+                  <span className="font-bold">R$ {valorOriginal.toFixed(2).replace('.', ',')}</span>
+                </div>
+                
+                {descontoAplicado && (
+                  <div className="flex justify-between items-center text-yellow-400">
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Desconto Aplicado</span>
+                    <span className="font-bold">- R$ {(valorOriginal - valorComDesconto).toFixed(2).replace('.', ',')}</span>
+                  </div>
+                )}
+                
+                <div className="flex justify-between items-center pt-4 border-t border-white/10">
+                  <span className="text-sm font-black uppercase tracking-[0.3em]">Total Final</span>
+                  <span className="text-4xl font-black tracking-tighter">
+                    R$ {getValorAtual()}
+                  </span>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                <button 
-                  onClick={() => navigator.clipboard.writeText(formatarLinhaDigitavel(codigoBarrasNumerico))} 
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm py-2 px-4 rounded-lg flex items-center justify-center"
-                >
-                  <FontAwesomeIcon icon={faCopy} className="mr-2" /> Copiar Linha Digitável
-                </button>
-                <button 
-                  onClick={handleDownloadPdf}
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-4 rounded-lg flex items-center justify-center"
-                >
-                  <FontAwesomeIcon icon={faDownload} className="mr-2" /> Baixar Boleto (PDF)
-                </button>
-              </div>
-            </div>
-          )}
-          
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold text-[#004d2b] mb-4 flex items-center">
-              <FontAwesomeIcon icon={faTicketAlt} className="mr-2 text-green-500" />
-              Voucher de desconto
-            </h2>
-            
-            <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-              <div className="flex items-start">
-                <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-500 mr-2 mt-0.5" />
-                <div className="text-sm text-yellow-700">
-                  <p className="font-semibold">Cupom OUT31/10:</p>
-                  <p>• 30% de desconto para compras acima de R$ 10,00</p>
-                  <p>• 20% de desconto para compras a partir de R$ 5,00</p>
-                  <p>• Não válido para valores abaixo de R$ 5,00</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex">
-              <input 
-                type="text" 
-                placeholder="Digite OUT31/10" 
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                value={codigoVoucher}
-                onChange={(e) => setCodigoVoucher(e.target.value)}
-              />
               <button 
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-r-md transition duration-200"
-                onClick={handleAplicarVoucher}
+                className="w-full bg-yellow-400 hover:bg-yellow-300 text-[#004d2b] font-black py-6 px-4 rounded-3xl mt-10 transition-all shadow-xl shadow-yellow-400/20 hover:scale-[1.02] active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed text-lg tracking-tight flex items-center justify-center gap-3"
+                onClick={handleFinalizarPagamento}
+                disabled={pagamentoFinalizado}
               >
-                Aplicar
+                {pagamentoFinalizado ? (
+                  <>
+                    <CheckCircle className="w-6 h-6" />
+                    PAGAMENTO CONCLUÍDO
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-6 h-6 fill-[#004d2b]" />
+                    FINALIZAR PAGAMENTO
+                  </>
+                )}
               </button>
             </div>
-            
-            {mensagemVoucher && (
-              <div className={`mt-2 p-2 rounded-md text-sm ${
-                tipoMensagemVoucher === 'success' 
-                  ? 'bg-green-100 text-green-700 border border-green-200' 
-                  : 'bg-red-100 text-red-700 border border-red-200'
-              }`}>
-                {mensagemVoucher}
-              </div>
-            )}
-          </div>
-          
-          <div className="border-t pt-4">
-            <div className="flex justify-between mb-2">
-              <span className="text-gray-600">Subtotal:</span>
-              <span className="font-medium">R$ {valorOriginal.toFixed(2).replace('.', ',')}</span>
-            </div>
-            
-            {descontoAplicado && (
-              <div className="flex justify-between mb-2 text-green-600">
-                <span>Desconto:</span>
-                <span>- R$ {(valorOriginal - valorComDesconto).toFixed(2).replace('.', ',')}</span>
-              </div>
-            )}
-            
-            <div className="flex justify-between text-lg font-bold mt-4 pt-4 border-t">
-              <span>Total:</span>
-              <span className="text-[#004d2b]">
-                R$ {getValorAtual()}
-              </span>
+
+            <div className="mt-8 flex items-center justify-center gap-6">
+               <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                  <ShieldCheck className="w-4 h-4 text-green-500" />
+                  Pagamento SSL Seguro
+               </div>
+               <div className="w-px h-4 bg-gray-200"></div>
+               <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                  <Lock className="w-4 h-4 text-gray-400" />
+                  Dados Criptografados
+               </div>
             </div>
           </div>
-          
-          <button 
-            className="w-full bg-[#FFD700] hover:bg-[#FFC000] text-[#004d2b] font-bold py-3 px-4 rounded-md mt-6 transition duration-200 disabled:opacity-50"
-            onClick={handleFinalizarPagamento}
-            disabled={pagamentoFinalizado}
-          >
-            {pagamentoFinalizado ? 'Pagamento Concluído' : 'Finalizar pagamento'}
-          </button>
         </div>
       </div>
     </div>
