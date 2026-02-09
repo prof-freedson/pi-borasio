@@ -365,7 +365,7 @@ export default function CadastroMotorista() {
                     </View>
 
                     <TouchableOpacity
-                        onPress={() => router.push("/pessoal/login")}
+                        onPress={() => router.push("/pessoal/login" as any)}
                         className="mt-8 items-center"
                     >
                         <Text className="text-green-900 font-medium">
