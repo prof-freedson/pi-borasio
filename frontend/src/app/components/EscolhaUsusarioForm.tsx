@@ -8,7 +8,7 @@ export default function EscolhaUsuarioForm() {
   const [tipoUsuario, setTipoUsuario] = useState('')
   const router = useRouter()
   const searchParams = useSearchParams()
-  const acao = searchParams.get('acao')
+  const acao = searchParams?.get('acao')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

@@ -1,11 +1,10 @@
+@import url("https://unpkg.com/leaflet/dist/leaflet.css");
+@import url("https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css");
 @import "tailwindcss";
-/* Import de bibliotecas externas devem aparecer antes de quaisquer regras CSS */
-@import url('https://unpkg.com/leaflet/dist/leaflet.css');
-@import url('https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css');
 
 /* Opcional: fonte custom com variável */
 :root {
-  --font-poppins: 'Poppins', sans-serif;
+  --font-poppins: "Poppins", sans-serif;
 }
 
 body {
