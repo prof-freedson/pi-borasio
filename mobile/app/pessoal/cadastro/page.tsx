@@ -88,21 +88,27 @@ const Cadastro = () => {
     }
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userEmail', form.email);
-      localStorage.setItem('userType', 'passageiro');
-      localStorage.setItem('userName', form.nome);
-      
-      try { 
-        window.dispatchEvent(new CustomEvent('authChanged', { 
-          detail: { loggedIn: true, email: form.email, userType: 'passageiro' } 
-        })); 
-      } catch (e) {}
-      
+      const response = await fetch("http://10.0.2.2:3000/auth/register/passageiro", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Erro desconhecido ao cadastrar.");
+      }
+
+      // Sucesso
+      // Aqui você pode salvar o token ou estado de login se o backend retornar token no futuro
+      // Por enquanto, apenas redireciona
       router.push("/usuario");
-    } catch (err) {
-      setError("Erro ao cadastrar. Tente novamente.");
+
+    } catch (err: any) {
+      setError(err.message || "Erro ao conectar com o servidor.");
       Sentry.captureException(err);
     } finally {
       setIsLoading(false);
@@ -113,15 +119,15 @@ const Cadastro = () => {
     <main className="min-h-screen bg-green-50 flex flex-col items-center justify-center p-4 py-10 relative overflow-hidden font-sans">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-green-100/50 to-transparent -z-10"></div>
-      
+
       <div className="w-full max-w-md relative">
         <Link href="/" className="inline-flex items-center gap-2 text-[#004d2b] font-bold mb-4 hover:bg-white p-2 rounded-xl transition-all">
           <ChevronLeft className="w-5 h-5" /> Início
         </Link>
-        
+
         <div className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-green-50">
           <div className="text-center mb-6">
-             <div className="bg-[#004d2b] w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#004d2b]/20">
+            <div className="bg-[#004d2b] w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#004d2b]/20">
               <Zap className="w-6 h-6 text-yellow-400 fill-yellow-400" />
             </div>
             <h1 className="text-2xl font-black text-[#004d2b]">Crie sua conta</h1>
@@ -186,16 +192,15 @@ const Cadastro = () => {
             <button
               type="submit"
               disabled={isLoading || !forcaSenha.todosValidos || !termosAceitos}
-              className={`w-full font-black py-4 rounded-2xl transition-all duration-300 text-lg flex items-center justify-center gap-3 shadow-xl ${
-                isLoading || !forcaSenha.todosValidos || !termosAceitos
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed shadow-none"
-                : "bg-yellow-400 hover:bg-yellow-300 text-[#004d2b] shadow-yellow-400/20 active:scale-95 transform hover:-translate-y-1"
-              }`}
+              className={`w-full font-black py-4 rounded-2xl transition-all duration-300 text-lg flex items-center justify-center gap-3 shadow-xl ${isLoading || !forcaSenha.todosValidos || !termosAceitos
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed shadow-none"
+                  : "bg-yellow-400 hover:bg-yellow-300 text-[#004d2b] shadow-yellow-400/20 active:scale-95 transform hover:-translate-y-1"
+                }`}
             >
               {isLoading ? "Criando sua conta..." : "Criar conta agora"}
             </button>
           </form>
-          
+
           <p className="text-center text-gray-500 font-medium mt-6">
             Já é de casa?{" "}
             <Link href="/pessoal/login" className="text-[#004d2b] font-black hover:underline underline-offset-4 decoration-yellow-400 decoration-2">

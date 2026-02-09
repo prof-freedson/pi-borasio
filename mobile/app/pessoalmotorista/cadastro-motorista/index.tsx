@@ -120,14 +120,32 @@ export default function CadastroMotorista() {
 
         setIsLoading(true);
         try {
-            // Simulação de cadastro
-            console.log("Dados para cadastro:", form);
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const payload = {
+                ...form,
+                veiculoArCondicionado: form.veiculoArCondicionado ? "sim" : "não",
+            };
+
+            const response = await fetch("http://10.0.2.2:3000/auth/register/motorista", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Erro desconhecido ao cadastrar motorista.");
+            }
+
             Alert.alert("Sucesso", "Cadastro realizado com sucesso!", [
                 { text: "OK", onPress: () => router.push("/") }
             ]);
-        } catch (err) {
-            Alert.alert("Erro", "Ocorreu um erro ao realizar o cadastro.");
+
+        } catch (err: any) {
+            console.error(err);
+            Alert.alert("Erro", err.message || "Ocorreu um erro ao conectar com o servidor.");
         } finally {
             setIsLoading(false);
         }
