@@ -1,10 +1,12 @@
 import { Router } from "express";
-import homeRoutes from "./home.routes.js";
 import authRoutes from "./auth.routes.js";
+import homeRoutes from "./home.routes.js";
+import adminRoutes from "./admin.routes.js";
 
 const router = Router();
 
+router.use("/auth", authRoutes);
 router.use("/", homeRoutes);
-router.use("/auth", authRoutes); // Prefixo /auth
+router.use("/admin", adminRoutes);
 
 export default router;

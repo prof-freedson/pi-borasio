@@ -12,6 +12,7 @@ const passengerSchema = z.object({
     cpf: z.string().min(11).optional(),
     endereco: z.string().optional(),
     telefone: z.string().optional(),
+    preferencias: z.string().optional(),
 });
 
 const driverSchema = z.object({
@@ -62,6 +63,7 @@ export const registerPassenger = async (req: Request, res: Response) => {
                     cpf: data.cpf || null,
                     endereco: data.endereco || null,
                     telefone: data.telefone || null,
+                    preferencias: data.preferencias || null,
                 },
             });
 
