@@ -70,6 +70,7 @@ export default function App() {
     { id: "pessoal/login", label: "Login", icon: "log-in" },
     { id: "pagamento", label: "Pagamento", icon: "credit-card" },
     { id: "escolha-usuario", label: "Cadastrar", icon: "user-plus" },
+    { id: "corridas", label: "Caronas", icon: "map-pin" },
     { id: "resetar-senha", label: "Recuperar Senha", icon: "key" },
   ];
 
@@ -121,9 +122,9 @@ export default function App() {
       icon: "map",
     },
     {
-      title: "corrida-em-grupo",
-      displayTitle: "Corrida em Grupo",
-      desc: "Economize até 40% dividindo sua rota.",
+      title: "corridas",
+      displayTitle: "Caronas e Corridas",
+      desc: "Economize até 40% dividindo sua rota ou oferecendo carona.",
       icon: "users",
     },
   ];

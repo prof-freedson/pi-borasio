@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec node --import tsx src/server.ts"
+    "dev": "nodemon --exec node --import tsx src/server.ts",
+    "build": "tsc",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
