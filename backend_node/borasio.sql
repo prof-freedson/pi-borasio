@@ -285,7 +285,17 @@ select * from carona.usuarios;
 CREATE TABLE carona.oferta_carona (
     id_oferta SERIAL PRIMARY KEY,
     id_motorista INT NOT NULL,
-    tipo VARCHAR(20) NOT NULL,
+    tipo VARCHAR(20) NOT NULL, -- 'geral' ou 'grupo'
+    origem VARCHAR(255) NOT NULL,
+    destino VARCHAR(255) NOT NULL,
+    data_hora TIMESTAMP NOT NULL,
+    vagas INT NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    veiculo VARCHAR(100),
+    placa VARCHAR(10),
+    ar_condicionado BOOLEAN DEFAULT FALSE,
+    observacoes TEXT,
+    telefone VARCHAR(20),
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_motorista) REFERENCES carona.usuarios(id)
 );
