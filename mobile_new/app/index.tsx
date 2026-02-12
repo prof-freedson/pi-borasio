@@ -5,7 +5,7 @@ import React from 'react'
 export default function Index() {
   return (
     <View>
-      <Text>index</Text>
+      <Text className='text-xl font-bold text-blue-500'>index</Text>
     </View>
   )
 }
