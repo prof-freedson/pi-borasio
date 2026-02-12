@@ -1,20 +1,81 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import "../../global.css";
 
+// Interface para tipar a resposta do backend
+interface UserData {
+    id: number;
+    nome: string;
+    email: string;
+    tipo: string;
+    passageiros?: {
+        telefone: string;
+        endereco: string;
+    }[];
+    motoristas?: {
+        telefone: string;
+    }[];
+}
+
 export default function PerfilUsuario() {
     const router = useRouter();
+    const [user, setUser] = useState<UserData | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
+    const fetchUserData = async () => {
+        try {
+            // Em uma aplicação real, usaríamos o ID do usuário logado armazenado no contexto/storage
+            // Aqui estamos usando o ID 1 para fins de demonstração
+            const response = await fetch('https://backend-node-vd88.vercel.app/admin/users/1');
+
+            if (!response.ok) {
+                throw new Error('Falha ao buscar dados do usuário');
+            }
+
+            const data = await response.json();
+            setUser(data);
+        } catch (error) {
+            console.error(error);
+            Alert.alert("Erro", "Não foi possível carregar os dados do perfil.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getTelefone = () => {
+        if (user?.tipo === 'passageiro' && user.passageiros && user.passageiros.length > 0) {
+            return user.passageiros[0].telefone;
+        }
+        if (user?.tipo === 'motorista' && user.motoristas && user.motoristas.length > 0) {
+            return user.motoristas[0].telefone;
+        }
+        return 'Não informado';
+    };
 
     const menuOptions = [
-        { icon: 'user', label: 'Dados Pessoais', desc: 'Nome, e-mail e telefone' },
+        { icon: 'user', label: 'Dados Pessoais', desc: user ? `${user.nome} • ${user.email}` : 'Nome, e-mail e telefone' },
+        { icon: 'phone', label: 'Contato', desc: user ? getTelefone() : 'Telefone' },
         { icon: 'map-pin', label: 'Endereços Salvos', desc: 'Casa, trabalho e favoritos' },
         { icon: 'credit-card', label: 'Pagamentos', desc: 'Cartões e histórico' },
         { icon: 'shield', label: 'Segurança', desc: 'Senha e verificação' },
         { icon: 'bell', label: 'Notificações', desc: 'Preferências de alertas' },
         { icon: 'help-circle', label: 'Ajuda', desc: 'Suporte e FAQ' },
     ];
+
+    if (loading) {
+        return (
+            <View className="flex-1 justify-center items-center bg-gray-50">
+                <ActivityIndicator size="large" color="#004d2b" />
+                <Text className="mt-4 text-green-800 font-medium">Carregando perfil...</Text>
+            </View>
+        );
+    }
 
     return (
         <View className="flex-1 bg-gray-50">
@@ -39,8 +100,12 @@ export default function PerfilUsuario() {
                             <Feather name="camera" size={14} color="#004d2b" />
                         </TouchableOpacity>
                     </View>
-                    <Text className="text-white text-xl font-bold mt-3">Maria Vitória</Text>
-                    <Text className="text-green-200">Passageira Safira</Text>
+                    <Text className="text-white text-xl font-bold mt-3">
+                        {user ? user.nome : 'Usuário'}
+                    </Text>
+                    <Text className="text-green-200 capitalize">
+                        {user ? `${user.tipo} Safira` : 'Passageiro'}
+                    </Text>
                     <View className="flex-row items-center mt-2 bg-white/20 px-3 py-1 rounded-full">
                         <Feather name="star" size={14} color="#fde047" />
                         <Text className="text-white ml-1 font-bold">4.9</Text>
@@ -57,7 +122,7 @@ export default function PerfilUsuario() {
                             </View>
                             <View className="flex-1">
                                 <Text className="text-gray-800 font-semibold text-base">{item.label}</Text>
-                                <Text className="text-gray-400 text-xs">{item.desc}</Text>
+                                <Text className="text-gray-400 text-xs" numberOfLines={1}>{item.desc}</Text>
                             </View>
                             <Feather name="chevron-right" size={20} color="#cbd5e1" />
                         </TouchableOpacity>
