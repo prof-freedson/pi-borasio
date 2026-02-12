@@ -9,6 +9,7 @@ import {
     ArrowLeft, MapPin, Search as SearchIcon, Users, Cloud, Car, Clock, Star,
     Map as MapIcon, Calendar, TreePine, Share2, Navigation, Truck
 } from "lucide-react-native";
+import { mockData } from "../../data/mockData";
 
 // Definição do Tipo Carona (baseado no frontend e backend)
 type Carona = {
@@ -43,90 +44,30 @@ export default function ProcurarCaronasScreen() {
     const [buscaDestino, setBuscaDestino] = useState("");
     const [caronas, setCaronas] = useState<Carona[]>([]);
 
-    // Dados Mockados para Categorias Especiais (Baseado no Frontend)
-    const caronasMockadas: Carona[] = [
-        // Modo Ilha
-        {
-            id: 101, tipo: 'ilha', origem: "Terminal Cohama", destino: "Praia do Calhau", vagas: 3, valor: 12.50,
-            motorista: { nome: "Mariana Almeida", veiculo: "Jeep Renegade", avaliacao: 4.9 },
-            dataHora: new Date().toISOString(), tempoEstimado: "18 min"
-        },
-        {
-            id: 102, tipo: 'ilha', origem: "Renascença", destino: "Praia de Olho d'Água", vagas: 2, valor: 14.00,
-            motorista: { nome: "Ricardo Borges", veiculo: "Toyota Corolla", avaliacao: 4.8 },
-            dataHora: new Date().toISOString(), tempoEstimado: "22 min"
-        },
-        // Eventos
-        {
-            id: 201, tipo: 'evento', origem: "Terminal Cohama", destino: "Festival Bumba Meu Boi", vagas: 4, valor: 18.00,
-            motorista: { nome: "Juliana Martins", veiculo: "Creta Branco", avaliacao: 4.9 },
-            dataHora: new Date().toISOString(), tempoEstimado: "22 min"
-        },
-        // Rural
-        {
-            id: 301, tipo: 'rural', origem: "Tirirical", destino: "Terminal Cohab", vagas: 4, valor: 12.00,
-            motorista: { nome: "José Ribeiro", veiculo: "S10 Cabine Dupla", avaliacao: 4.8 },
-            dataHora: new Date().toISOString(), tempoEstimado: "45 min"
-        },
-        // Grupo
-        {
-            id: 401, tipo: 'grupo', origem: "Shopping da Ilha", destino: "Praia do Calhau", vagas: 3, valor: 5.00,
-            motorista: { nome: "Grupo Viagem", veiculo: "Spin Prata", avaliacao: 4.9 },
-            dataHora: new Date().toISOString(), tempoEstimado: "18 min", economia: "R$ 10,00", pessoasGrupo: 3
-        }
-    ];
+    // Dados Mockados importados
+    // Dados Mockados importados
+    const caronasMockadas: Carona[] = mockData.ofertasCaronas.map(c => ({
+        id: c.id,
+        tipo: (c.tipo as any) || 'geral',
+        origem: c.origem,
+        destino: c.destino,
+        vagas: c.vagas,
+        valor: c.valor,
+        motorista: mockData.motoristas.find(m => m.id === c.motoristaId) || { nome: "Motorista", avaliacao: 5.0 },
+        dataHora: c.dataHora,
+        tempoEstimado: "15 min" // Hardcoded for demo
+    }));
 
     // Buscar Caronas da API (e mesclar com mocks)
+    // Buscar Caronas (Apenas Mocks para Demo Instantânea)
     const buscarCaronas = async () => {
-        setLoading(true);
+        // setLoading(true); // Removido para não mostrar "Buscando rotas"
         try {
-            // 1. Tentar buscar do backend oficial primeiro
-            let caronasAPI: Carona[] = [];
-            try {
-                const queryParams = new URLSearchParams();
-                if (buscaOrigem) queryParams.append('origem', buscaOrigem);
-                if (buscaDestino) queryParams.append('destino', buscaDestino);
-
-                const response = await fetch(`${API_URL}/caronas/disponiveis?${queryParams.toString()}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    // Mapear resposta do backend para nosso formato local
-                    caronasAPI = data.map((item: any) => ({
-                        id: item.id_oferta || item.id, // Ajuste conforme retorno real do backend
-                        tipo: item.tipo?.toLowerCase() || 'geral',
-                        origem: item.origem,
-                        destino: item.destino,
-                        vagas: item.vagas,
-                        valor: parseFloat(item.valor),
-                        motorista: {
-                            nome: item.motorista?.nome || "Motorista App",
-                            veiculo: item.veiculo,
-                            avaliacao: 5.0 // Padrão se não vier
-                        },
-                        dataHora: item.dataHora,
-                        tempoEstimado: "ND"
-                    }));
-                }
-            } catch (err) {
-                console.log("Backend indisponível, usando apenas dados locais simulados.");
-            }
-
-            // 2. Filtrar os mocks locais pelo tipo ativo
+            // Simplesmente filtra os mocks
             const mocksFiltrados = caronasMockadas.filter(c => c.tipo === abaAtiva);
 
-            // 3. Mesclar (API geralmente traz 'geral', mocks trazem os especiais)
-            // Se abaAtiva for 'geral', prioriza a API. Se for outra, prioriza mocks + API filtrada
+            // Aplica filtros de texto
             let resultadoFinal = [...mocksFiltrados];
-
-            if (abaAtiva === 'geral') {
-                const apiGeral = caronasAPI.filter(c => c.tipo === 'geral' || !c.tipo);
-                resultadoFinal = [...resultadoFinal, ...apiGeral];
-            } else {
-                const apiTipo = caronasAPI.filter(c => c.tipo === abaAtiva);
-                resultadoFinal = [...resultadoFinal, ...apiTipo];
-            }
-
-            // Aplicar filtro de texto localmente se a API não retornou nada ou se estamos usando mocks
             if (buscaOrigem || buscaDestino) {
                 resultadoFinal = resultadoFinal.filter(c => {
                     const matchOrigem = !buscaOrigem || c.origem.toLowerCase().includes(buscaOrigem.toLowerCase());
@@ -139,9 +80,6 @@ export default function ProcurarCaronasScreen() {
 
         } catch (error) {
             console.error("Erro ao buscar caronas:", error);
-            Alert.alert("Erro", "Não foi possível carregar as caronas.");
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -226,8 +164,8 @@ export default function ProcurarCaronasScreen() {
                             key={cat}
                             onPress={() => setAbaAtiva(cat)}
                             className={`flex-row items-center px-5 py-3 rounded-2xl mr-3 border ${abaAtiva === cat
-                                    ? 'bg-[#004d2b] border-[#004d2b]'
-                                    : 'bg-white border-green-100'
+                                ? 'bg-[#004d2b] border-[#004d2b]'
+                                : 'bg-white border-green-100'
                                 }`}
                         >
                             {getIconeCategoria(cat)}
@@ -247,8 +185,7 @@ export default function ProcurarCaronasScreen() {
             <ScrollView className="px-4 pb-20" showsVerticalScrollIndicator={false}>
                 {loading ? (
                     <View className="py-20 items-center">
-                        <ActivityIndicator size="large" color="#004d2b" />
-                        <Text className="mt-4 text-[#004d2b] font-bold">Buscando rotas...</Text>
+                        {/* Loading removido conforme solicitado */}
                     </View>
                 ) : caronas.length === 0 ? (
                     <View className="bg-white p-8 rounded-[32px] items-center mt-4 border border-green-100 shadow-sm">

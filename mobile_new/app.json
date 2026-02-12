@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "mobile_new",
-    "slug": "mobile_new",
+    "name": "Borasiô",
+    "slug": "borasio",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "mobilenew",
+    "scheme": "borasio",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

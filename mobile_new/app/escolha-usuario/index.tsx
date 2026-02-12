@@ -11,9 +11,7 @@ export default function UserTypeSelectionScreen() {
     if (type === 'motorista') {
       router.push('/pessoalmotorista/cadastro-motorista');
     } else {
-      // Assuming there's a passenger registration or it goes to the general one
-      // router.push('/pessoal/cadastro');
-      console.log('Passageiro selecionado');
+      router.push('/pessoal/cadastro' as any);
     }
   };
 

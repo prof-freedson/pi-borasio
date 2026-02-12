@@ -87,12 +87,19 @@ export default function Cadastro() {
         }
 
         try {
-            const response = await fetch("http://10.0.2.2:3000/auth/register/passageiro", {
+            // Remove caracteres não numéricos de CPF e Telefone antes de enviar
+            const payload = {
+                ...form,
+                cpf: form.cpf.replace(/\D/g, ''),
+                telefone: form.telefone.replace(/\D/g, ''),
+            };
+
+            const response = await fetch("https://backend-node-vd88.vercel.app/auth/register/passageiro", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(form),
+                body: JSON.stringify(payload),
             });
 
             const data = await response.json();

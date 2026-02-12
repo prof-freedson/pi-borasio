@@ -8,6 +8,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import {
     ArrowLeft, CreditCard, Ticket, CheckCircle, Zap, ShieldCheck, Lock, AlertTriangle, AlertCircle
 } from "lucide-react-native";
+import { mockData } from "../../../data/mockData";
 
 const API_URL = "http://10.0.2.2:3001"; // Ajuste para seu ambiente (localhost no emulador Android)
 
@@ -34,26 +35,28 @@ export default function PagamentoCaronaScreen() {
     const [numeroCartao, setNumeroCartao] = useState("");
     const [validade, setValidade] = useState("");
     const [cvc, setCvc] = useState("");
-    const [metodoPagamento, setMetodoPagamento] = useState<'credito' | 'pix'>('credito');
+    const [metodoPagamento, setMetodoPagamento] = useState<'credito' | 'dinheiro'>('credito');
     const [erroPagamento, setErroPagamento] = useState("");
 
-    // Simular busca de detalhes da carona (idealmente buscaria na API pelo ID)
+    // Simular busca de detalhes da carona usando mockData
     useEffect(() => {
-        // Simulando delay de rede
-        setTimeout(() => {
-            // Aqui você faria um fetch(`${API_URL}/caronas/${id}`)
-            // Como ainda não temos esse endpoint específico de detalhes único, vamos mockar
+        const ride = mockData.ofertasCaronas.find(c => c.id === Number(id));
+        if (ride) {
+            const motorista = mockData.motoristas.find(m => m.id === ride.motoristaId);
             setDetalhes({
-                id: Number(id),
-                origem: "Terminal Cohama",
-                destino: "Praia do Calhau",
-                valor: 12.50,
-                motorista: "Mariana Almeida",
-                veiculo: "Jeep Renegade",
-                data: new Date().toLocaleDateString('pt-BR')
+                id: ride.id,
+                origem: ride.origem,
+                destino: ride.destino,
+                valor: ride.valor,
+                motorista: motorista?.nome || "Motorista App",
+                veiculo: motorista?.veiculo || "Carro Padrão",
+                data: new Date(ride.dataHora).toLocaleDateString('pt-BR')
             });
             setLoading(false);
-        }, 1000);
+        } else {
+            Alert.alert("Erro", "Carona não encontrada");
+            router.back();
+        }
     }, [id]);
 
     const handlePagamento = async () => {
@@ -61,54 +64,35 @@ export default function PagamentoCaronaScreen() {
         setProcessando(true);
 
         try {
-            if (metodoPagamento === 'credito') {
-                const cartaoLimpo = numeroCartao.replace(/\s/g, '');
-                if (cartaoLimpo !== '4242424242424242') {
-                    throw new Error("Cartão recusado. Use o cartão de teste final 4242.");
-                }
+            // Validação simples de cartão
+            if (metodoPagamento === 'credito' && numeroCartao.length < 13) {
+                throw new Error("Número do cartão inválido.");
             }
 
-            // Payload para a API
-            const payload = {
-                ofertaId: id,
-                passageiroId: 1, // Fixo para teste
-                metodoPagamento,
-                tokenCartao: metodoPagamento === 'credito' ? 'tok_visa_4242' : undefined
-            };
+            // Simula processamento
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // Chamada real ao Backend
-            try {
-                const response = await fetch(`${API_URL}/caronas/reservar`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+            // Sucesso no pagamento
+            setPagamentoConcluido(true);
+            setProcessando(false);
 
-                const data = await response.json();
+            Alert.alert("Pagamento Aprovado", "Aguardando confirmação do motorista...");
 
-                if (!response.ok) {
-                    throw new Error(data.error || "Erro ao processar pagamento.");
-                }
-
-                // Sucesso
-                setPagamentoConcluido(true);
-                setTimeout(() => {
-                    // Redirecionar para home ou histórico após 2s
-                    Alert.alert("Sucesso", "Sua carona foi confirmada!", [
-                        { text: "OK", onPress: () => router.push("/corridas") } // Volta para o Hub
-                    ]);
-                }, 1000);
-
-            } catch (apiError: any) {
-                console.log("Erro API:", apiError);
-                // Fallback para teste offline se API falhar
-                setErroPagamento("Não foi possível conectar ao servidor de pagamentos. (" + apiError.message + ")");
-            }
+            // Simula aceitação do motorista após 10 segundos
+            setTimeout(() => {
+                Alert.alert(
+                    "Corrida Aceita! 🚗",
+                    `O motorista ${detalhes?.motorista} está a caminho!`,
+                    [
+                        { text: "Acompanhar", onPress: () => router.push(`/corridas/${id}/aguardando` as any) }
+                    ]
+                );
+            }, 10000); // 10 segundos
 
         } catch (err: any) {
-            setErroPagamento(err.message);
-        } finally {
             setProcessando(false);
+            setErroPagamento(err.message);
+            Alert.alert("Erro no Pagamento", err.message);
         }
     };
 
@@ -170,11 +154,11 @@ export default function PagamentoCaronaScreen() {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => setMetodoPagamento('pix')}
-                        className={`flex-1 ml-2 p-4 rounded-2xl border items-center ${metodoPagamento === 'pix' ? 'bg-[#004d2b] border-[#004d2b]' : 'bg-white border-green-100'}`}
+                        onPress={() => setMetodoPagamento('dinheiro')}
+                        className={`flex-1 ml-2 p-4 rounded-2xl border items-center ${metodoPagamento === 'dinheiro' ? 'bg-[#004d2b] border-[#004d2b]' : 'bg-white border-green-100'}`}
                     >
-                        <Zap size={24} color={metodoPagamento === 'pix' ? '#fff' : '#004d2b'} />
-                        <Text className={`text-[10px] font-bold uppercase mt-2 ${metodoPagamento === 'pix' ? 'text-white' : 'text-[#004d2b]'}`}>Pix</Text>
+                        <Ticket size={24} color={metodoPagamento === 'dinheiro' ? '#fff' : '#004d2b'} />
+                        <Text className={`text-[10px] font-bold uppercase mt-2 ${metodoPagamento === 'dinheiro' ? 'text-white' : 'text-[#004d2b]'}`}>Dinheiro</Text>
                     </TouchableOpacity>
                 </View>
 

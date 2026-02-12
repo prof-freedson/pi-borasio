@@ -4,11 +4,29 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import "../../global.css";
 
+import { mockData } from '../../data/mockData';
+
 export default function LoginPassageiro() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('joao@email.com'); // Pre-fill for demo
+  const [password, setPassword] = useState('123'); // Pre-fill for demo
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    // Simula delay de rede
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const user = mockData.usuarioLogado;
+
+    if (email === user.email && password === user.senha) {
+      router.replace("/corridas/procurar" as any); // Ir direto para busca de caronas
+    } else {
+      alert("Credenciais inválidas! Tente joao@email.com / 123");
+    }
+    setLoading(false);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -77,9 +95,16 @@ export default function LoginPassageiro() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              className="bg-[#004d2b] py-4 rounded-xl shadow-lg shadow-green-900/20"
-              onPress={() => router.replace("/usuario" as any)}
+              className="bg-[#004d2b] py-4 rounded-xl shadow-lg shadow-green-900/20 flex-row justify-center items-center"
+              onPress={handleLogin}
+              disabled={loading}
             >
+              {loading ? (
+                <View className="mr-2">
+                  {/* Import ActivityIndicator first if needed, but for now simple text or specific component */}
+                  <Text className="text-white font-bold">Carregando...</Text>
+                </View>
+              ) : null}
               <Text className="text-white text-center font-bold text-lg">Entrar</Text>
             </TouchableOpacity>
 
